@@ -31,6 +31,22 @@ prueba-tecnica-entidad-financiera/
 └── README.md
 ```
 
+## Ejecución local del backend
+
+Requisitos: **Java 21** y **Docker** (para la base de datos y para los tests de integración).
+
+```bash
+# 1. Base de datos PostgreSQL (si el puerto 5432 está ocupado: DB_PORT=5433 docker compose up -d postgres)
+docker compose up -d postgres
+
+# 2. API REST (con el mismo DB_PORT si se cambió en el paso 1)
+cd backend
+./mvnw spring-boot:run
+```
+
+- Swagger UI: http://localhost:8080/swagger-ui.html
+- Tests y reporte de cobertura: `./mvnw verify` → `backend/target/site/jacoco/index.html`
+
 ## Ejecución con Docker
 
 > Disponible cuando se integre la rama de contenedores.

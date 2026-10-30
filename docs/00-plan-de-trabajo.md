@@ -10,7 +10,7 @@ Fases del proyecto en el orden en que se desarrollan. Cada fase es una rama `fea
 |---|---|---|---|---|
 | 1 | Documentación técnica | `feature/documentacion` | [#1](https://github.com/Sofialjure/prueba-tecnica-entidad-financiera/pull/1) | ✅ |
 | 2 | Base del backend | `feature/backend-base` | [#2](https://github.com/Sofialjure/prueba-tecnica-entidad-financiera/pull/2) | ✅ |
-| 3 | Clientes | `feature/customers` | — | 🔄 |
+| 3 | Clientes | `feature/customers` | [#3](https://github.com/Sofialjure/prueba-tecnica-entidad-financiera/pull/3) | ✅ |
 | 4 | Cuentas | `feature/accounts` | — | ⏳ |
 | 5 | Transacciones | `feature/transactions` | — | ⏳ |
 | 6 | Frontend | `feature/frontend` | — | ⏳ |
@@ -39,15 +39,15 @@ Fases del proyecto en el orden en que se desarrollan. Cada fase es una rama `fea
 - [x] Swagger UI y PostgreSQL local con Docker Compose
 - [x] Tests de migraciones y de manejo de errores
 
-### 3. Clientes 🔄
+### 3. Clientes ✅
 
-- [ ] Modelo de dominio `Customer` con sus reglas: mayoría de edad, correo, nombres (RF-05, RF-07, RF-08)
-- [ ] Crear, consultar, listar y actualizar clientes con fechas automáticas (RF-01, RF-02, RF-03, RF-06)
-- [ ] Eliminar cliente solo si no tiene cuentas (RF-04)
-- [ ] Identificación única (SUP-07)
-- [ ] Entidad JPA, repositorio y adaptador de persistencia
-- [ ] Controller REST con validaciones
-- [ ] Tests unitarios de Service y Controller
+- [x] Modelo de dominio `Customer` con sus reglas: mayoría de edad, correo, nombres (RF-05, RF-07, RF-08)
+- [x] Crear, consultar, listar y actualizar clientes con fechas automáticas (RF-01, RF-02, RF-03, RF-06)
+- [x] Eliminar cliente solo si no tiene cuentas (RF-04)
+- [x] Identificación única (SUP-07)
+- [x] Entidad JPA, repositorio y adaptador de persistencia
+- [x] Controller REST con validaciones
+- [x] Tests unitarios de Service y Controller (cobertura 100 % en ambas capas)
 
 ### 4. Cuentas ⏳
 
