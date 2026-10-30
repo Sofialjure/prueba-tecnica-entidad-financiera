@@ -49,6 +49,7 @@ docker compose up --build
 
 | # | Documento | Contenido |
 |---|---|---|
+| 0 | [Plan de trabajo](docs/00-plan-de-trabajo.md) | Fases del proyecto y avance |
 | 1 | [Requerimientos](docs/01-requerimientos.md) | Requerimientos funcionales, no funcionales y supuestos |
 | 2 | [Arquitectura](docs/02-arquitectura.md) | Hexagonal, patrones de diseño, SOLID y ACID |
 | 3 | [Modelo de datos](docs/03-modelo-datos.md) | Diagrama entidad-relación, DDL y DML |
