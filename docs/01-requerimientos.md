@@ -74,10 +74,10 @@ El enunciado deja algunos puntos abiertos. Estas son las decisiones tomadas:
 
 | ID | Supuesto | Justificación |
 |---|---|---|
-| SUP-01 | La **cuenta corriente admite sobregiro**: su saldo puede ser negativo hasta un `cupoSobregiro`. El cupo es configurable y vale **$0** en las de ahorros. | La restricción de saldo ≥ 0 solo aplica a ahorros. En la práctica bancaria el sobregiro es propio de la cuenta corriente. |
+| SUP-01 | La **cuenta corriente admite sobregiro**: su saldo puede ser negativo hasta un cupo de sobregiro (`overdraftLimit`). El cupo es configurable y vale **$0** en las de ahorros. | La restricción de saldo ≥ 0 solo aplica a ahorros. En la práctica bancaria el sobregiro es propio de la cuenta corriente. |
 | SUP-02 | **Saldo disponible** = saldo + cupo de sobregiro. En ahorros es igual al saldo. | Da sentido a la diferencia entre "saldo" y "saldo disponible" del enunciado. |
 | SUP-03 | La **cuenta corriente** también se crea **activa** por defecto. | El enunciado solo lo define para ahorros. Se aplica el mismo criterio por consistencia. |
-| SUP-04 | Ciclo de vida de la cuenta (ver diagrama abajo). **INACTIVA** es reversible y **CANCELADA** es definitiva. | Una cuenta cancelada está cerrada y no puede reabrirse. |
+| SUP-04 | Ciclo de vida de la cuenta (ver diagrama abajo). **Inactiva** (`INACTIVE`) es reversible y **cancelada** (`CANCELLED`) es definitiva. | Una cuenta cancelada está cerrada y no puede reabrirse. |
 | SUP-05 | Las cuentas **inactivas o canceladas no permiten movimientos**, ni como origen ni como destino. | Solo una cuenta activa está habilitada para operar. |
 | SUP-06 | El monto de toda transacción debe ser **mayor a $0**, y no se permite transferir a la **misma cuenta**. | Evita movimientos sin sentido. |
 | SUP-07 | La combinación **tipo + número de identificación** es única por cliente. | Una persona no puede registrarse dos veces. |
@@ -91,12 +91,12 @@ El enunciado deja algunos puntos abiertos. Estas son las decisiones tomadas:
 
 ```mermaid
 stateDiagram-v2
-    [*] --> ACTIVA : creación
-    ACTIVA --> INACTIVA : inactivar
-    INACTIVA --> ACTIVA : activar
-    ACTIVA --> CANCELADA : cancelar (saldo = 0)
-    INACTIVA --> CANCELADA : cancelar (saldo = 0)
-    CANCELADA --> [*]
+    [*] --> ACTIVE : creación
+    ACTIVE --> INACTIVE : deactivate
+    INACTIVE --> ACTIVE : activate
+    ACTIVE --> CANCELLED : cancel (saldo = 0)
+    INACTIVE --> CANCELLED : cancel (saldo = 0)
+    CANCELLED --> [*]
 ```
 
 ### Reglas de saldo por tipo de cuenta

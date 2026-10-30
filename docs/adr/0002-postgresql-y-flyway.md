@@ -9,7 +9,7 @@ Se debe usar SQL Server, Oracle, PostgreSQL o MySQL. La prueba evalúa explícit
 ## Decisión
 
 - **PostgreSQL 16**: es libre, tiene imagen Docker oficial liviana y soporta todo lo necesario: transacciones ACID robustas, `SELECT ... FOR UPDATE`, `CHECK` constraints, secuencias, columnas generadas y el tipo `NUMERIC` exacto.
-- **Flyway** para versionar el esquema con scripts **SQL puros** (`V1__crear_tablas.sql` para DDL y `V2__datos_iniciales.sql` para DML).
+- **Flyway** para versionar el esquema con scripts **SQL puros** (`V1__create_schema.sql` para DDL y `V2__seed_data.sql` para DML).
 - Hibernate se configura con `ddl-auto=validate`: valida que las entidades coincidan con el esquema, pero **nunca lo modifica**.
 
 ## Alternativas consideradas

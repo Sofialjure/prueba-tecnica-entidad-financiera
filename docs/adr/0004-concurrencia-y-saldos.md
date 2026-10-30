@@ -10,7 +10,7 @@ Dos operaciones simultáneas sobre la misma cuenta (por ejemplo, dos retiros) po
 
 1. **Bloqueo pesimista** (`@Lock(PESSIMISTIC_WRITE)`, que genera `SELECT ... FOR UPDATE`) al leer las cuentas que se van a modificar, dentro de un `@Transactional`.
 2. En las transferencias, las dos cuentas se bloquean **en orden ascendente de id**, sin importar cuál es el origen y cuál el destino. Así se evitan *deadlocks*.
-3. `saldo_disponible` es una **columna generada** en PostgreSQL: `GENERATED ALWAYS AS (saldo + cupo_sobregiro) STORED`. Se persiste y se actualiza automáticamente cada vez que cambia el saldo.
+3. `available_balance` es una **columna generada** en PostgreSQL: `GENERATED ALWAYS AS (balance + overdraft_limit) STORED`. Se persiste y se actualiza automáticamente cada vez que cambia el saldo.
 
 ## Alternativas consideradas
 

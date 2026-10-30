@@ -27,7 +27,7 @@ flowchart LR
     subgraph CORE[Núcleo]
         direction TB
         PI[Puertos de entrada<br/>casos de uso] --> S[Servicios de aplicación]
-        S --> D[Modelo de dominio<br/>Cliente · Cuenta · Transaccion]
+        S --> D[Modelo de dominio<br/>Customer · Account · Transaction]
         S --> PO[Puertos de salida]
     end
     subgraph OUT[Adaptadores de salida]
@@ -47,7 +47,7 @@ Se incluyen explícitamente las capas exigidas (**entity, service, controller, r
 ```
 com.pruebatecnica.entidadfinanciera
 ├── domain
-│   ├── model          # Cliente, Cuenta, Transaccion, enums de dominio
+│   ├── model          # Customer, Account, Transaction, enums de dominio
 │   ├── exception      # Excepciones de negocio
 │   └── port
 │       ├── in         # Casos de uso (interfaces)
@@ -73,18 +73,18 @@ com.pruebatecnica.entidadfinanciera
 ```mermaid
 sequenceDiagram
     participant FE as Frontend
-    participant C as TransaccionController
-    participant S as TransaccionService
-    participant D as Cuenta (dominio)
-    participant P as CuentaRepositoryPort
-    FE->>C: POST /api/v1/transacciones/retiros
-    C->>S: retirar(comando)
-    S->>P: buscarPorNumeroParaActualizar(numero) [lock]
-    P-->>S: Cuenta
-    S->>D: cuenta.debitar(monto)
+    participant C as TransactionController
+    participant S as TransactionService
+    participant D as Account (dominio)
+    participant P as AccountRepositoryPort
+    FE->>C: POST /api/v1/transactions/withdrawals
+    C->>S: withdraw(command)
+    S->>P: findByNumberForUpdate(number) [lock]
+    P-->>S: Account
+    S->>D: account.debit(amount)
     D-->>S: valida estado y saldo disponible
-    S->>P: guardar(cuenta) + registrar movimiento
-    S-->>C: Transaccion
+    S->>P: save(account) + registrar movimiento
+    S-->>C: Transaction
     C-->>FE: 201 Created
 ```
 
@@ -95,7 +95,7 @@ sequenceDiagram
 | **Ports & Adapters** | `domain.port` + `infrastructure.adapter` | Aislar el dominio de la tecnología. |
 | **Repository** | Puertos de salida y repositorios Spring Data | Abstraer el acceso a datos. |
 | **Adapter** | Adaptadores de persistencia | Traducir entre los puertos del dominio y JPA. |
-| **Strategy** | Reglas por tipo de cuenta (`AHORROS` / `CORRIENTE`) | Cada tipo define su prefijo, saldo mínimo y saldo disponible sin `if/else` repartidos por el código. |
+| **Strategy** | Reglas por tipo de cuenta (`SAVINGS` / `CHECKING`) | Cada tipo define su prefijo, saldo mínimo y saldo disponible sin `if/else` repartidos por el código. |
 | **Factory** | Creación de cuentas y generación del número de cuenta | Centralizar la construcción válida de una cuenta según su tipo. |
 | **DTO + Mapper** | Capa REST (MapStruct) | No exponer el dominio ni las entidades JPA en la API. |
 | **Builder** | Construcción de objetos de dominio y respuestas | Objetos legibles e inmutables. |
@@ -108,7 +108,7 @@ sequenceDiagram
 | **S** — Responsabilidad única | Cada caso de uso tiene su propio servicio. Los controllers solo traducen HTTP y la validación de negocio vive en el dominio. |
 | **O** — Abierto/Cerrado | Un nuevo tipo de cuenta se agrega con una nueva estrategia, sin modificar los servicios existentes. |
 | **L** — Sustitución de Liskov | Cualquier implementación de un puerto (JPA, en memoria para tests) es intercambiable. |
-| **I** — Segregación de interfaces | Puertos pequeños y específicos (`CrearClienteUseCase`, `EliminarClienteUseCase`...) en lugar de una interfaz gigante. |
+| **I** — Segregación de interfaces | Puertos pequeños y específicos (`CreateCustomerUseCase`, `DeleteCustomerUseCase`...) en lugar de una interfaz gigante. |
 | **D** — Inversión de dependencias | Los servicios dependen de **interfaces** (puertos), no de implementaciones concretas de persistencia. |
 
 ## 2.5 Transacciones ACID
@@ -144,7 +144,7 @@ src/app
 ├── core          # Servicios HTTP, interceptores, modelos
 ├── shared        # Componentes reutilizables (tablas, formularios, diálogos)
 └── features
-    ├── clientes
-    ├── cuentas
-    └── transacciones
+    ├── customers
+    ├── accounts
+    └── transactions
 ```

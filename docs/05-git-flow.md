@@ -8,7 +8,7 @@ El proyecto usa **Git Flow**:
 |---|---|---|---|
 | `main` | Código liberado (producción). Cada versión lleva un tag (`v1.0.0`). | — | — |
 | `develop` | Integración de funcionalidades terminadas. | `main` | — |
-| `feature/*` | Una funcionalidad (ej. `feature/clientes-crud`). | `develop` | `develop` |
+| `feature/*` | Una funcionalidad (ej. `feature/customers-crud`). | `develop` | `develop` |
 | `release/*` | Estabilización de una versión (ej. `release/1.0.0`). | `develop` | `main` y `develop` |
 | `hotfix/*` | Corrección urgente en producción. | `main` | `main` y `develop` |
 
@@ -17,16 +17,16 @@ gitGraph
     commit id: "init"
     branch develop
     checkout develop
-    branch feature/clientes
-    commit id: "feat: clientes"
+    branch feature/customers
+    commit id: "feat: customers"
     checkout develop
-    merge feature/clientes
-    branch feature/cuentas
-    commit id: "feat: cuentas"
+    merge feature/customers
+    branch feature/accounts
+    commit id: "feat: accounts"
     checkout develop
-    merge feature/cuentas
+    merge feature/accounts
     branch release/1.0.0
-    commit id: "chore: versión"
+    commit id: "chore: release"
     checkout main
     merge release/1.0.0 tag: "v1.0.0"
     checkout develop
@@ -55,8 +55,10 @@ Muchos equipos usan ramas por ambiente (`dev` → `qa` → `main`). Git Flow tie
 Se usa **[Conventional Commits](https://www.conventionalcommits.org/es/)**:
 
 ```
-<tipo>(<alcance opcional>): <descripción en imperativo>
+<type>(<optional scope>): <description in imperative mood>
 ```
+
+Los mensajes de commit, los nombres de ramas y los títulos de los PR se escriben en **inglés** (ver [ADR-0005](adr/0005-idioma-del-codigo.md)).
 
 | Tipo | Uso |
 |---|---|
@@ -71,9 +73,9 @@ Se usa **[Conventional Commits](https://www.conventionalcommits.org/es/)**:
 
 **Ejemplos:**
 ```
-feat(clientes): validar mayoría de edad al crear cliente
-test(cuentas): cubrir cancelación con saldo distinto de cero
-docs: documentar endpoints de transacciones
+feat(customers): validate legal age on customer creation
+test(accounts): cover cancellation with non-zero balance
+docs: document transaction endpoints
 ```
 
 ## 5.4 Versionamiento

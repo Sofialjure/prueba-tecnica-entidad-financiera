@@ -3,48 +3,49 @@
 - **URL base:** `http://localhost:8080/api/v1`
 - **Documentación interactiva:** `http://localhost:8080/swagger-ui.html`
 - **Formato:** JSON. Fechas en ISO-8601 y montos como números decimales.
+- **Idioma:** rutas y campos en inglés. Los mensajes de error (`title`, `detail`) van en español porque los leen los trabajadores de la entidad.
 
 ## 4.1 Clientes
 
 | Método | Endpoint | Descripción | RF |
 |---|---|---|---|
-| `POST` | `/clientes` | Crear cliente | RF-01, RF-05, RF-06 |
-| `GET` | `/clientes` | Listar clientes | RF-02 |
-| `GET` | `/clientes/{id}` | Consultar cliente | RF-02 |
-| `PUT` | `/clientes/{id}` | Actualizar cliente | RF-03 |
-| `DELETE` | `/clientes/{id}` | Eliminar cliente | RF-04 |
-| `GET` | `/clientes/{id}/cuentas` | Cuentas del cliente | RF-19 |
+| `POST` | `/customers` | Crear cliente | RF-01, RF-05, RF-06 |
+| `GET` | `/customers` | Listar clientes | RF-02 |
+| `GET` | `/customers/{id}` | Consultar cliente | RF-02 |
+| `PUT` | `/customers/{id}` | Actualizar cliente | RF-03 |
+| `DELETE` | `/customers/{id}` | Eliminar cliente | RF-04 |
+| `GET` | `/customers/{id}/accounts` | Cuentas del cliente | RF-19 |
 
 **Ejemplo: crear cliente**
 
 ```http
-POST /api/v1/clientes
+POST /api/v1/customers
 Content-Type: application/json
 
 {
-  "tipoIdentificacion": "CC",
-  "numeroIdentificacion": "1020304050",
-  "nombres": "Ana María",
-  "apellido": "Gómez",
-  "correo": "ana.gomez@correo.com",
-  "fechaNacimiento": "1995-04-12"
+  "identificationType": "CC",
+  "identificationNumber": "1020304050",
+  "firstName": "Ana María",
+  "lastName": "Gómez",
+  "email": "ana.gomez@correo.com",
+  "birthDate": "1995-04-12"
 }
 ```
 
 ```http
 201 Created
-Location: /api/v1/clientes/1
+Location: /api/v1/customers/1
 
 {
   "id": 1,
-  "tipoIdentificacion": "CC",
-  "numeroIdentificacion": "1020304050",
-  "nombres": "Ana María",
-  "apellido": "Gómez",
-  "correo": "ana.gomez@correo.com",
-  "fechaNacimiento": "1995-04-12",
-  "fechaCreacion": "2026-10-30T10:15:30",
-  "fechaModificacion": "2026-10-30T10:15:30"
+  "identificationType": "CC",
+  "identificationNumber": "1020304050",
+  "firstName": "Ana María",
+  "lastName": "Gómez",
+  "email": "ana.gomez@correo.com",
+  "birthDate": "1995-04-12",
+  "createdAt": "2026-10-30T10:15:30",
+  "updatedAt": "2026-10-30T10:15:30"
 }
 ```
 
@@ -52,23 +53,23 @@ Location: /api/v1/clientes/1
 
 | Método | Endpoint | Descripción | RF |
 |---|---|---|---|
-| `POST` | `/cuentas` | Crear cuenta | RF-09 a RF-13 |
-| `GET` | `/cuentas/{id}` | Consultar cuenta | RF-19 |
-| `PATCH` | `/cuentas/{id}/activar` | Activar cuenta | RF-15 |
-| `PATCH` | `/cuentas/{id}/inactivar` | Inactivar cuenta | RF-15 |
-| `PATCH` | `/cuentas/{id}/cancelar` | Cancelar cuenta (saldo = 0) | RF-16 |
-| `GET` | `/cuentas/{id}/movimientos` | Estado de cuenta | RF-24 |
+| `POST` | `/accounts` | Crear cuenta | RF-09 a RF-13 |
+| `GET` | `/accounts/{id}` | Consultar cuenta | RF-19 |
+| `PATCH` | `/accounts/{id}/activate` | Activar cuenta | RF-15 |
+| `PATCH` | `/accounts/{id}/deactivate` | Inactivar cuenta | RF-15 |
+| `PATCH` | `/accounts/{id}/cancel` | Cancelar cuenta (saldo = 0) | RF-16 |
+| `GET` | `/accounts/{id}/transactions` | Estado de cuenta | RF-24 |
 
 **Ejemplo: crear cuenta**
 
 ```http
-POST /api/v1/cuentas
+POST /api/v1/accounts
 Content-Type: application/json
 
 {
-  "clienteId": 1,
-  "tipoCuenta": "AHORROS",
-  "exentaGmf": false
+  "customerId": 1,
+  "accountType": "SAVINGS",
+  "gmfExempt": false
 }
 ```
 
@@ -77,16 +78,16 @@ Content-Type: application/json
 
 {
   "id": 1,
-  "tipoCuenta": "AHORROS",
-  "numeroCuenta": "5300000001",
-  "estado": "ACTIVA",
-  "saldo": 0.00,
-  "cupoSobregiro": 0.00,
-  "saldoDisponible": 0.00,
-  "exentaGmf": false,
-  "clienteId": 1,
-  "fechaCreacion": "2026-10-30T10:20:00",
-  "fechaModificacion": "2026-10-30T10:20:00"
+  "accountType": "SAVINGS",
+  "accountNumber": "5300000001",
+  "status": "ACTIVE",
+  "balance": 0.00,
+  "overdraftLimit": 0.00,
+  "availableBalance": 0.00,
+  "gmfExempt": false,
+  "customerId": 1,
+  "createdAt": "2026-10-30T10:20:00",
+  "updatedAt": "2026-10-30T10:20:00"
 }
 ```
 
@@ -94,21 +95,21 @@ Content-Type: application/json
 
 | Método | Endpoint | Descripción | RF |
 |---|---|---|---|
-| `POST` | `/transacciones/consignaciones` | Consignar en una cuenta | RF-20 |
-| `POST` | `/transacciones/retiros` | Retirar de una cuenta | RF-21 |
-| `POST` | `/transacciones/transferencias` | Transferir entre cuentas | RF-22 |
+| `POST` | `/transactions/deposits` | Consignar en una cuenta | RF-20 |
+| `POST` | `/transactions/withdrawals` | Retirar de una cuenta | RF-21 |
+| `POST` | `/transactions/transfers` | Transferir entre cuentas | RF-22 |
 
 **Ejemplo: transferencia**
 
 ```http
-POST /api/v1/transacciones/transferencias
+POST /api/v1/transactions/transfers
 Content-Type: application/json
 
 {
-  "cuentaOrigen": "5300000001",
-  "cuentaDestino": "3300000001",
-  "monto": 100000.00,
-  "descripcion": "Pago arriendo"
+  "sourceAccountNumber": "5300000001",
+  "targetAccountNumber": "3300000001",
+  "amount": 100000.00,
+  "description": "Pago arriendo"
 }
 ```
 
@@ -116,11 +117,11 @@ Content-Type: application/json
 201 Created
 
 {
-  "referencia": "7f1c2b9e-4a7d-4f0e-9c1a-2f3b4c5d6e7f",
-  "movimientos": [
-    { "cuenta": "5300000001", "tipo": "TRANSFERENCIA", "naturaleza": "DEBITO",  "monto": 100000.00 },
-    { "cuenta": "5300000001", "tipo": "GMF",           "naturaleza": "DEBITO",  "monto": 400.00 },
-    { "cuenta": "3300000001", "tipo": "TRANSFERENCIA", "naturaleza": "CREDITO", "monto": 100000.00 }
+  "reference": "7f1c2b9e-4a7d-4f0e-9c1a-2f3b4c5d6e7f",
+  "entries": [
+    { "accountNumber": "5300000001", "type": "TRANSFER", "entryType": "DEBIT",  "amount": 100000.00 },
+    { "accountNumber": "5300000001", "type": "GMF",      "entryType": "DEBIT",  "amount": 400.00 },
+    { "accountNumber": "3300000001", "type": "TRANSFER", "entryType": "CREDIT", "amount": 100000.00 }
   ]
 }
 ```
@@ -138,7 +139,7 @@ Content-Type: application/problem+json
   "title": "Regla de negocio violada",
   "status": 422,
   "detail": "Saldo disponible insuficiente en la cuenta 5300000001",
-  "instance": "/api/v1/transacciones/retiros"
+  "instance": "/api/v1/transactions/withdrawals"
 }
 ```
 
