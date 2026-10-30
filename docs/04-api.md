@@ -99,6 +99,8 @@ Content-Type: application/json
 | `POST` | `/transactions/withdrawals` | Retirar de una cuenta | RF-21 |
 | `POST` | `/transactions/transfers` | Transferir entre cuentas | RF-22 |
 
+Los movimientos de una cuenta se consultan en `GET /accounts/{id}/transactions`. No hay endpoints para editar ni eliminar transacciones porque son inmutables (SUP-13).
+
 **Ejemplo: transferencia**
 
 ```http
