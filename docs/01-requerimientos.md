@@ -52,7 +52,7 @@ Aplicación usada por los trabajadores de una entidad financiera para:
 
 | ID | Categoría | Requerimiento |
 |---|---|---|
-| RNF-01 | Tecnología | Backend desarrollado en **Java** (Java 21, Spring Boot 3). |
+| RNF-01 | Tecnología | Backend desarrollado en **Java** (Java 21, Spring Boot 4). |
 | RNF-02 | Arquitectura | **Arquitectura hexagonal** (puertos y adaptadores). |
 | RNF-03 | Base de datos | **PostgreSQL**, con estructuras de persistencia para todos los RF obligatorios. |
 | RNF-04 | Capas | El backend incluye como mínimo las capas **entity, service, controller y repository**. |

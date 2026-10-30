@@ -8,7 +8,7 @@ Aplicación para los trabajadores de una entidad financiera que permite administ
 
 | Capa | Tecnología |
 |---|---|
-| Backend | Java 21 · Spring Boot 3 · Spring Data JPA · Bean Validation · MapStruct |
+| Backend | Java 21 · Spring Boot 4 · Spring Data JPA · Bean Validation · MapStruct |
 | Base de datos | PostgreSQL 16 · Flyway (migraciones DDL/DML) |
 | Documentación API | OpenAPI 3 · Swagger UI (springdoc) |
 | Pruebas | JUnit 5 · Mockito · MockMvc · JaCoCo |
