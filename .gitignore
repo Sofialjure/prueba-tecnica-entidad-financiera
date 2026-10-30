@@ -1,0 +1,28 @@
+# --- Java / Maven ---
+target/
+*.class
+*.jar
+!**/.mvn/wrapper/maven-wrapper.jar
+*.log
+
+# --- Node / Angular ---
+node_modules/
+dist/
+.angular/
+coverage/
+
+# --- IDEs ---
+.idea/
+*.iml
+.vscode/*
+!.vscode/extensions.json
+*.swp
+
+# --- Sistema operativo ---
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# --- Variables de entorno ---
+.env
+!.env.example
