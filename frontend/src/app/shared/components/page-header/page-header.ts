@@ -16,18 +16,21 @@ import { Component, input } from '@angular/core';
     :host {
       display: flex;
       flex-wrap: wrap;
-      align-items: center;
+      align-items: flex-end;
       justify-content: space-between;
       gap: 16px;
       margin-bottom: 24px;
     }
     h1 {
       margin: 0;
-      font: var(--mat-sys-headline-small);
+      font-size: 26px;
+      font-weight: 700;
+      letter-spacing: -0.01em;
+      color: var(--app-navy);
     }
     .subtitle {
       margin: 4px 0 0;
-      color: var(--mat-sys-on-surface-variant);
+      color: var(--app-text-muted);
     }
     .actions {
       display: flex;
