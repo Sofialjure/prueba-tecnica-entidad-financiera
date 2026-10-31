@@ -47,3 +47,17 @@
     color: var(--app-navy);
   }
 }
+
+.split,
+.in-use {
+  font-size: 12px;
+}
+
+.split {
+  color: var(--app-text-muted);
+}
+
+.in-use {
+  color: #8c1d18;
+  font-weight: 600;
+}

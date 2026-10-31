@@ -30,4 +30,15 @@ describe('AccountSummary', () => {
   it('tells when the account is GMF exempt', async () => {
     expect(await render(CHECKING_ACCOUNT)).toContain('Cuenta corriente · Exenta GMF');
   });
+
+  it('splits the available balance of a checking account into balance and overdraft', async () => {
+    const text = await render(CHECKING_ACCOUNT);
+
+    expect(text).toContain('Saldo -$ 250.000 + cupo $ 500.000');
+    expect(text).toContain('Sobregiro en uso: $ 250.000');
+  });
+
+  it('does not talk about overdraft on savings accounts', async () => {
+    expect(await render()).not.toContain('cupo');
+  });
 });
