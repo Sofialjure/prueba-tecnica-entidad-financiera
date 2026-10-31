@@ -108,11 +108,11 @@ Permisos mínimos: `contents: read`.
 
 La aplicación se publica en **Microsoft Azure**: una máquina virtual Linux (`Standard_B2als_v2`, región `northcentralus`) que ejecuta el mismo Docker Compose. Los motivos, las alternativas y las consecuencias están en el [ADR-0006](adr/0006-despliegue-en-azure.md).
 
-**Aplicación en línea:** http://entidad-financiera-sofia.northcentralus.cloudapp.azure.com
+**Aplicación en línea:** https://entidad-financiera-sofia.northcentralus.cloudapp.azure.com
 
 ```text
-Navegador ──http:80──► Azure (northcentralus) · VM Standard_B2als_v2 · Ubuntu 24.04 LTS
-                       └─ Docker Compose: frontend (nginx :80) ──/api──► backend ──► postgres
+Navegador ──https:443──► Azure (northcentralus) · VM Standard_B2als_v2 · Ubuntu 24.04 LTS
+                         └─ Docker Compose: Caddy (HTTPS) ──► frontend (nginx) ──/api──► backend ──► postgres
 ```
 
 ### Recursos en Azure
@@ -124,7 +124,8 @@ Todos viven en un solo grupo de recursos, **`rg-entidad-financiera`**, de la sus
 | Máquina virtual | `vm-entidad-financiera` | `Standard_B2als_v2` (2 vCPU AMD, 4 GiB) + 2 GiB de *swap*, Ubuntu Server 24.04 LTS | 34,16 USD/mes encendida; 0 USD apagada |
 | Disco | `vm-entidad-financiera_OsDisk_…` | SSD estándar de 32 GiB | 2,40 USD/mes, siempre |
 | IP pública | `vm-entidad-financieraPublicIP` | Estándar estática, con nombre DNS `entidad-financiera-sofia` | 3,65 USD/mes, siempre |
-| Firewall | `vm-entidad-financieraNSG` | Solo dos reglas de entrada (ver seguridad) | Gratis |
+| Firewall | `vm-entidad-financieraNSG` | Solo tres reglas de entrada (ver seguridad) | Gratis |
+| Certificado HTTPS | Let's Encrypt, emitido y renovado por Caddy | Válido 90 días, se renueva solo | Gratis |
 | Red e interfaz | `vm-entidad-financieraVNET`, `…VMNic` | Red privada de la máquina | Gratis |
 | Alerta de presupuesto | `presupuesto-entidad-financiera` | 20 USD/mes; correo al 80 % y al 100 % del gasto real | Gratis |
 
@@ -134,17 +135,18 @@ Todos viven en un solo grupo de recursos, **`rg-entidad-financiera`**, de la sus
 
 | Medida | Detalle |
 |---|---|
-| Firewall de Azure | Entrada solo por el puerto **80** (web) desde internet y el **22** (SSH) desde la IP de la administradora. Los puertos 8080, 5432 y 443 no responden desde internet (verificado). |
-| Puertos de los contenedores | `docker-compose.azure.yml` quita los puertos publicados de PostgreSQL y de la API (`ports: !reset []`): solo se hablan por la red interna de Docker. El único puerto publicado es el 80 de Nginx. Por eso Swagger no es público en Azure. |
+| Firewall de Azure | Entrada solo por los puertos **443** (HTTPS) y **80** (redirige a HTTPS) desde internet, y el **22** (SSH) desde la IP de la administradora. Los puertos 8080 y 5432 no responden desde internet (verificado). |
+| HTTPS | **Caddy** (`deploy/azure/Caddyfile`) obtiene un certificado gratuito de **Let's Encrypt** para el dominio de Azure y lo renueva solo. Redirige `http://` a `https://` (308) y envía `Strict-Transport-Security`. Sin HTTPS, los celulares no cargaban la página: intentan primero el puerto 443. |
+| Puertos de los contenedores | `docker-compose.azure.yml` quita los puertos publicados de PostgreSQL, de la API y de Nginx (`ports: !reset []`): solo se hablan por la red interna de Docker. Los únicos puertos publicados son el 80 y el 443 de Caddy. Por eso Swagger no es público en Azure. |
 | Llave SSH | `ed25519` sin contraseña en `~/.ssh/entidad-financiera-azure` de la administradora, fuera del repositorio. Solo la parte pública está en el servidor, y el `.gitignore` excluye patrones de llaves por si acaso. |
 | Contraseña de la base de datos | Aleatoria (32 caracteres), generada en el servidor dentro de un `.env` con permisos `600`. Nunca pasa por el repositorio ni por el computador local. |
-| Memoria | Límites por contenedor (PostgreSQL 512 MiB, API 768 MiB, Nginx 128 MiB) para que la JVM no le quite memoria a la base de datos. |
+| Memoria | Límites por contenedor (PostgreSQL 512 MiB, API 768 MiB, Nginx 128 MiB, Caddy 64 MiB) para que la JVM no le quite memoria a la base de datos. |
 
 ### Cómo se desplegó
 
 1. `deploy/azure/cloud-init.yaml` (en el primer arranque): instala Docker desde el repositorio oficial y crea el *swap*.
 2. Las imágenes se construyen **en el equipo local** y se copian comprimidas por SSH (`docker save | gzip | ssh … docker load`). Así el servidor no compila.
-3. En el servidor se ejecuta `docker compose -f docker-compose.yml -f docker-compose.azure.yml up -d --no-build`.
+3. En el servidor se ejecuta `docker compose -f docker-compose.yml -f docker-compose.azure.yml up -d --no-build`, que además de los tres servicios arranca **Caddy** para HTTPS (imagen oficial `caddy:2.11.7-alpine`; los certificados se guardan en el volumen `caddy-data`).
 
 Para publicar una versión nueva basta, desde la raíz del repositorio y con Git Bash:
 

@@ -35,6 +35,7 @@ Fases del proyecto en el orden en que se desarrollan. Cada fase se divide en PRs
 | 8.3 | CI: reportes de cobertura | `feature/ci-coverage` | [#23](https://github.com/Sofialjure/prueba-tecnica-entidad-financiera/pull/23) | ✅ |
 | 9.1 | Nube: elección del proveedor (ADR) | `feature/cloud-decision` | [#26](https://github.com/Sofialjure/prueba-tecnica-entidad-financiera/pull/26) | ✅ |
 | 9.2 | Nube: despliegue | `feature/cloud-deploy` | [#27](https://github.com/Sofialjure/prueba-tecnica-entidad-financiera/pull/27) | ✅ |
+| 9.3 | Nube: HTTPS con Let's Encrypt | `feature/cloud-https` | [#28](https://github.com/Sofialjure/prueba-tecnica-entidad-financiera/pull/28) | ✅ |
 | 10 | Versión 1.0.0 | `release/1.0.0` | — | ⏳ |
 
 ## Detalle por fase
@@ -117,7 +118,8 @@ Fases del proyecto en el orden en que se desarrollan. Cada fase se divide en PRs
 ### 9. Despliegue en la nube ✅
 
 - [x] 9.1 Elegir proveedor y registrar la decisión en un ADR: Azure for Students, una VM con Docker Compose (ADR-0006)
-- [x] 9.2 Desplegar base de datos, backend y frontend en Azure y documentar los servicios usados, costos, seguridad y cómo apagar o borrar ([Despliegue](06-despliegue.md)) → http://entidad-financiera-sofia.northcentralus.cloudapp.azure.com
+- [x] 9.2 Desplegar base de datos, backend y frontend en Azure y documentar los servicios usados, costos, seguridad y cómo apagar o borrar ([Despliegue](06-despliegue.md)) → https://entidad-financiera-sofia.northcentralus.cloudapp.azure.com
+- [x] 9.3 HTTPS con Caddy y un certificado gratuito de Let's Encrypt (candado en el navegador y la página carga en celulares)
 
 ### 10. Versión 1.0.0 ⏳
 

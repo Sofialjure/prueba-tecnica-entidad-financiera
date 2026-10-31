@@ -36,7 +36,7 @@ prueba-tecnica-entidad-financiera/
 
 ## Aplicación en línea
 
-**http://entidad-financiera-sofia.northcentralus.cloudapp.azure.com**
+**https://entidad-financiera-sofia.northcentralus.cloudapp.azure.com**
 
 Desplegada en una máquina virtual de **Microsoft Azure** con el mismo Docker Compose ([detalles y costos](docs/06-despliegue.md#63-servicios-en-la-nube), [decisión](docs/adr/0006-despliegue-en-azure.md)). Si no responde, puede estar apagada para ahorrar crédito.
 
