@@ -95,8 +95,8 @@ sequenceDiagram
 | **Ports & Adapters** | `domain.port` + `infrastructure.adapter` | Aislar el dominio de la tecnología. |
 | **Repository** | Puertos de salida y repositorios Spring Data | Abstraer el acceso a datos. |
 | **Adapter** | Adaptadores de persistencia | Traducir entre los puertos del dominio y JPA. |
-| **Strategy** | Reglas por tipo de cuenta (`SAVINGS` / `CHECKING`) | Cada tipo define su prefijo, saldo mínimo y saldo disponible sin `if/else` repartidos por el código. |
-| **Factory** | Creación de cuentas y generación del número de cuenta | Centralizar la construcción válida de una cuenta según su tipo. |
+| **Strategy** | Reglas por tipo de cuenta: `AccountTypePolicy` con `SavingsAccountPolicy` y `CheckingAccountPolicy` | Cada tipo define su prefijo, saldo mínimo y saldo disponible sin `if/else` repartidos por el código. |
+| **Factory** | `AccountFactory`: creación de cuentas y generación del número de cuenta | Centralizar la construcción válida de una cuenta según su tipo. |
 | **DTO + Mapper** | Capa REST (MapStruct) | No exponer el dominio ni las entidades JPA en la API. |
 | **Builder** | Construcción de objetos de dominio y respuestas | Objetos legibles e inmutables. |
 | **Dependency Injection** | Spring IoC | Bajo acoplamiento y facilidad de pruebas. |
