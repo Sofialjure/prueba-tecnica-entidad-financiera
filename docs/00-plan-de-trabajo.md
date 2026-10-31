@@ -18,7 +18,7 @@ Fases del proyecto en el orden en que se desarrollan. Cada fase se divide en PRs
 | 6.3 | Frontend: listado y eliminación de clientes | `feature/frontend-customers-list` | [#8](https://github.com/Sofialjure/prueba-tecnica-entidad-financiera/pull/8) | ✅ |
 | 6.4 | Frontend: formulario de cliente | `feature/frontend-customer-form` | [#9](https://github.com/Sofialjure/prueba-tecnica-entidad-financiera/pull/9) | ✅ |
 | 6.5 | Frontend: rediseño visual (estilo banca moderna) | `feature/frontend-visual-redesign` | [#10](https://github.com/Sofialjure/prueba-tecnica-entidad-financiera/pull/10) | ✅ |
-| 6.6 | Frontend: cuentas del cliente y apertura | `feature/frontend-accounts` | — | ⏳ |
+| 6.6 | Frontend: cuentas del cliente y apertura | `feature/frontend-accounts` | [#11](https://github.com/Sofialjure/prueba-tecnica-entidad-financiera/pull/11) | ✅ |
 | 6.7 | Frontend: activar, inactivar y cancelar cuentas | `feature/frontend-account-status` | — | ⏳ |
 | 6.8 | Frontend: consignaciones y retiros | `feature/frontend-deposits-withdrawals` | — | ⏳ |
 | 6.9 | Frontend: transferencias | `feature/frontend-transfers` | — | ⏳ |
@@ -88,7 +88,7 @@ Fases del proyecto en el orden en que se desarrollan. Cada fase se divide en PRs
 - [x] 6.3 Listado de clientes con búsqueda, y eliminación con confirmación
 - [x] 6.4 Formulario de cliente (crear y editar) con las mismas validaciones de la API
 - [x] 6.5 Rediseño visual: menú lateral azul marino con acento dorado, panel principal con indicadores reales, tablas sin cuadrícula con avatares, formularios por secciones, calendario desplegable
-- [ ] 6.6 Cuentas de un cliente y apertura de cuentas
+- [x] 6.6 Detalle del cliente con sus cuentas (tarjetas tipo bancarias) y apertura de cuentas
 - [ ] 6.7 Activar, inactivar y cancelar cuentas
 - [ ] 6.8 Consignaciones y retiros
 - [ ] 6.9 Transferencias
