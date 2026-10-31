@@ -17,6 +17,10 @@ export const LABELS = {
     SAVINGS: 'Ahorros',
     CHECKING: 'Corriente',
   } satisfies Record<AccountType, string>,
+  accountTypeName: {
+    SAVINGS: 'Cuenta de ahorros',
+    CHECKING: 'Cuenta corriente',
+  } satisfies Record<AccountType, string>,
   accountStatus: {
     ACTIVE: 'Activa',
     INACTIVE: 'Inactiva',

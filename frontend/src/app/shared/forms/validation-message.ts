@@ -27,6 +27,8 @@ export function validationMessage(
       return `No puede superar ${detail.requiredLength} caracteres`;
     case 'min':
       return `El valor mínimo es ${detail.min}`;
+    case 'maxDecimals':
+      return `Admite máximo ${detail.digits} decimales`;
     case 'legalAge':
       return `El cliente debe ser mayor de edad (${detail.years} años cumplidos)`;
     default:

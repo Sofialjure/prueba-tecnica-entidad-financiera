@@ -1,5 +1,5 @@
 import { FormControl } from '@angular/forms';
-import { latestAdultBirthDate, legalAge, trimmedMinLength } from './validators';
+import { latestAdultBirthDate, legalAge, maxDecimals, trimmedMinLength } from './validators';
 
 describe('trimmedMinLength', () => {
   const validator = trimmedMinLength(2);
@@ -12,6 +12,21 @@ describe('trimmedMinLength', () => {
   it('leaves empty values to the required validator', () => {
     expect(validator(new FormControl(''))).toBeNull();
     expect(validator(new FormControl(null))).toBeNull();
+  });
+});
+
+describe('maxDecimals', () => {
+  const validator = maxDecimals(2);
+
+  it('accepts up to two decimals and rejects more', () => {
+    expect(validator(new FormControl(500000))).toBeNull();
+    expect(validator(new FormControl(10.55))).toBeNull();
+    expect(validator(new FormControl(10.555))).toEqual({ maxDecimals: { digits: 2 } });
+  });
+
+  it('leaves empty values to the required validator', () => {
+    expect(validator(new FormControl(null))).toBeNull();
+    expect(validator(new FormControl(''))).toBeNull();
   });
 });
 
