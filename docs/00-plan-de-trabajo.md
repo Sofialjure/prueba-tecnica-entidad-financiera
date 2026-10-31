@@ -26,7 +26,7 @@ Fases del proyecto en el orden en que se desarrollan. Cada fase se divide en PRs
 | 6.10 | Frontend: estado de cuenta | `feature/frontend-statement` | [#15](https://github.com/Sofialjure/prueba-tecnica-entidad-financiera/pull/15) | ✅ |
 | 6.11 | Frontend: sobregiro visible y cuentas del mismo titular | `feature/frontend-overdraft-visibility` | [#17](https://github.com/Sofialjure/prueba-tecnica-entidad-financiera/pull/17) | ✅ |
 | 7.1 | Docker: imagen del backend | `feature/docker-backend` | [#18](https://github.com/Sofialjure/prueba-tecnica-entidad-financiera/pull/18) | ✅ |
-| 7.2 | Docker: imagen del frontend (Nginx) | `feature/docker-frontend` | — | ⏳ |
+| 7.2 | Docker: imagen del frontend (Nginx) | `feature/docker-frontend` | [#19](https://github.com/Sofialjure/prueba-tecnica-entidad-financiera/pull/19) | ✅ |
 | 7.3 | Docker Compose con los 3 contenedores | `feature/docker-compose` | — | ⏳ |
 | 8.1 | CI: pipeline del backend | `feature/ci-backend` | — | ⏳ |
 | 8.2 | CI: pipeline del frontend | `feature/ci-frontend` | — | ⏳ |
@@ -101,7 +101,7 @@ Fases del proyecto en el orden en que se desarrollan. Cada fase se divide en PRs
 ### 7. Contenedores 🔄
 
 - [x] 7.1 Dockerfile multi-stage del backend (JRE Alpine, capas, usuario sin privilegios, healthcheck)
-- [ ] 7.2 Dockerfile multi-stage del frontend (Nginx)
+- [x] 7.2 Dockerfile multi-stage del frontend (Nginx sin root, proxy de /api, caché y cabeceras de seguridad)
 - [ ] 7.3 Docker Compose con los 3 contenedores: `docker compose up --build`
 
 ### 8. Integración continua ⏳
