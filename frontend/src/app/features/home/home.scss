@@ -1,0 +1,17 @@
+.intro {
+  color: var(--mat-sys-on-surface-variant);
+}
+
+.modules {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 16px;
+  margin-top: 24px;
+}
+
+mat-icon[mat-card-avatar] {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--mat-sys-primary);
+}
