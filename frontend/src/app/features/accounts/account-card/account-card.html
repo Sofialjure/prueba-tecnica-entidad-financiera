@@ -6,11 +6,11 @@
   </span>
   <span class="top-right">
     <app-status-chip [status]="item.status" />
-    @if (item.status !== 'CANCELLED') {
+    @if (actions()) {
       <button
         mat-icon-button
         class="menu-button"
-        [matMenuTriggerFor]="actions"
+        [matMenuTriggerFor]="menu"
         [attr.aria-label]="'Acciones de la cuenta ' + (item.accountNumber | accountNumber)"
       >
         <mat-icon>more_vert</mat-icon>
@@ -19,7 +19,12 @@
   </span>
 </div>
 
-<mat-menu #actions="matMenu" xPosition="before">
+<mat-menu #menu="matMenu" xPosition="before">
+  <a mat-menu-item [routerLink]="['/accounts', item.id, 'statement']">
+    <mat-icon>receipt_long</mat-icon>
+    Estado de cuenta
+  </a>
+  <mat-divider />
   @if (item.status === 'ACTIVE') {
     <a
       mat-menu-item
@@ -52,26 +57,29 @@
       <mat-icon>pause_circle</mat-icon>
       Inactivar cuenta
     </button>
-  } @else {
+  } @else if (item.status === 'INACTIVE') {
     <button mat-menu-item (click)="statusChange.emit('activate')">
       <mat-icon>play_circle</mat-icon>
       Activar cuenta
     </button>
   }
-  <button
-    mat-menu-item
-    class="cancel-item"
-    [disabled]="item.balance !== 0"
-    (click)="statusChange.emit('cancel')"
-  >
-    <mat-icon>block</mat-icon>
-    <span>
-      Cancelar cuenta
-      @if (item.balance !== 0) {
-        <small class="hint">Requiere saldo $0</small>
-      }
-    </span>
-  </button>
+  <!-- A cancelled account is final (SUP-04): only its statement remains -->
+  @if (item.status !== 'CANCELLED') {
+    <button
+      mat-menu-item
+      class="cancel-item"
+      [disabled]="item.balance !== 0"
+      (click)="statusChange.emit('cancel')"
+    >
+      <mat-icon>block</mat-icon>
+      <span>
+        Cancelar cuenta
+        @if (item.balance !== 0) {
+          <small class="hint">Requiere saldo $0</small>
+        }
+      </span>
+    </button>
+  }
 </mat-menu>
 
 <p class="number">{{ item.accountNumber | accountNumber }}</p>

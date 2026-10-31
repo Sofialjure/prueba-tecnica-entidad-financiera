@@ -6,7 +6,12 @@ export const routes: Routes = [
   { path: '', component: Home, title: 'Inicio | Entidad Financiera' },
   {
     path: 'customers',
-    loadChildren: () => import('./features/customers/customers.routes').then((m) => m.CUSTOMER_ROUTES),
+    loadChildren: () =>
+      import('./features/customers/customers.routes').then((m) => m.CUSTOMER_ROUTES),
+  },
+  {
+    path: 'accounts',
+    loadChildren: () => import('./features/accounts/accounts.routes').then((m) => m.ACCOUNT_ROUTES),
   },
   {
     path: 'transactions',

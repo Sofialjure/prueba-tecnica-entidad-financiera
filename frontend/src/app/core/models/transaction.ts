@@ -1,3 +1,4 @@
+import { Account } from './account';
 import { EntryType, TransactionType } from './enums';
 
 /** One movement on one account; movements are never edited nor deleted (SUP-13). */
@@ -17,6 +18,12 @@ export interface Transaction {
 export interface TransactionReceipt {
   reference: string;
   entries: Transaction[];
+}
+
+/** GET /accounts/{id}/transactions: the account and its movements, newest first (RF-24). */
+export interface AccountStatement {
+  account: Account;
+  transactions: Transaction[];
 }
 
 /** Body of POST /transactions/transfers. */

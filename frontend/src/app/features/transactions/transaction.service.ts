@@ -3,6 +3,7 @@ import { inject, Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { API_URL } from '../../core/http/api.config';
 import {
+  AccountStatement,
   MovementRequest,
   TransactionReceipt,
   TransferRequest,
@@ -12,6 +13,11 @@ import {
 export class TransactionService {
   private readonly http = inject(HttpClient);
   private readonly url = `${API_URL}/transactions`;
+
+  /** Account data and every movement, newest first (RF-24). */
+  getStatement(accountId: number): Observable<AccountStatement> {
+    return this.http.get<AccountStatement>(`${API_URL}/accounts/${accountId}/transactions`);
+  }
 
   /** Credit movement (RF-20). */
   deposit(request: MovementRequest): Observable<TransactionReceipt> {

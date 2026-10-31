@@ -22,7 +22,7 @@ Fases del proyecto en el orden en que se desarrollan. Cada fase se divide en PRs
 | 6.7 | Frontend: activar, inactivar y cancelar cuentas | `feature/frontend-account-status` | [#12](https://github.com/Sofialjure/prueba-tecnica-entidad-financiera/pull/12) | ✅ |
 | 6.8 | Frontend: consignaciones y retiros | `feature/frontend-deposits-withdrawals` | [#13](https://github.com/Sofialjure/prueba-tecnica-entidad-financiera/pull/13) | ✅ |
 | 6.9 | Frontend: transferencias | `feature/frontend-transfers` | [#14](https://github.com/Sofialjure/prueba-tecnica-entidad-financiera/pull/14) | ✅ |
-| 6.10 | Frontend: estado de cuenta | `feature/frontend-statement` | — | ⏳ |
+| 6.10 | Frontend: estado de cuenta | `feature/frontend-statement` | [#15](https://github.com/Sofialjure/prueba-tecnica-entidad-financiera/pull/15) | ✅ |
 | 7.1 | Docker: imagen del backend | `feature/docker-backend` | — | ⏳ |
 | 7.2 | Docker: imagen del frontend (Nginx) | `feature/docker-frontend` | — | ⏳ |
 | 7.3 | Docker Compose con los 3 contenedores | `feature/docker-compose` | — | ⏳ |
@@ -80,7 +80,7 @@ Fases del proyecto en el orden en que se desarrollan. Cada fase se divide en PRs
 - [x] Estado de cuenta (RF-24)
 - [x] Tests unitarios de Service y Controller (cobertura 100 %), y prueba de concurrencia contra PostgreSQL real
 
-### 6. Frontend 🔄
+### 6. Frontend ✅
 
 - [x] 6.1 Proyecto Angular 22 con Angular Material, layout con menú lateral, proxy a la API, formato de moneda colombiana
 - [x] 6.1 Mensajes de error de la API visibles para el usuario (interceptor HTTP)
@@ -92,7 +92,7 @@ Fases del proyecto en el orden en que se desarrollan. Cada fase se divide en PRs
 - [x] 6.7 Activar, inactivar y cancelar cuentas desde el menú de cada tarjeta, con confirmación
 - [x] 6.8 Consignaciones y retiros con vista previa del GMF, validación del saldo disponible y comprobante
 - [x] 6.9 Transferencias con el GMF de la cuenta de origen, sin permitir la misma cuenta como destino
-- [ ] 6.10 Estado de cuenta
+- [x] 6.10 Estado de cuenta con totales, filtro por tipo de movimiento y descarga en CSV
 
 ### 7. Contenedores ⏳
 

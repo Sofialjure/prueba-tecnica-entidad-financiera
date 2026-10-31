@@ -37,5 +37,7 @@ import { LabelPipe } from '../../../shared/pipes/label.pipe';
 })
 export class AccountCard {
   readonly account = input.required<Account>();
+  /** False to show the card alone, e.g. as the header of the statement. */
+  readonly actions = input(true);
   readonly statusChange = output<AccountAction>();
 }

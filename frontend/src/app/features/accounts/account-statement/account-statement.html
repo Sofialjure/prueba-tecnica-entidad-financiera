@@ -1,0 +1,143 @@
+@if (loading()) {
+  <mat-progress-bar mode="indeterminate" />
+}
+
+@if (statement(); as data) {
+  <a [routerLink]="['/customers', data.account.customerId]" class="back">
+    <mat-icon>arrow_back</mat-icon>
+    Volver a {{ ownerName() }}
+  </a>
+
+  <app-page-header
+    title="Estado de cuenta"
+    [subtitle]="ownerName() + ' · ' + (data.account.accountNumber | accountNumber)"
+  >
+    <button mat-stroked-button (click)="download()" [disabled]="movements().length === 0">
+      <mat-icon>download</mat-icon>
+      Descargar CSV
+    </button>
+  </app-page-header>
+
+  <section class="overview">
+    <app-account-card [account]="data.account" [actions]="false" />
+
+    <div class="totals">
+      <article class="app-card total">
+        <span class="total-icon credit"><mat-icon>south_west</mat-icon></span>
+        <div>
+          <p>Total créditos</p>
+          <strong>{{ totals().credits | currency: 'COP' : 'symbol-narrow' : '1.2-2' }}</strong>
+        </div>
+      </article>
+      <article class="app-card total">
+        <span class="total-icon debit"><mat-icon>north_east</mat-icon></span>
+        <div>
+          <p>Total débitos</p>
+          <strong>{{ totals().debits | currency: 'COP' : 'symbol-narrow' : '1.2-2' }}</strong>
+        </div>
+      </article>
+      <article class="app-card total">
+        <span class="total-icon gmf"><mat-icon>account_balance</mat-icon></span>
+        <div>
+          <p>GMF 4x1000 pagado</p>
+          <strong>{{ totals().gmf | currency: 'COP' : 'symbol-narrow' : '1.2-2' }}</strong>
+        </div>
+      </article>
+      <article class="app-card total">
+        <span class="total-icon count"><mat-icon>receipt_long</mat-icon></span>
+        <div>
+          <p>Movimientos</p>
+          <strong>{{ totals().count }}</strong>
+        </div>
+      </article>
+    </div>
+  </section>
+
+  <section class="app-card movements">
+    <div class="movements-header">
+      <h2>Movimientos</h2>
+      <mat-chip-listbox
+        aria-label="Filtrar por tipo de movimiento"
+        [value]="filter()"
+        (change)="filter.set($event.value ?? 'ALL')"
+      >
+        @for (option of filters; track option.value) {
+          <mat-chip-option [value]="option.value">{{ option.label }}</mat-chip-option>
+        }
+      </mat-chip-listbox>
+    </div>
+
+    @if (movements().length === 0) {
+      <app-empty-state
+        icon="receipt_long"
+        [message]="
+          totals().count === 0
+            ? 'Esta cuenta todavía no tiene movimientos'
+            : 'No hay movimientos de este tipo'
+        "
+      />
+    } @else {
+      <div class="table-container">
+        <table mat-table [dataSource]="movements()">
+          <ng-container matColumnDef="date">
+            <th mat-header-cell *matHeaderCellDef>Fecha</th>
+            <td mat-cell *matCellDef="let t" class="date">
+              <strong>{{ t.createdAt | date: 'dd/MM/yyyy' }}</strong>
+              <span>{{ t.createdAt | date: 'HH:mm' }}</span>
+            </td>
+          </ng-container>
+
+          <ng-container matColumnDef="movement">
+            <th mat-header-cell *matHeaderCellDef>Movimiento</th>
+            <td mat-cell *matCellDef="let t">
+              <div class="movement">
+                <span class="icon" [class.credit]="t.entryType === 'CREDIT'">
+                  <mat-icon>{{ t.entryType === 'CREDIT' ? 'south_west' : 'north_east' }}</mat-icon>
+                </span>
+                <div>
+                  <strong>{{ t.type | label: 'transactionType' }}</strong>
+                  <span>{{ t.description }}</span>
+                </div>
+              </div>
+            </td>
+          </ng-container>
+
+          <ng-container matColumnDef="reference">
+            <th mat-header-cell *matHeaderCellDef>Referencia</th>
+            <td mat-cell *matCellDef="let t">
+              <code [matTooltip]="t.reference">{{ t.reference.slice(0, 8) }}</code>
+            </td>
+          </ng-container>
+
+          <ng-container matColumnDef="debit">
+            <th mat-header-cell *matHeaderCellDef class="money">Débito</th>
+            <td mat-cell *matCellDef="let t" class="money debit">
+              @if (t.entryType === 'DEBIT') {
+                −{{ t.amount | currency: 'COP' : 'symbol-narrow' : '1.2-2' }}
+              }
+            </td>
+          </ng-container>
+
+          <ng-container matColumnDef="credit">
+            <th mat-header-cell *matHeaderCellDef class="money">Crédito</th>
+            <td mat-cell *matCellDef="let t" class="money credit">
+              @if (t.entryType === 'CREDIT') {
+                +{{ t.amount | currency: 'COP' : 'symbol-narrow' : '1.2-2' }}
+              }
+            </td>
+          </ng-container>
+
+          <ng-container matColumnDef="balance">
+            <th mat-header-cell *matHeaderCellDef class="money">Saldo</th>
+            <td mat-cell *matCellDef="let t" class="money balance">
+              {{ t.balanceAfter | currency: 'COP' : 'symbol-narrow' : '1.2-2' }}
+            </td>
+          </ng-container>
+
+          <tr mat-header-row *matHeaderRowDef="columns"></tr>
+          <tr mat-row *matRowDef="let row; columns: columns"></tr>
+        </table>
+      </div>
+    }
+  </section>
+}
