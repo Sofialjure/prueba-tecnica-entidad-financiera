@@ -154,6 +154,8 @@ src/app
 - La URL de la API es relativa (`/api/v1`): en desarrollo la redirige `proxy.conf.json` y en Docker, Nginx. El navegador siempre habla con un solo origen y no se necesita CORS.
 - Un **interceptor HTTP** muestra en un aviso el mensaje en español que devuelve la API (RFC 7807), así cada pantalla solo maneja el caso exitoso.
 - Formato regional `es-CO`: moneda `$ 1.799.200,00` y fechas `dd/MM/yyyy`.
+- **Diseño "banca moderna":** menú lateral azul marino con acento dorado, fondo gris claro, tarjetas blancas con sombra suave (`.app-card`) y tipografía Inter. Los colores están centralizados en `styles.scss` (`mat.theme` + `mat.theme-overrides` y variables `--app-*`).
+- Fechas con calendario desplegable de Angular Material y un `DateAdapter` propio que lee y escribe `dd/MM/yyyy`.
 - Tests unitarios con **Vitest** (el *runner* por defecto de Angular 22).
 
 Componentes compartidos (`shared/`), usados por todas las pantallas:
