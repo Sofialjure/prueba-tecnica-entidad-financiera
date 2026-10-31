@@ -30,7 +30,7 @@ Fases del proyecto en el orden en que se desarrollan. Cada fase se divide en PRs
 | 7.3 | Docker Compose con los 3 contenedores | `feature/docker-compose` | [#20](https://github.com/Sofialjure/prueba-tecnica-entidad-financiera/pull/20) | ✅ |
 | 8.1 | CI: pipeline del backend | `feature/ci-backend` | [#21](https://github.com/Sofialjure/prueba-tecnica-entidad-financiera/pull/21) | ✅ |
 | 8.2 | CI: pipeline del frontend | `feature/ci-frontend` | [#22](https://github.com/Sofialjure/prueba-tecnica-entidad-financiera/pull/22) | ✅ |
-| 8.3 | CI: reportes de cobertura | `feature/ci-coverage` | — | ⏳ |
+| 8.3 | CI: reportes de cobertura | `feature/ci-coverage` | [#23](https://github.com/Sofialjure/prueba-tecnica-entidad-financiera/pull/23) | ✅ |
 | 9.1 | Nube: elección del proveedor (ADR) | `feature/cloud-decision` | — | ⏳ |
 | 9.2 | Nube: despliegue | `feature/cloud-deploy` | — | ⏳ |
 | 10 | Versión 1.0.0 | `release/1.0.0` | — | ⏳ |
@@ -104,11 +104,11 @@ Fases del proyecto en el orden en que se desarrollan. Cada fase se divide en PRs
 - [x] 7.2 Dockerfile multi-stage del frontend (Nginx sin root, proxy de /api, caché y cabeceras de seguridad)
 - [x] 7.3 Docker Compose con los 3 contenedores: `docker compose up --build`, con arranque en orden por healthchecks
 
-### 8. Integración continua 🔄
+### 8. Integración continua ✅
 
 - [x] 8.1 GitHub Actions: compilar y ejecutar los tests del backend (con Testcontainers) y construir su imagen Docker en cada PR
 - [x] 8.2 GitHub Actions: tests del frontend (Vitest), compilación de producción y construcción de su imagen Docker en cada PR
-- [ ] 8.3 Reportes de cobertura (JaCoCo y Vitest)
+- [x] 8.3 Reportes de cobertura (JaCoCo y Vitest) con mínimos obligatorios, resumen en cada ejecución e insignias en el README
 
 ### 9. Despliegue en la nube ⏳
 

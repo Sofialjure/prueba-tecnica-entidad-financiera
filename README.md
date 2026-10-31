@@ -1,5 +1,8 @@
 # Prueba Técnica — Sistema de Gestión Bancaria
 
+[![Backend](https://github.com/Sofialjure/prueba-tecnica-entidad-financiera/actions/workflows/backend.yml/badge.svg?branch=develop)](https://github.com/Sofialjure/prueba-tecnica-entidad-financiera/actions/workflows/backend.yml)
+[![Frontend](https://github.com/Sofialjure/prueba-tecnica-entidad-financiera/actions/workflows/frontend.yml/badge.svg?branch=develop)](https://github.com/Sofialjure/prueba-tecnica-entidad-financiera/actions/workflows/frontend.yml)
+
 Aplicación para los trabajadores de una entidad financiera que permite administrar **clientes**, sus **productos financieros** (cuentas de ahorro y corriente) y los **movimientos transaccionales** (consignaciones, retiros y transferencias), con consulta de estados de cuenta.
 
 > 🚧 Proyecto en construcción. El avance se puede seguir en el historial de commits y Pull Requests.
@@ -78,7 +81,7 @@ cd backend
 ```
 
 - Swagger UI: http://localhost:8080/swagger-ui.html
-- Tests y reporte de cobertura: `./mvnw verify` → `backend/target/site/jacoco/index.html`
+- Tests y reporte de cobertura: `./mvnw verify` → `backend/target/site/jacoco/index.html`. El build falla si la cobertura baja de los mínimos (100 % en Service y Controller).
 
 ## Ejecución local del frontend (desarrollo)
 
@@ -92,7 +95,7 @@ npm start
 
 - Aplicación: http://localhost:4300 (se usa el 4300 y no el 4200 por defecto de Angular, para no chocar con otros proyectos)
 - Las llamadas a `/api` se redirigen al backend con `proxy.conf.json`, así que no se necesita CORS.
-- Tests: `npm test`
+- Tests: `npm test` · con cobertura: `npm run test:coverage` → `frontend/coverage/frontend/index.html`
 
 ## Documentación
 
