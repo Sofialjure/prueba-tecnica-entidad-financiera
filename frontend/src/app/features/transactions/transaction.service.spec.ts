@@ -18,6 +18,12 @@ describe('TransactionService', () => {
 
   afterEach(() => httpTesting.verify());
 
+  it('reads the statement of an account', () => {
+    service.getStatement(4).subscribe();
+
+    expect(httpTesting.expectOne('/api/v1/accounts/4/transactions').request.method).toBe('GET');
+  });
+
   it('posts deposits', () => {
     service.deposit(request).subscribe();
 
