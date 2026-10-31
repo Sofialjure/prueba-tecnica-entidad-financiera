@@ -76,10 +76,15 @@ npm start
 
 ## Ejecución con Docker
 
-> Disponible cuando se integre la rama de contenedores.
+> El `docker compose up --build` con los 3 contenedores llega en el PR 7.3. Por ahora se puede construir y probar la imagen del backend:
 
 ```bash
-docker compose up --build
+# Imagen del backend (compila con Maven dentro de Docker; no hace falta Java instalado)
+docker build -t entidad-financiera-backend ./backend
+
+# Ejecutarla junto a la base de datos del docker-compose actual
+docker compose up -d postgres
+docker run --rm -p 8080:8080 --network prueba-tecnica-entidad-financiera_default   -e DB_HOST=entidad-financiera-db -e DB_PORT=5432 entidad-financiera-backend
 ```
 
 | Servicio | URL |
