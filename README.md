@@ -44,6 +44,19 @@ cd backend
 ./mvnw spring-boot:run
 ```
 
+En Windows PowerShell, todo en la misma ventana (las variables solo valen para esa ventana):
+
+```powershell
+# Solo si JAVA_HOME apunta a otra versión de Java (error "UnsupportedClassVersionError")
+$env:JAVA_HOME = "C:\Program Files\Eclipse Adoptium\jdk-21.0.12.101-hotspot"
+# Solo si el puerto 5432 está ocupado
+$env:DB_PORT = "5433"
+
+docker compose up -d postgres
+cd backend
+.\mvnw.cmd spring-boot:run
+```
+
 - Swagger UI: http://localhost:8080/swagger-ui.html
 - Tests y reporte de cobertura: `./mvnw verify` → `backend/target/site/jacoco/index.html`
 
