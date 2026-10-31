@@ -60,6 +60,20 @@ cd backend
 - Swagger UI: http://localhost:8080/swagger-ui.html
 - Tests y reporte de cobertura: `./mvnw verify` → `backend/target/site/jacoco/index.html`
 
+## Ejecución local del frontend
+
+Requisitos: **Node.js 22 o superior** y el backend corriendo en el puerto 8080.
+
+```bash
+cd frontend
+npm install
+npm start
+```
+
+- Aplicación: http://localhost:4300 (se usa el 4300 y no el 4200 por defecto de Angular, para no chocar con otros proyectos)
+- Las llamadas a `/api` se redirigen al backend con `proxy.conf.json`, así que no se necesita CORS.
+- Tests: `npm test`
+
 ## Ejecución con Docker
 
 > Disponible cuando se integre la rama de contenedores.
@@ -70,7 +84,7 @@ docker compose up --build
 
 | Servicio | URL |
 |---|---|
-| Frontend | http://localhost:4200 |
+| Frontend | http://localhost:4300 |
 | API REST | http://localhost:8080/api/v1 |
 | Swagger UI | http://localhost:8080/swagger-ui.html |
 

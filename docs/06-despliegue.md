@@ -8,11 +8,11 @@ La solución corre en **3 contenedores** orquestados con Docker Compose:
 |---|---|---|---|
 | `postgres` | `postgres:16-alpine` | 5432 | Base de datos, con volumen persistente. |
 | `backend` | `eclipse-temurin:21-jre-alpine` | 8080 | API REST. Al arrancar aplica las migraciones Flyway. |
-| `frontend` | `nginx:alpine` | 4200 → 80 | Sirve la SPA compilada de Angular. |
+| `frontend` | `nginx:alpine` | 4300 → 80 | Sirve la SPA compilada de Angular. |
 
 ```mermaid
 flowchart LR
-    B[Navegador] -->|:4200| FE[frontend<br/>nginx]
+    B[Navegador] -->|:4300| FE[frontend<br/>nginx]
     B -->|:8080| BE[backend<br/>Spring Boot]
     BE -->|:5432| DB[(postgres)]
     DB --- V[(volumen<br/>pgdata)]

@@ -1,0 +1,29 @@
+:host {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.toolbar {
+  gap: 8px;
+  background-color: var(--mat-sys-primary);
+  color: var(--mat-sys-on-primary);
+}
+
+.brand-icon {
+  margin-left: 4px;
+}
+
+.container {
+  flex: 1;
+}
+
+.sidenav {
+  width: 240px;
+}
+
+.content {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 24px 16px;
+}
