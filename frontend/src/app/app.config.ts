@@ -10,6 +10,7 @@ import {
 import { MAT_ICON_DEFAULT_OPTIONS } from '@angular/material/icon';
 import { provideRouter, withComponentInputBinding } from '@angular/router';
 import { routes } from './app.routes';
+import { provideAppDateAdapter } from './core/date/app-date-adapter';
 import { errorInterceptor } from './core/http/error.interceptor';
 
 // Colombian formats: $ 1.799.200,00 and dd/MM/yyyy
@@ -23,5 +24,6 @@ export const appConfig: ApplicationConfig = {
     { provide: LOCALE_ID, useValue: 'es-CO' },
     { provide: DEFAULT_CURRENCY_CODE, useValue: 'COP' },
     { provide: MAT_ICON_DEFAULT_OPTIONS, useValue: { fontSet: 'material-symbols-outlined' } },
+    provideAppDateAdapter(),
   ],
 };

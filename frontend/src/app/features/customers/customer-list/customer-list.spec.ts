@@ -2,6 +2,7 @@ import { registerLocaleData } from '@angular/common';
 import localeEsCo from '@angular/common/locales/es-CO';
 import { LOCALE_ID } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { provideRouter } from '@angular/router';
 import { of, Subject, throwError } from 'rxjs';
 import { Customer } from '../../../core/models/customer';
 import { NotificationService } from '../../../core/notification/notification.service';
@@ -45,6 +46,7 @@ describe('CustomerList', () => {
         { provide: ConfirmService, useValue: confirmService },
         { provide: NotificationService, useValue: notifications },
         { provide: LOCALE_ID, useValue: 'es-CO' },
+        provideRouter([]),
       ],
     });
     const fixture = TestBed.createComponent(CustomerList);
@@ -69,6 +71,14 @@ describe('CustomerList', () => {
     expect(firstRow).toContain('ana.gomez@correo.com');
     expect(firstRow).toContain('12/04/1995');
     expect(firstRow).toContain('01/10/2026 08:00');
+  });
+
+  it('links to the new customer form and to each customer edit form', async () => {
+    const fixture = await render();
+    const element = fixture.nativeElement as HTMLElement;
+
+    expect(element.querySelector('app-page-header a')?.getAttribute('href')).toBe('/new');
+    expect(rows(fixture)[1].querySelector('a')?.getAttribute('href')).toBe('/2/edit');
   });
 
   it('shows a progress bar while loading', async () => {

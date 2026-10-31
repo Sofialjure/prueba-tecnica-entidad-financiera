@@ -42,9 +42,9 @@ body {
 .snackbar-success {
   @include mat.snack-bar-overrides(
     (
-      container-color: var(--mat-sys-primary-container),
-      supporting-text-color: var(--mat-sys-on-primary-container),
-      button-color: var(--mat-sys-primary),
+      container-color: #1e7a3c,
+      supporting-text-color: #ffffff,
+      button-color: #d4f7dc,
     )
   );
 }
@@ -52,9 +52,9 @@ body {
 .snackbar-error {
   @include mat.snack-bar-overrides(
     (
-      container-color: var(--mat-sys-error-container),
-      supporting-text-color: var(--mat-sys-on-error-container),
-      button-color: var(--mat-sys-error),
+      container-color: #b3261e,
+      supporting-text-color: #ffffff,
+      button-color: #ffdad6,
     )
   );
 }
