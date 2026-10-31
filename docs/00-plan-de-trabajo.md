@@ -12,7 +12,7 @@ Fases del proyecto en el orden en que se desarrollan. Cada fase es una rama `fea
 | 2 | Base del backend | `feature/backend-base` | [#2](https://github.com/Sofialjure/prueba-tecnica-entidad-financiera/pull/2) | ✅ |
 | 3 | Clientes | `feature/customers` | [#3](https://github.com/Sofialjure/prueba-tecnica-entidad-financiera/pull/3) | ✅ |
 | 4 | Cuentas | `feature/accounts` | [#4](https://github.com/Sofialjure/prueba-tecnica-entidad-financiera/pull/4) | ✅ |
-| 5 | Transacciones | `feature/transactions` | — | ⏳ |
+| 5 | Transacciones | `feature/transactions` | [#5](https://github.com/Sofialjure/prueba-tecnica-entidad-financiera/pull/5) | ✅ |
 | 6 | Frontend | `feature/frontend` | — | ⏳ |
 | 7 | Contenedores | `feature/docker` | — | ⏳ |
 | 8 | Integración continua | `feature/ci` | — | ⏳ |
@@ -57,14 +57,14 @@ Fases del proyecto en el orden en que se desarrollan. Cada fase es una rama `fea
 - [x] Consultar una cuenta y las cuentas de un cliente (RF-19)
 - [x] Tests unitarios de Service y Controller (cobertura 100 % en ambas capas)
 
-### 5. Transacciones ⏳
+### 5. Transacciones ✅
 
-- [ ] Consignación, retiro y transferencia (RF-20, RF-21, RF-22)
-- [ ] Actualización de saldo y saldo disponible (RF-18, RF-23)
-- [ ] GMF 4×1000 en cuentas no exentas (SUP-10)
-- [ ] Bloqueo de cuentas para operaciones simultáneas (RNF-10)
-- [ ] Estado de cuenta (RF-24)
-- [ ] Tests unitarios de Service y Controller, y prueba de concurrencia
+- [x] Consignación, retiro y transferencia (RF-20, RF-21, RF-22)
+- [x] Actualización de saldo y saldo disponible (RF-18, RF-23)
+- [x] GMF 4×1000 en cuentas no exentas (SUP-10)
+- [x] Bloqueo de cuentas para operaciones simultáneas (RNF-10), también al activar, inactivar o cancelar
+- [x] Estado de cuenta (RF-24)
+- [x] Tests unitarios de Service y Controller (cobertura 100 %), y prueba de concurrencia contra PostgreSQL real
 
 ### 6. Frontend ⏳
 
