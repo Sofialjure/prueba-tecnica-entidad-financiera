@@ -100,6 +100,9 @@ Content-Type: application/json
 | `POST` | `/transactions/deposits` | Consignar en una cuenta | RF-20 |
 | `POST` | `/transactions/withdrawals` | Retirar de una cuenta | RF-21 |
 | `POST` | `/transactions/transfers` | Transferir entre cuentas | RF-22 |
+| `GET` | `/accounts/{id}/transactions` | Estado de cuenta | RF-24 |
+
+Las consignaciones y los retiros reciben `accountNumber`, `amount` y `description` (opcional). Todas las operaciones responden con un comprobante: la `reference` que agrupa los movimientos generados y la lista `entries`. Cada movimiento trae el saldo resultante (`balanceAfter`).
 
 Los movimientos de una cuenta se consultan en `GET /accounts/{id}/transactions`. No hay endpoints para editar ni eliminar transacciones porque son inmutables (SUP-13).
 
@@ -123,12 +126,35 @@ Content-Type: application/json
 {
   "reference": "7f1c2b9e-4a7d-4f0e-9c1a-2f3b4c5d6e7f",
   "entries": [
-    { "accountNumber": "5300000001", "type": "TRANSFER", "entryType": "DEBIT",  "amount": 100000.00 },
-    { "accountNumber": "5300000001", "type": "GMF",      "entryType": "DEBIT",  "amount": 400.00 },
-    { "accountNumber": "3300000001", "type": "TRANSFER", "entryType": "CREDIT", "amount": 100000.00 }
+    { "id": 12, "accountNumber": "5300000001", "type": "TRANSFER", "entryType": "DEBIT",  "amount": 100000.00, "balanceAfter": 1699200.00, "description": "Pago arriendo", "createdAt": "2026-10-30T10:30:00" },
+    { "id": 13, "accountNumber": "5300000001", "type": "GMF",      "entryType": "DEBIT",  "amount": 400.00,    "balanceAfter": 1698800.00, "description": "GMF 4x1000",    "createdAt": "2026-10-30T10:30:00" },
+    { "id": 14, "accountNumber": "3300000001", "type": "TRANSFER", "entryType": "CREDIT", "amount": 100000.00, "balanceAfter": 999600.00,  "description": "Pago arriendo", "createdAt": "2026-10-30T10:30:00" }
   ]
 }
 ```
+
+*(Cada movimiento incluye también la `reference`; se omite arriba para abreviar.)* Si la cuenta de origen es exenta del GMF, el movimiento `GMF` no aparece.
+
+**Ejemplo: estado de cuenta**
+
+```http
+GET /api/v1/accounts/1/transactions
+```
+
+```http
+200 OK
+
+{
+  "account": { "id": 1, "accountNumber": "5300000001", "status": "ACTIVE", "balance": 1799200.00, "availableBalance": 1799200.00, "...": "..." },
+  "transactions": [
+    { "id": 3, "type": "GMF",        "entryType": "DEBIT",  "amount": 800.00,     "balanceAfter": 1799200.00, "description": "GMF 4x1000" },
+    { "id": 2, "type": "WITHDRAWAL", "entryType": "DEBIT",  "amount": 200000.00,  "balanceAfter": 1800000.00, "description": "Retiro en cajero" },
+    { "id": 1, "type": "DEPOSIT",    "entryType": "CREDIT", "amount": 2000000.00, "balanceAfter": 2000000.00, "description": "Consignación inicial" }
+  ]
+}
+```
+
+Los movimientos van del más reciente al más antiguo.
 
 ## 4.4 Errores
 
@@ -152,4 +178,4 @@ Content-Type: application/problem+json
 | `400` | Validación de formato (correo inválido, campos obligatorios, monto ≤ 0). |
 | `404` | Cliente o cuenta inexistente. |
 | `409` | Identificación duplicada o cliente con productos vinculados. |
-| `422` | Menor de edad, saldo insuficiente, cuenta no activa, cupo de sobregiro en una cuenta de ahorros, cancelación con saldo ≠ 0, reactivación de una cuenta cancelada, activar una cuenta ya activa o inactivar una ya inactiva. |
+| `422` | Menor de edad, saldo insuficiente (el saldo disponible debe cubrir el monto más el GMF), cuenta no activa, transferencia a la misma cuenta, cupo de sobregiro en una cuenta de ahorros, cancelación con saldo ≠ 0, reactivación de una cuenta cancelada, activar una cuenta ya activa o inactivar una ya inactiva. |

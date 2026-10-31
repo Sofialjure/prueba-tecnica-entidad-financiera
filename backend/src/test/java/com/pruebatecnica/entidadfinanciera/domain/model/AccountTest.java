@@ -9,6 +9,7 @@ import java.time.Clock;
 import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
+import java.util.UUID;
 import org.junit.jupiter.api.Test;
 
 class AccountTest {
@@ -19,6 +20,7 @@ class AccountTest {
     /** One hour later than {@link #CLOCK}. */
     private static final Clock LATER = Clock.fixed(Instant.parse("2026-10-30T16:00:00Z"), BOGOTA);
     private static final LocalDateTime CREATED = LocalDateTime.of(2026, 10, 30, 10, 0);
+    private static final UUID REFERENCE = UUID.fromString("7f1c2b9e-4a7d-4f0e-9c1a-2f3b4c5d6e7f");
 
     @Test
     void openCreatesActiveSavingsAccountWithZeroBalance() {
@@ -155,6 +157,120 @@ class AccountTest {
         assertThatThrownBy(() -> account.cancel(CLOCK))
                 .isInstanceOf(BusinessRuleViolationException.class)
                 .hasMessage("La cuenta 5300000001 ya está cancelada");
+    }
+
+    @Test
+    void creditRaisesBalanceAndReturnsMovement() {
+        Account account = stored(AccountType.SAVINGS, AccountStatus.ACTIVE, "100.00", "0.00");
+
+        Transaction movement = account.credit(REFERENCE, TransactionType.DEPOSIT, new BigDecimal("50.5"),
+                "Consignación", LATER);
+
+        assertThat(account.getBalance()).isEqualByComparingTo("150.50");
+        assertThat(account.getUpdatedAt()).isEqualTo(CREATED.plusHours(1));
+        assertThat(movement).isEqualTo(new Transaction(null, REFERENCE, 1L, "5300000001", TransactionType.DEPOSIT,
+                EntryType.CREDIT, new BigDecimal("50.50"), new BigDecimal("150.50"), "Consignación",
+                CREATED.plusHours(1)));
+    }
+
+    @Test
+    void debitLowersBalanceAndReturnsMovement() {
+        Account account = stored(AccountType.SAVINGS, AccountStatus.ACTIVE, "100.00", "0.00");
+
+        Transaction movement = account.debit(REFERENCE, TransactionType.WITHDRAWAL, new BigDecimal("100"),
+                "Retiro", CLOCK);
+
+        assertThat(account.getBalance()).isEqualByComparingTo("0");
+        assertThat(movement.entryType()).isEqualTo(EntryType.DEBIT);
+        assertThat(movement.balanceAfter()).isEqualByComparingTo("0");
+    }
+
+    @Test
+    void savingsDebitCannotLeaveBalanceBelowZero() {
+        Account account = stored(AccountType.SAVINGS, AccountStatus.ACTIVE, "100.00", "0.00");
+
+        assertThatThrownBy(() -> account.debit(REFERENCE, TransactionType.WITHDRAWAL, new BigDecimal("100.01"),
+                "Retiro", CLOCK))
+                .isInstanceOf(BusinessRuleViolationException.class)
+                .hasMessage("Saldo disponible insuficiente en la cuenta 5300000001");
+        assertThat(account.getBalance()).isEqualByComparingTo("100");
+    }
+
+    @Test
+    void checkingDebitCanUseOverdraftUpToItsLimit() {
+        Account account = stored(AccountType.CHECKING, AccountStatus.ACTIVE, "100.00", "500.00");
+
+        account.debit(REFERENCE, TransactionType.WITHDRAWAL, new BigDecimal("600"), "Retiro", CLOCK);
+
+        assertThat(account.getBalance()).isEqualByComparingTo("-500");
+        assertThat(account.getAvailableBalance()).isEqualByComparingTo("0");
+        assertThatThrownBy(() -> account.debit(REFERENCE, TransactionType.WITHDRAWAL, new BigDecimal("0.01"),
+                "Retiro", CLOCK))
+                .isInstanceOf(BusinessRuleViolationException.class);
+    }
+
+    @Test
+    void inactiveOrCancelledAccountsDoNotAllowMovements() {
+        Account inactive = stored(AccountType.SAVINGS, AccountStatus.INACTIVE, "100.00", "0.00");
+        Account cancelled = stored(AccountType.SAVINGS, AccountStatus.CANCELLED, "0.00", "0.00");
+
+        assertThatThrownBy(() -> inactive.credit(REFERENCE, TransactionType.DEPOSIT, BigDecimal.TEN, "x", CLOCK))
+                .isInstanceOf(BusinessRuleViolationException.class)
+                .hasMessage("La cuenta 5300000001 no está activa y no permite movimientos");
+        assertThatThrownBy(() -> cancelled.debit(REFERENCE, TransactionType.WITHDRAWAL, BigDecimal.TEN, "x", CLOCK))
+                .isInstanceOf(BusinessRuleViolationException.class);
+    }
+
+    @Test
+    void movementAmountMustBePositive() {
+        Account account = stored(AccountType.SAVINGS, AccountStatus.ACTIVE, "100.00", "0.00");
+
+        assertThatThrownBy(() -> account.credit(REFERENCE, TransactionType.DEPOSIT, BigDecimal.ZERO, "x", CLOCK))
+                .isInstanceOf(BusinessRuleViolationException.class)
+                .hasMessage("El monto de la transacción debe ser mayor a $0");
+        assertThatThrownBy(() -> account.debit(REFERENCE, TransactionType.WITHDRAWAL, new BigDecimal("-1"), "x",
+                CLOCK))
+                .isInstanceOf(BusinessRuleViolationException.class);
+    }
+
+    @Test
+    void chargeGmfDebitsFourPerThousandOnNonExemptAccount() {
+        Account account = stored(AccountType.SAVINGS, AccountStatus.ACTIVE, "100400.00", "0.00");
+
+        Transaction gmf = account.chargeGmf(REFERENCE, new BigDecimal("100000"), CLOCK).orElseThrow();
+
+        assertThat(gmf.type()).isEqualTo(TransactionType.GMF);
+        assertThat(gmf.entryType()).isEqualTo(EntryType.DEBIT);
+        assertThat(gmf.amount()).isEqualByComparingTo("400");
+        assertThat(gmf.description()).isEqualTo("GMF 4x1000");
+        assertThat(account.getBalance()).isEqualByComparingTo("100000");
+    }
+
+    @Test
+    void chargeGmfSkipsExemptAccount() {
+        Account account = Account.builder()
+                .accountNumber("5300000002").accountType(AccountType.SAVINGS).status(AccountStatus.ACTIVE)
+                .balance(new BigDecimal("1000.00")).overdraftLimit(BigDecimal.ZERO).gmfExempt(true).build();
+
+        assertThat(account.chargeGmf(REFERENCE, new BigDecimal("1000"), CLOCK)).isEmpty();
+        assertThat(account.getBalance()).isEqualByComparingTo("1000");
+    }
+
+    @Test
+    void chargeGmfSkipsTaxThatRoundsToZero() {
+        Account account = stored(AccountType.SAVINGS, AccountStatus.ACTIVE, "100.00", "0.00");
+
+        assertThat(account.chargeGmf(REFERENCE, new BigDecimal("1.00"), CLOCK)).isEmpty();
+    }
+
+    @Test
+    void chargeGmfFailsWhenBalanceDoesNotCoverTheTax() {
+        Account account = stored(AccountType.SAVINGS, AccountStatus.ACTIVE, "100.00", "0.00");
+        account.debit(REFERENCE, TransactionType.WITHDRAWAL, new BigDecimal("100"), "Retiro", CLOCK);
+
+        assertThatThrownBy(() -> account.chargeGmf(REFERENCE, new BigDecimal("100"), CLOCK))
+                .isInstanceOf(BusinessRuleViolationException.class)
+                .hasMessage("Saldo disponible insuficiente en la cuenta 5300000001");
     }
 
     private static Account stored(AccountType type, AccountStatus status, String balance, String overdraftLimit) {

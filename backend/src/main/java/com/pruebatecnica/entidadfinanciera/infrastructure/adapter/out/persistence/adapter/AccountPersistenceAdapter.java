@@ -6,6 +6,7 @@ import com.pruebatecnica.entidadfinanciera.domain.port.out.AccountNumberSequence
 import com.pruebatecnica.entidadfinanciera.domain.port.out.AccountRepositoryPort;
 import com.pruebatecnica.entidadfinanciera.infrastructure.adapter.out.persistence.mapper.AccountPersistenceMapper;
 import com.pruebatecnica.entidadfinanciera.infrastructure.adapter.out.persistence.repository.AccountJpaRepository;
+import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 import org.springframework.data.domain.Sort;
@@ -30,6 +31,16 @@ public class AccountPersistenceAdapter implements AccountRepositoryPort, Account
     @Override
     public Optional<Account> findById(Long id) {
         return repository.findById(id).map(mapper::toDomain);
+    }
+
+    @Override
+    public Optional<Account> findByIdForUpdate(Long id) {
+        return repository.findByIdForUpdate(id).map(mapper::toDomain);
+    }
+
+    @Override
+    public List<Account> findByAccountNumbersForUpdate(Collection<String> accountNumbers) {
+        return repository.findByAccountNumbersForUpdate(accountNumbers).stream().map(mapper::toDomain).toList();
     }
 
     @Override

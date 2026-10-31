@@ -41,8 +41,7 @@ public class AccountService implements OpenAccountUseCase, GetAccountUseCase, Ch
     @Override
     @Transactional(readOnly = true)
     public Account getById(Long id) {
-        return accountRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("No existe la cuenta con id " + id));
+        return accountRepository.findById(id).orElseThrow(() -> notFound(id));
     }
 
     @Override
@@ -73,10 +72,15 @@ public class AccountService implements OpenAccountUseCase, GetAccountUseCase, Ch
         return changeStatus(id, Account::cancel);
     }
 
+    /** Locks the account so a concurrent deposit cannot slip in between the balance check and the save. */
     private Account changeStatus(Long id, BiConsumer<Account, Clock> transition) {
-        Account account = getById(id);
+        Account account = accountRepository.findByIdForUpdate(id).orElseThrow(() -> notFound(id));
         transition.accept(account, clock);
         return accountRepository.save(account);
+    }
+
+    private static ResourceNotFoundException notFound(Long id) {
+        return new ResourceNotFoundException("No existe la cuenta con id " + id);
     }
 
     private void ensureCustomerExists(Long customerId) {
