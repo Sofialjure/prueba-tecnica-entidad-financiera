@@ -10,6 +10,7 @@ import { AccountService } from '../../accounts/account.service';
 import { SAVINGS_ACCOUNT } from '../../accounts/testing/accounts.fixtures';
 import { CustomerService } from '../../customers/customer.service';
 import { MovementForm } from '../movement-form/movement-form';
+import { TransferForm } from '../transfer-form/transfer-form';
 import { WITHDRAWAL_RECEIPT } from '../testing/transactions.fixtures';
 import { TransactionService } from '../transaction.service';
 import { TransactionsPage } from './transactions-page';
@@ -77,6 +78,33 @@ describe('TransactionsPage', () => {
     await fixture.whenStable();
 
     expect(element(fixture).querySelector('h2')?.textContent).toBe('Nuevo retiro');
+  });
+
+  it('shows the transfer form when the address asks for a transfer', async () => {
+    const fixture = await render({ type: 'transfer', account: '5300000001' });
+    const transferForm = fixture.debugElement.query(By.directive(TransferForm));
+
+    expect(element(fixture).querySelector('h2')?.textContent).toBe('Nueva transferencia');
+    expect(form(fixture)).toBeNull();
+    expect((transferForm.componentInstance as TransferForm).initialAccount()).toBe('5300000001');
+    expect(element(fixture).querySelector('.tips')?.textContent).toContain(
+      'No se puede transferir a la misma cuenta',
+    );
+  });
+
+  it('switches to transfers from the selector', async () => {
+    const fixture = await render();
+
+    element(fixture).querySelectorAll<HTMLButtonElement>('mat-button-toggle button')[2].click();
+    await fixture.whenStable();
+
+    expect(fixture.debugElement.query(By.directive(TransferForm))).not.toBeNull();
+  });
+
+  it('falls back to deposits for an unknown type in the address', async () => {
+    const fixture = await render({ type: 'loan' });
+
+    expect(element(fixture).querySelector('h2')?.textContent).toBe('Nueva consignación');
   });
 
   it('shows the receipt and refreshes the balances after an operation', async () => {

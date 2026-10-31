@@ -1,4 +1,4 @@
-import { Component, inject, input, linkedSignal, OnInit, signal } from '@angular/core';
+import { Component, computed, inject, input, linkedSignal, OnInit, signal } from '@angular/core';
 import { MatButtonToggleModule } from '@angular/material/button-toggle';
 import { MatIconModule } from '@angular/material/icon';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
@@ -10,8 +10,13 @@ import { CustomerService } from '../../customers/customer.service';
 import { AccountOption, activeAccountOptions } from '../account-option';
 import { MovementForm, MovementKind } from '../movement-form/movement-form';
 import { TransactionReceiptView } from '../transaction-receipt/transaction-receipt';
+import { TransferForm } from '../transfer-form/transfer-form';
 
-/** Deposits and withdrawals. `?type=withdrawal&account=5300000001` preselects both. */
+export type OperationKind = 'deposit' | 'withdrawal' | 'transfer';
+
+const KINDS: OperationKind[] = ['deposit', 'withdrawal', 'transfer'];
+
+/** Deposits, withdrawals and transfers. `?type=transfer&account=5300000001` preselects both. */
 @Component({
   selector: 'app-transactions-page',
   imports: [
@@ -21,6 +26,7 @@ import { TransactionReceiptView } from '../transaction-receipt/transaction-recei
     MovementForm,
     PageHeader,
     TransactionReceiptView,
+    TransferForm,
   ],
   templateUrl: './transactions-page.html',
   styleUrl: './transactions-page.scss',
@@ -33,9 +39,18 @@ export class TransactionsPage implements OnInit {
   readonly type = input<string>();
   readonly account = input<string>();
 
-  protected readonly kind = linkedSignal<MovementKind>(() =>
-    this.type() === 'withdrawal' ? 'withdrawal' : 'deposit',
+  protected readonly kind = linkedSignal<OperationKind>(() =>
+    KINDS.includes(this.type() as OperationKind) ? (this.type() as OperationKind) : 'deposit',
   );
+  /** What the deposit/withdrawal form receives when the transfer form is not shown. */
+  protected readonly movementKind = computed<MovementKind>(() =>
+    this.kind() === 'withdrawal' ? 'withdrawal' : 'deposit',
+  );
+  protected readonly titles: Record<OperationKind, string> = {
+    deposit: 'Nueva consignación',
+    withdrawal: 'Nuevo retiro',
+    transfer: 'Nueva transferencia',
+  };
   protected readonly options = signal<AccountOption[]>([]);
   protected readonly loading = signal(true);
   protected readonly receipt = signal<TransactionReceipt | null>(null);
@@ -44,7 +59,7 @@ export class TransactionsPage implements OnInit {
     this.loadAccounts();
   }
 
-  protected changeKind(kind: MovementKind): void {
+  protected changeKind(kind: OperationKind): void {
     this.kind.set(kind);
     this.receipt.set(null);
   }
