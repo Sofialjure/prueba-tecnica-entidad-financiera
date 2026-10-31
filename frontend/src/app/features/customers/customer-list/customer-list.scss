@@ -1,0 +1,20 @@
+.search {
+  width: 100%;
+  max-width: 420px;
+}
+
+// Wide tables scroll sideways on phones instead of breaking the layout
+.table-container {
+  overflow-x: auto;
+  border: 1px solid var(--mat-sys-outline-variant);
+  border-radius: 8px;
+}
+
+table {
+  min-width: 760px;
+}
+
+.actions {
+  text-align: right;
+  white-space: nowrap;
+}
