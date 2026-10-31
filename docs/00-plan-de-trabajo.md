@@ -1,6 +1,6 @@
 # 0. Plan de trabajo
 
-Fases del proyecto en el orden en que se desarrollan. Cada fase es una rama `feature/*` que se integra a `develop` con un Pull Request (ver [Git Flow](05-git-flow.md)). Este documento se actualiza en cada PR.
+Fases del proyecto en el orden en que se desarrollan. Cada fase se divide en PRs pequeños: cada uno es una rama `feature/*` que se integra a `develop` (ver [Git Flow](05-git-flow.md)). Este documento se actualiza en cada PR.
 
 **Leyenda:** ✅ terminada · 🔄 en curso · ⏳ pendiente
 
@@ -13,10 +13,23 @@ Fases del proyecto en el orden en que se desarrollan. Cada fase es una rama `fea
 | 3 | Clientes | `feature/customers` | [#3](https://github.com/Sofialjure/prueba-tecnica-entidad-financiera/pull/3) | ✅ |
 | 4 | Cuentas | `feature/accounts` | [#4](https://github.com/Sofialjure/prueba-tecnica-entidad-financiera/pull/4) | ✅ |
 | 5 | Transacciones | `feature/transactions` | [#5](https://github.com/Sofialjure/prueba-tecnica-entidad-financiera/pull/5) | ✅ |
-| 6 | Frontend | `feature/frontend` | — | ⏳ |
-| 7 | Contenedores | `feature/docker` | — | ⏳ |
-| 8 | Integración continua | `feature/ci` | — | ⏳ |
-| 9 | Despliegue en la nube | `feature/cloud` | — | ⏳ |
+| 6.1 | Frontend: proyecto base y layout | `feature/frontend-setup` | [#6](https://github.com/Sofialjure/prueba-tecnica-entidad-financiera/pull/6) | ✅ |
+| 6.2 | Frontend: componentes compartidos | `feature/frontend-shared-components` | — | ⏳ |
+| 6.3 | Frontend: listado y eliminación de clientes | `feature/frontend-customers-list` | — | ⏳ |
+| 6.4 | Frontend: formulario de cliente | `feature/frontend-customer-form` | — | ⏳ |
+| 6.5 | Frontend: cuentas del cliente y apertura | `feature/frontend-accounts` | — | ⏳ |
+| 6.6 | Frontend: activar, inactivar y cancelar cuentas | `feature/frontend-account-status` | — | ⏳ |
+| 6.7 | Frontend: consignaciones y retiros | `feature/frontend-deposits-withdrawals` | — | ⏳ |
+| 6.8 | Frontend: transferencias | `feature/frontend-transfers` | — | ⏳ |
+| 6.9 | Frontend: estado de cuenta | `feature/frontend-statement` | — | ⏳ |
+| 7.1 | Docker: imagen del backend | `feature/docker-backend` | — | ⏳ |
+| 7.2 | Docker: imagen del frontend (Nginx) | `feature/docker-frontend` | — | ⏳ |
+| 7.3 | Docker Compose con los 3 contenedores | `feature/docker-compose` | — | ⏳ |
+| 8.1 | CI: pipeline del backend | `feature/ci-backend` | — | ⏳ |
+| 8.2 | CI: pipeline del frontend | `feature/ci-frontend` | — | ⏳ |
+| 8.3 | CI: reportes de cobertura | `feature/ci-coverage` | — | ⏳ |
+| 9.1 | Nube: elección del proveedor (ADR) | `feature/cloud-decision` | — | ⏳ |
+| 9.2 | Nube: despliegue | `feature/cloud-deploy` | — | ⏳ |
 | 10 | Versión 1.0.0 | `release/1.0.0` | — | ⏳ |
 
 ## Detalle por fase
@@ -66,30 +79,35 @@ Fases del proyecto en el orden en que se desarrollan. Cada fase es una rama `fea
 - [x] Estado de cuenta (RF-24)
 - [x] Tests unitarios de Service y Controller (cobertura 100 %), y prueba de concurrencia contra PostgreSQL real
 
-### 6. Frontend ⏳
+### 6. Frontend 🔄
 
-- [ ] Proyecto Angular con Angular Material
-- [ ] Componentes reutilizables (tabla, formulario, diálogo de confirmación)
-- [ ] Pantallas de clientes, cuentas y transacciones
-- [ ] Estado de cuenta
-- [ ] Mensajes de error de la API visibles para el usuario
+- [x] 6.1 Proyecto Angular 22 con Angular Material, layout con menú lateral, proxy a la API, formato de moneda colombiana
+- [x] 6.1 Mensajes de error de la API visibles para el usuario (interceptor HTTP)
+- [ ] 6.2 Componentes reutilizables (encabezado de página, diálogo de confirmación, estado de la cuenta, estado vacío)
+- [ ] 6.3 Listado de clientes y eliminación con confirmación
+- [ ] 6.4 Formulario de cliente (crear y editar) con las mismas validaciones de la API
+- [ ] 6.5 Cuentas de un cliente y apertura de cuentas
+- [ ] 6.6 Activar, inactivar y cancelar cuentas
+- [ ] 6.7 Consignaciones y retiros
+- [ ] 6.8 Transferencias
+- [ ] 6.9 Estado de cuenta
 
 ### 7. Contenedores ⏳
 
-- [ ] Dockerfile multi-stage del backend
-- [ ] Dockerfile multi-stage del frontend (Nginx)
-- [ ] Docker Compose con los 3 contenedores: `docker compose up --build`
+- [ ] 7.1 Dockerfile multi-stage del backend
+- [ ] 7.2 Dockerfile multi-stage del frontend (Nginx)
+- [ ] 7.3 Docker Compose con los 3 contenedores: `docker compose up --build`
 
 ### 8. Integración continua ⏳
 
-- [ ] GitHub Actions: compilar y ejecutar tests del backend y del frontend en cada PR
-- [ ] Reporte de cobertura (JaCoCo)
+- [ ] 8.1 GitHub Actions: compilar y ejecutar los tests del backend en cada PR
+- [ ] 8.2 GitHub Actions: compilar y ejecutar los tests del frontend en cada PR
+- [ ] 8.3 Reportes de cobertura (JaCoCo y Vitest)
 
 ### 9. Despliegue en la nube ⏳
 
-- [ ] Elegir proveedor
-- [ ] Desplegar base de datos, backend y frontend
-- [ ] Documentar los servicios usados ([Despliegue](06-despliegue.md))
+- [ ] 9.1 Elegir proveedor y registrar la decisión en un ADR
+- [ ] 9.2 Desplegar base de datos, backend y frontend, y documentar los servicios usados ([Despliegue](06-despliegue.md))
 
 ### 10. Versión 1.0.0 ⏳
 

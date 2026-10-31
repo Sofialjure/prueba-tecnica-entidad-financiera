@@ -141,10 +141,17 @@ SPA en Angular organizada por funcionalidades, con componentes reutilizables:
 
 ```
 src/app
-├── core          # Servicios HTTP, interceptores, modelos
+├── core          # Layout, configuración HTTP, interceptor de errores, notificaciones
 ├── shared        # Componentes reutilizables (tablas, formularios, diálogos)
 └── features
+    ├── home
     ├── customers
     ├── accounts
     └── transactions
 ```
+
+- **Angular 22 + Angular Material 22**, componentes *standalone* y *signals*.
+- La URL de la API es relativa (`/api/v1`): en desarrollo la redirige `proxy.conf.json` y en Docker, Nginx. El navegador siempre habla con un solo origen y no se necesita CORS.
+- Un **interceptor HTTP** muestra en un aviso el mensaje en español que devuelve la API (RFC 7807), así cada pantalla solo maneja el caso exitoso.
+- Formato regional `es-CO`: moneda `$ 1.799.200,00` y fechas `dd/MM/yyyy`.
+- Tests unitarios con **Vitest** (el *runner* por defecto de Angular 22).
