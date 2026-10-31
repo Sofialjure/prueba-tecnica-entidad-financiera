@@ -48,6 +48,18 @@
         <span>Total a debitar</span>
         <span>{{ total() | currency: 'COP' : 'symbol-narrow' : '1.2-2' }}</span>
       </div>
+      @if (preview(); as result) {
+        @if (result.overdraftUsed > 0) {
+          <div class="overdraft-use">
+            <span>Usará del cupo de sobregiro</span>
+            <span>{{ result.overdraftUsed | currency: 'COP' : 'symbol-narrow' : '1.2-2' }}</span>
+          </div>
+        }
+        <div class="after" [class.negative]="result.balanceAfter < 0">
+          <span>Saldo después del retiro</span>
+          <span>{{ result.balanceAfter | currency: 'COP' : 'symbol-narrow' : '1.2-2' }}</span>
+        </div>
+      }
     </div>
   }
 

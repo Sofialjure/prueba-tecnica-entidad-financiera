@@ -105,6 +105,7 @@ describe('MovementForm', () => {
       ['Retiro', '$ 100.000,00'],
       ['GMF 4x1000', '$ 400,00'],
       ['Total a debitar', '$ 100.400,00'],
+      ['Saldo después del retiro', '$ 1.698.800,00'],
     ]);
   });
 
@@ -132,6 +133,20 @@ describe('MovementForm', () => {
 
     expect(transactionService.withdraw).not.toHaveBeenCalled();
     expect(errors(fixture)).toEqual(['Saldo disponible insuficiente: $ 1.799.200,00']);
+  });
+
+  it('tells how much of the overdraft a checking withdrawal will use', async () => {
+    const fixture = await render('withdrawal', '3300000001');
+
+    // Balance -250.000 and limit 500.000: withdrawing 100.000 (GMF exempt) uses 100.000 more
+    await type(fixture, 'amount', '100000');
+
+    const rows = Array.from(element(fixture).querySelectorAll('.breakdown div'), (row) =>
+      Array.from(row.querySelectorAll('span'), (cell) => norm(cell.textContent)),
+    );
+    expect(rows).toContainEqual(['Usará del cupo de sobregiro', '$ 100.000,00']);
+    expect(rows).toContainEqual(['Saldo después del retiro', '-$ 350.000,00']);
+    expect(element(fixture).querySelector('.after')?.classList).toContain('negative');
   });
 
   it('lets a checking account use its overdraft', async () => {

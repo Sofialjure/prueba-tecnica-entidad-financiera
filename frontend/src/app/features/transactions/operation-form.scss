@@ -22,6 +22,19 @@ form {
     color: var(--app-text-muted);
   }
 
+  .overdraft-use {
+    color: #8c1d18;
+    font-weight: 600;
+  }
+
+  .after {
+    color: var(--app-navy);
+
+    &.negative span:last-child {
+      color: #8c1d18;
+    }
+  }
+
   .total {
     margin-top: 4px;
     padding-top: 10px;
