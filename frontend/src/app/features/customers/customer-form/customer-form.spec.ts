@@ -1,6 +1,7 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { provideRouter, Router } from '@angular/router';
 import { of, throwError } from 'rxjs';
+import { provideAppDateAdapter } from '../../../core/date/app-date-adapter';
 import { Customer } from '../../../core/models/customer';
 import { NotificationService } from '../../../core/notification/notification.service';
 import { CustomerService } from '../customer.service';
@@ -29,6 +30,7 @@ describe('CustomerForm', () => {
       imports: [CustomerForm],
       providers: [
         provideRouter([]),
+        provideAppDateAdapter(),
         { provide: CustomerService, useValue: customerService },
         { provide: NotificationService, useValue: notifications },
       ],
@@ -56,7 +58,7 @@ describe('CustomerForm', () => {
     type(fixture, 'firstName', ANA.firstName);
     type(fixture, 'lastName', ANA.lastName);
     type(fixture, 'email', ANA.email);
-    type(fixture, 'birthDate', ANA.birthDate);
+    type(fixture, 'birthDate', '12/04/1995');
   }
 
   async function submit(fixture: ComponentFixture<CustomerForm>) {
@@ -90,7 +92,7 @@ describe('CustomerForm', () => {
     type(fixture, 'identificationNumber', '12');
     type(fixture, 'firstName', ' A ');
     type(fixture, 'email', 'ana@correo');
-    type(fixture, 'birthDate', '2015-01-01');
+    type(fixture, 'birthDate', '01/01/2015');
     await submit(fixture);
 
     expect(customerService.create).not.toHaveBeenCalled();
@@ -103,6 +105,23 @@ describe('CustomerForm', () => {
     ]);
   });
 
+  it('asks for the dd/mm/aaaa format when the date cannot be read', async () => {
+    const fixture = await render();
+
+    fill(fixture);
+    type(fixture, 'birthDate', '1995-04-12');
+    await submit(fixture);
+
+    expect(customerService.create).not.toHaveBeenCalled();
+    expect(errors(fixture)).toEqual(['Escriba la fecha como dd/mm/aaaa']);
+  });
+
+  it('opens a calendar to pick the birth date', async () => {
+    const fixture = await render();
+
+    expect((fixture.nativeElement as HTMLElement).querySelector('mat-datepicker-toggle button')).not.toBeNull();
+  });
+
   it('loads the customer and saves the changes when editing', async () => {
     customerService.getById.mockReturnValue(of(ANA));
     customerService.update.mockReturnValue(of({ ...ANA, email: 'ana@nuevo.com' }));
@@ -110,6 +129,10 @@ describe('CustomerForm', () => {
 
     expect(customerService.getById).toHaveBeenCalledWith(1);
     expect((fixture.nativeElement as HTMLElement).querySelector('h1')?.textContent).toBe('Editar cliente');
+    expect(
+      (fixture.nativeElement as HTMLElement).querySelector<HTMLInputElement>('input[formControlName="birthDate"]')!
+        .value,
+    ).toBe('12/04/1995');
 
     type(fixture, 'email', 'ana@nuevo.com');
     await submit(fixture);

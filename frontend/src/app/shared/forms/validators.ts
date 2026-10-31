@@ -8,23 +8,18 @@ export function trimmedMinLength(min: number): ValidatorFn {
   };
 }
 
-/** Rejects birth dates of people younger than `years` (RF-05). The value is a yyyy-MM-dd string. */
+/** Rejects birth dates of people younger than `years` (RF-05). */
 export function legalAge(years: number, today: () => Date = () => new Date()): ValidatorFn {
   return (control: AbstractControl): ValidationErrors | null => {
-    if (!control.value) {
+    const birthDate = control.value as Date | null;
+    if (!(birthDate instanceof Date) || isNaN(birthDate.getTime())) {
       return null;
     }
-    const [year, month, day] = (control.value as string).split('-').map(Number);
-    const adulthood = new Date(year + years, month - 1, day);
-    const now = today();
-    const startOfToday = new Date(now.getFullYear(), now.getMonth(), now.getDate());
-    return adulthood > startOfToday ? { legalAge: { years } } : null;
+    return birthDate > latestAdultBirthDate(years, today()) ? { legalAge: { years } } : null;
   };
 }
 
-/** Latest birth date allowed for an adult, as yyyy-MM-dd, for the date input's `max` attribute. */
-export function latestAdultBirthDate(years: number, today: Date = new Date()): string {
-  const date = new Date(today.getFullYear() - years, today.getMonth(), today.getDate());
-  const pad = (value: number) => value.toString().padStart(2, '0');
-  return `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(date.getDate())}`;
+/** Latest birth date of someone who is already `years` old today. */
+export function latestAdultBirthDate(years: number, today: Date = new Date()): Date {
+  return new Date(today.getFullYear() - years, today.getMonth(), today.getDate());
 }

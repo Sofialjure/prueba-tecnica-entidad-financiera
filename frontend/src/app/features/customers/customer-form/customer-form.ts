@@ -2,6 +2,7 @@ import { Component, computed, inject, input, OnInit, signal } from '@angular/cor
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
+import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
@@ -12,6 +13,7 @@ import { CustomerRequest } from '../../../core/models/customer';
 import { IdentificationType } from '../../../core/models/enums';
 import { NotificationService } from '../../../core/notification/notification.service';
 import { PageHeader } from '../../../shared/components/page-header/page-header';
+import { fromIsoDate, toIsoDate } from '../../../shared/forms/dates';
 import { validationMessage } from '../../../shared/forms/validation-message';
 import {
   latestAdultBirthDate,
@@ -31,6 +33,7 @@ const EMAIL_PATTERN = /^[^@\s]+@[^@\s]+\.[A-Za-z]{2,}$/;
   imports: [
     MatButtonModule,
     MatCardModule,
+    MatDatepickerModule,
     MatFormFieldModule,
     MatInputModule,
     MatProgressBarModule,
@@ -54,6 +57,8 @@ export class CustomerForm implements OnInit {
   protected readonly loading = signal(false);
   protected readonly saving = signal(false);
   protected readonly maxBirthDate = latestAdultBirthDate(LEGAL_AGE);
+  /** The calendar opens on the year picker around this date. */
+  protected readonly calendarStart = new Date(1990, 0, 1);
   protected readonly identificationTypes = Object.entries(LABELS.identificationType) as [
     IdentificationType,
     string,
@@ -65,12 +70,16 @@ export class CustomerForm implements OnInit {
     firstName: ['', [Validators.required, trimmedMinLength(2), Validators.maxLength(100)]],
     lastName: ['', [Validators.required, trimmedMinLength(2), Validators.maxLength(100)]],
     email: ['', [Validators.required, Validators.pattern(EMAIL_PATTERN), Validators.maxLength(150)]],
-    birthDate: ['', [Validators.required, legalAge(LEGAL_AGE)]],
+    birthDate: [null as Date | null, [Validators.required, legalAge(LEGAL_AGE)]],
   });
 
   protected readonly messages: Record<string, Record<string, string>> = {
     identificationNumber: { pattern: 'Debe tener entre 4 y 20 letras o números, sin espacios' },
     email: { pattern: 'El correo debe tener el formato xxxx@xxxxx.xxx' },
+    birthDate: {
+      matDatepickerParse: 'Escriba la fecha como dd/mm/aaaa',
+      matDatepickerMax: `El cliente debe ser mayor de edad (${LEGAL_AGE} años cumplidos)`,
+    },
   };
 
   ngOnInit(): void {
@@ -81,7 +90,8 @@ export class CustomerForm implements OnInit {
         .getById(Number(id))
         .pipe(finalize(() => this.loading.set(false)))
         .subscribe({
-          next: ({ id: _, createdAt, updatedAt, ...data }) => this.form.setValue(data),
+          next: ({ id: _, createdAt, updatedAt, birthDate, ...data }) =>
+            this.form.setValue({ ...data, birthDate: fromIsoDate(birthDate) }),
           error: () => this.router.navigate(['/customers']),
         });
     }
@@ -96,7 +106,8 @@ export class CustomerForm implements OnInit {
       this.form.markAllAsTouched();
       return;
     }
-    const data: CustomerRequest = this.form.getRawValue();
+    const { birthDate, ...rest } = this.form.getRawValue();
+    const data: CustomerRequest = { ...rest, birthDate: toIsoDate(birthDate!) };
     const id = this.id();
     const request = id
       ? this.customerService.update(Number(id), data)

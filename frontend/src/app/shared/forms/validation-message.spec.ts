@@ -28,4 +28,13 @@ describe('validationMessage', () => {
       validationMessage({ pattern: {} }, { pattern: 'El correo debe tener el formato xxxx@xxxxx.xxx' }),
     ).toBe('El correo debe tener el formato xxxx@xxxxx.xxx');
   });
+
+  it('prefers the custom text over a generic error reported first', () => {
+    expect(
+      validationMessage(
+        { required: true, matDatepickerParse: { text: '1995-04-12' } },
+        { matDatepickerParse: 'Escriba la fecha como dd/mm/aaaa' },
+      ),
+    ).toBe('Escriba la fecha como dd/mm/aaaa');
+  });
 });

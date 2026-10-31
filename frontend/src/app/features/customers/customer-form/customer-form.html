@@ -45,7 +45,15 @@
 
       <mat-form-field appearance="outline">
         <mat-label>Fecha de nacimiento</mat-label>
-        <input matInput type="date" formControlName="birthDate" [max]="maxBirthDate" />
+        <input
+          matInput
+          formControlName="birthDate"
+          placeholder="dd/mm/aaaa"
+          [matDatepicker]="birthDatePicker"
+          [max]="maxBirthDate"
+        />
+        <mat-datepicker-toggle matIconSuffix [for]="birthDatePicker" />
+        <mat-datepicker #birthDatePicker startView="multi-year" [startAt]="calendarStart" />
         <mat-hint>Debe ser mayor de edad</mat-hint>
         <mat-error>{{ error('birthDate') }}</mat-error>
       </mat-form-field>

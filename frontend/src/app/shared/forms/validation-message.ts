@@ -1,8 +1,9 @@
 import { ValidationErrors } from '@angular/forms';
 
 /**
- * First error of a form control as a Spanish message. `custom` replaces the generic text of
- * a given error, e.g. `{ pattern: 'El correo debe tener el formato xxxx@xxxxx.xxx' }`.
+ * Error of a form control as a Spanish message. `custom` gives field-specific texts, e.g.
+ * `{ pattern: 'El correo debe tener el formato xxxx@xxxxx.xxx' }`; they win over generic ones,
+ * so an unreadable date says how to write it instead of "obligatorio".
  */
 export function validationMessage(
   errors: ValidationErrors | null | undefined,
@@ -11,10 +12,11 @@ export function validationMessage(
   if (!errors) {
     return '';
   }
-  const [key, detail] = Object.entries(errors)[0];
-  if (custom[key]) {
-    return custom[key];
+  const customKey = Object.keys(errors).find((key) => custom[key]);
+  if (customKey) {
+    return custom[customKey];
   }
+  const [key, detail] = Object.entries(errors)[0];
   switch (key) {
     case 'required':
       return 'Este campo es obligatorio';
