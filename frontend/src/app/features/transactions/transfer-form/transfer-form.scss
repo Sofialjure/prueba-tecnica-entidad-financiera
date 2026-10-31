@@ -25,3 +25,15 @@
   color: #1e7a3c;
   font-weight: 600;
 }
+
+// Inside the select panel (overlay), so it needs to pierce the component styles
+::ng-deep .mat-mdc-option .same-owner {
+  display: inline-block;
+  margin-left: 6px;
+  padding: 1px 8px;
+  border-radius: 10px;
+  background: #fdf0cf;
+  color: #7a5600;
+  font-size: 12px;
+  font-weight: 600;
+}

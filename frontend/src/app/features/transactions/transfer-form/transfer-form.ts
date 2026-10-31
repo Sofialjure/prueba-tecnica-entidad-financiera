@@ -24,6 +24,7 @@ import { LabelPipe } from '../../../shared/pipes/label.pipe';
 import { AccountOption } from '../account-option';
 import { AccountSummary } from '../account-summary/account-summary';
 import { gmfFor } from '../gmf';
+import { previewDebit } from '../overdraft';
 import { TransactionService } from '../transaction.service';
 
 /** Transfer between two active accounts; emits the receipt when the API accepts it (RF-22). */
@@ -91,6 +92,17 @@ export class TransferForm {
     return source ? gmfFor(source.account, this.amount()) : 0;
   });
   protected readonly total = computed(() => this.amount() + this.gmf());
+
+  /** Source balance after the transfer and the part paid with its overdraft line, if any. */
+  protected readonly preview = computed(() => {
+    const source = this.source();
+    return source ? previewDebit(source.account, this.total()) : null;
+  });
+
+  /** Another account of the source's owner: allowed, but labelled so it is not mistaken for the same one. */
+  protected sameOwner(option: AccountOption): boolean {
+    return option.account.customerId === this.source()?.account.customerId;
+  }
 
   constructor() {
     effect(() => {
