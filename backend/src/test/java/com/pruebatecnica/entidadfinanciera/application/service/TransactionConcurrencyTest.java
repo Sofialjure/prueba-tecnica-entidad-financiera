@@ -40,8 +40,12 @@ import org.springframework.jdbc.core.JdbcTemplate;
 class TransactionConcurrencyTest {
 
     private static final int THREADS = 10;
-    /** Carlos Andrés, from the seed data. */
-    private static final long CUSTOMER_ID = 2L;
+    /**
+     * Seed customers without an account of these types, since a customer has at most one
+     * active or inactive account of each type (SUP-15).
+     */
+    private static final long CARLOS = 2L;
+    private static final long LAURA = 3L;
 
     @Autowired
     private OpenAccountUseCase openAccount;
@@ -70,7 +74,7 @@ class TransactionConcurrencyTest {
 
     @Test
     void simultaneousWithdrawalsNeverSpendMoreThanTheBalance() throws Exception {
-        Account account = openWithBalance(false, "1000000");
+        Account account = openWithBalance(CARLOS, AccountType.CHECKING, false, "1000000");
 
         List<Boolean> results = runConcurrently(THREADS, i -> () ->
                 withdraw.withdraw(new MovementData(account.getAccountNumber(), new BigDecimal("100000"), null)));
@@ -86,8 +90,8 @@ class TransactionConcurrencyTest {
 
     @Test
     void oppositeTransfersAtTheSameTimeDoNotDeadlockNorLoseMoney() throws Exception {
-        Account first = openWithBalance(true, "500000");
-        Account second = openWithBalance(true, "500000");
+        Account first = openWithBalance(CARLOS, AccountType.CHECKING, true, "500000");
+        Account second = openWithBalance(LAURA, AccountType.SAVINGS, true, "500000");
 
         List<Boolean> results = runConcurrently(THREADS * 2, i -> () -> i % 2 == 0
                 ? transfer.transfer(new TransferData(first.getAccountNumber(), second.getAccountNumber(),
@@ -100,8 +104,8 @@ class TransactionConcurrencyTest {
         assertThat(getAccount.getById(second.getId()).getBalance()).isEqualByComparingTo("480000");
     }
 
-    private Account openWithBalance(boolean gmfExempt, String balance) {
-        Account account = openAccount.open(new OpenAccountData(CUSTOMER_ID, AccountType.SAVINGS, null, gmfExempt));
+    private Account openWithBalance(long customerId, AccountType type, boolean gmfExempt, String balance) {
+        Account account = openAccount.open(new OpenAccountData(customerId, type, null, gmfExempt));
         createdAccountIds.add(account.getId());
         deposit.deposit(new MovementData(account.getAccountNumber(), new BigDecimal(balance), null));
         return account;

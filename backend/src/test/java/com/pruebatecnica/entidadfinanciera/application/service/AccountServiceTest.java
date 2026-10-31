@@ -9,6 +9,7 @@ import static org.mockito.Mockito.verifyNoInteractions;
 import static org.mockito.Mockito.when;
 
 import com.pruebatecnica.entidadfinanciera.domain.exception.BusinessRuleViolationException;
+import com.pruebatecnica.entidadfinanciera.domain.exception.ResourceConflictException;
 import com.pruebatecnica.entidadfinanciera.domain.exception.ResourceNotFoundException;
 import com.pruebatecnica.entidadfinanciera.domain.model.Account;
 import com.pruebatecnica.entidadfinanciera.domain.model.AccountStatus;
@@ -27,6 +28,8 @@ import java.util.Optional;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvSource;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
@@ -70,6 +73,21 @@ class AccountServiceTest {
                 .isInstanceOf(ResourceNotFoundException.class)
                 .hasMessage("No existe el cliente con id 99");
         verifyNoInteractions(accountFactory, accountRepository);
+    }
+
+    @ParameterizedTest
+    @CsvSource({"SAVINGS, cuenta de ahorros", "CHECKING, cuenta corriente"})
+    void openRejectsASecondOpenAccountOfTheSameType(AccountType type, String name) {
+        when(customerRepository.findById(1L)).thenReturn(Optional.of(Customer.builder().id(1L).build()));
+        when(accountRepository.hasOpenAccountOfType(1L, type)).thenReturn(true);
+
+        assertThatThrownBy(() -> service.open(new OpenAccountData(1L, type, null, false)))
+                .isInstanceOf(ResourceConflictException.class)
+                .hasMessage("El cliente con id 1 ya tiene una " + name
+                        + " activa o inactiva. Solo se permite una cuenta de cada tipo por cliente");
+        // Rejected before generating a number, so no consecutive is used up
+        verifyNoInteractions(accountFactory);
+        verify(accountRepository, never()).save(any());
     }
 
     @Test

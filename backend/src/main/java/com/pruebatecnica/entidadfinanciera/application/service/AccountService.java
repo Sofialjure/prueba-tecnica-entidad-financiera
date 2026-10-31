@@ -1,7 +1,9 @@
 package com.pruebatecnica.entidadfinanciera.application.service;
 
+import com.pruebatecnica.entidadfinanciera.domain.exception.ResourceConflictException;
 import com.pruebatecnica.entidadfinanciera.domain.exception.ResourceNotFoundException;
 import com.pruebatecnica.entidadfinanciera.domain.model.Account;
+import com.pruebatecnica.entidadfinanciera.domain.model.AccountType;
 import com.pruebatecnica.entidadfinanciera.domain.model.OpenAccountData;
 import com.pruebatecnica.entidadfinanciera.domain.port.in.ChangeAccountStatusUseCase;
 import com.pruebatecnica.entidadfinanciera.domain.port.in.GetAccountUseCase;
@@ -31,10 +33,19 @@ public class AccountService implements OpenAccountUseCase, GetAccountUseCase, Ch
         this.clock = clock;
     }
 
-    /** An account can only exist linked to an existing customer (RF-10). */
+    /**
+     * An account can only exist linked to an existing customer (RF-10), and a customer has at most
+     * one active or inactive account of each type (SUP-15). Checked before generating the number,
+     * so a rejected request does not use up a consecutive.
+     */
     @Override
     public Account open(OpenAccountData data) {
         ensureCustomerExists(data.customerId());
+        if (accountRepository.hasOpenAccountOfType(data.customerId(), data.accountType())) {
+            throw new ResourceConflictException("El cliente con id " + data.customerId() + " ya tiene una "
+                    + accountTypeName(data.accountType())
+                    + " activa o inactiva. Solo se permite una cuenta de cada tipo por cliente");
+        }
         return accountRepository.save(accountFactory.open(data));
     }
 
@@ -77,6 +88,13 @@ public class AccountService implements OpenAccountUseCase, GetAccountUseCase, Ch
         Account account = accountRepository.findByIdForUpdate(id).orElseThrow(() -> notFound(id));
         transition.accept(account, clock);
         return accountRepository.save(account);
+    }
+
+    private static String accountTypeName(AccountType type) {
+        return switch (type) {
+            case SAVINGS -> "cuenta de ahorros";
+            case CHECKING -> "cuenta corriente";
+        };
     }
 
     private static ResourceNotFoundException notFound(Long id) {

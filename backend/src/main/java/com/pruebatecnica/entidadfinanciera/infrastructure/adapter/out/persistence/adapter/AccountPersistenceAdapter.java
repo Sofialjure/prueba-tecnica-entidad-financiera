@@ -1,6 +1,7 @@
 package com.pruebatecnica.entidadfinanciera.infrastructure.adapter.out.persistence.adapter;
 
 import com.pruebatecnica.entidadfinanciera.domain.model.Account;
+import com.pruebatecnica.entidadfinanciera.domain.model.AccountStatus;
 import com.pruebatecnica.entidadfinanciera.domain.model.AccountType;
 import com.pruebatecnica.entidadfinanciera.domain.port.out.AccountNumberSequencePort;
 import com.pruebatecnica.entidadfinanciera.domain.port.out.AccountRepositoryPort;
@@ -31,6 +32,13 @@ public class AccountPersistenceAdapter implements AccountRepositoryPort, Account
     @Override
     public Optional<Account> findById(Long id) {
         return repository.findById(id).map(mapper::toDomain);
+    }
+
+    /** Cancelled accounts are closed for good, so they do not count. */
+    @Override
+    public boolean hasOpenAccountOfType(Long customerId, AccountType accountType) {
+        return repository.existsByCustomerIdAndAccountTypeAndStatusNot(customerId, accountType,
+                AccountStatus.CANCELLED);
     }
 
     @Override
