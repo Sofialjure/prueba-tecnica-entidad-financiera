@@ -64,7 +64,10 @@
     } @else {
       <div class="cards">
         @for (account of accounts(); track account.id) {
-          <app-account-card [account]="account" />
+          <app-account-card
+            [account]="account"
+            (statusChange)="changeStatus(account, $event)"
+          />
         }
       </div>
     }

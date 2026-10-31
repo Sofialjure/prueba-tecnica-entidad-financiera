@@ -39,10 +39,26 @@
 }
 
 .top {
+  // Same height with or without the menu button, so numbers line up across cards
+  min-height: 40px;
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: 8px;
+}
+
+.top-right {
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+  // Above the decorative circles
+  position: relative;
+  z-index: 1;
+}
+
+.menu-button {
+  margin-right: -10px;
+  color: rgba(255, 255, 255, 0.85);
 }
 
 .type {

@@ -15,6 +15,9 @@ export interface Account {
   updatedAt: string;
 }
 
+/** Status changes the API offers: PATCH /api/v1/accounts/{id}/{action} (RF-15, RF-16). */
+export type AccountAction = 'activate' | 'deactivate' | 'cancel';
+
 /** Body of POST /api/v1/accounts; number, status and balance are set by the API. */
 export interface OpenAccountRequest {
   customerId: number;
