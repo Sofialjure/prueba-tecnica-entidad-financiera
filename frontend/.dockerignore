@@ -1,0 +1,8 @@
+# The image installs its own dependencies and builds from the sources
+node_modules/
+dist/
+.angular/
+coverage/
+.vscode/
+*.log
+.env
