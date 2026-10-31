@@ -106,4 +106,6 @@ Permisos mínimos: `contents: read`.
 
 ## 6.3 Servicios en la nube
 
-> Se documenta al completar la fase de despliegue.
+La aplicación se publica en **Microsoft Azure**: una máquina virtual Linux (`Standard_B1ms`, región `westus2`) que ejecuta el mismo Docker Compose. Los motivos, las alternativas y las consecuencias están en el [ADR-0006](adr/0006-despliegue-en-azure.md).
+
+> El procedimiento de despliegue, la URL pública y cómo apagar o borrar los recursos se documentan en el PR 9.2.
