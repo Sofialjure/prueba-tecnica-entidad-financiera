@@ -18,7 +18,7 @@ docker save entidad-financiera-backend:latest entidad-financiera-frontend:latest
   | gzip | ssh -i "$KEY" "$HOST" 'gunzip | docker load'
 
 echo "3/4 Copiando la configuración de Docker Compose..."
-scp -q -i "$KEY" docker-compose.yml deploy/azure/docker-compose.azure.yml "$HOST:$REMOTE_DIR/"
+scp -q -i "$KEY" docker-compose.yml deploy/azure/docker-compose.azure.yml deploy/azure/Caddyfile "$HOST:$REMOTE_DIR/"
 
 echo "4/4 Reiniciando la aplicación en el servidor..."
 # The database password lives only in the server's .env; it is created once and never copied
@@ -26,4 +26,4 @@ ssh -i "$KEY" "$HOST" "cd $REMOTE_DIR && \
   if [ ! -f .env ]; then umask 077; printf 'DB_NAME=entidad_financiera\nDB_USERNAME=entidad_financiera\nDB_PASSWORD=%s\n' \"\$(openssl rand -hex 16)\" > .env; fi && \
   $COMPOSE up -d --no-build --wait && $COMPOSE ps"
 
-echo "Listo: http://${HOST#*@}"
+echo "Listo: https://${HOST#*@}"
