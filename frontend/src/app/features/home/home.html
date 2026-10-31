@@ -1,16 +1,90 @@
-<h1>Bienvenido</h1>
-<p class="intro">Sistema de gestión de clientes, cuentas y transacciones de la entidad financiera.</p>
+<app-page-header
+  title="Panel principal"
+  subtitle="Resumen de clientes y cuentas de la entidad"
+/>
 
-<div class="modules">
-  @for (module of modules; track module.title) {
-    <mat-card appearance="outlined">
-      <mat-card-header>
-        <mat-icon mat-card-avatar>{{ module.icon }}</mat-icon>
-        <mat-card-title>{{ module.title }}</mat-card-title>
-      </mat-card-header>
-      <mat-card-content>
-        <p>{{ module.description }}</p>
-      </mat-card-content>
-    </mat-card>
-  }
-</div>
+@if (loading()) {
+  <mat-progress-bar mode="indeterminate" />
+}
+
+<section class="stats">
+  <article class="stat app-card">
+    <span class="stat-icon blue"><mat-icon>group</mat-icon></span>
+    <div>
+      <p class="stat-label">Clientes</p>
+      <p class="stat-value">{{ summary()?.customers ?? '—' }}</p>
+    </div>
+  </article>
+
+  <article class="stat app-card">
+    <span class="stat-icon green"><mat-icon>account_balance_wallet</mat-icon></span>
+    <div>
+      <p class="stat-label">Cuentas activas</p>
+      <p class="stat-value">
+        {{ summary()?.activeAccounts ?? '—' }}
+        @if (summary(); as data) {
+          <small>de {{ data.totalAccounts }}</small>
+        }
+      </p>
+    </div>
+  </article>
+
+  <article class="stat app-card highlight">
+    <span class="stat-icon gold"><mat-icon>payments</mat-icon></span>
+    <div>
+      <p class="stat-label">Saldo total en cuentas</p>
+      <p class="stat-value">
+        @if (summary(); as data) {
+          {{ data.totalBalance | currency: 'COP' : 'symbol-narrow' : '1.0-0' }}
+        } @else {
+          —
+        }
+      </p>
+    </div>
+  </article>
+</section>
+
+<section class="columns">
+  <div class="app-card panel">
+    <div class="panel-header">
+      <h2>Clientes recientes</h2>
+      <a routerLink="/customers" class="link">Ver todos</a>
+    </div>
+    @if (summary(); as data) {
+      @if (data.recentCustomers.length === 0) {
+        <app-empty-state icon="group" message="Aún no hay clientes registrados" />
+      } @else {
+        <ul class="people">
+          @for (customer of data.recentCustomers; track customer.id) {
+            <li>
+              <app-avatar [firstName]="customer.firstName" [lastName]="customer.lastName" />
+              <div class="person">
+                <strong>{{ customer.firstName }} {{ customer.lastName }}</strong>
+                <span>{{ customer.identificationType }} {{ customer.identificationNumber }}</span>
+              </div>
+              <span class="date">{{ customer.createdAt | date: 'd MMM y' }}</span>
+            </li>
+          }
+        </ul>
+      }
+    }
+  </div>
+
+  <div class="app-card panel">
+    <div class="panel-header">
+      <h2>Accesos rápidos</h2>
+    </div>
+    <div class="actions">
+      @for (action of quickActions; track action.route) {
+        <a class="action" [routerLink]="action.route">
+          <span class="action-icon"><mat-icon>{{ action.icon }}</mat-icon></span>
+          <span class="action-text">
+            <strong>{{ action.title }}</strong>
+            <small>{{ action.description }}</small>
+          </span>
+          <mat-icon class="chevron">chevron_right</mat-icon>
+        </a>
+      }
+    </div>
+  </div>
+</section>
