@@ -8,6 +8,10 @@ import { Account, AccountAction, OpenAccountRequest } from '../../core/models/ac
 export class AccountService {
   private readonly http = inject(HttpClient);
 
+  getAll(): Observable<Account[]> {
+    return this.http.get<Account[]>(`${API_URL}/accounts`);
+  }
+
   getByCustomer(customerId: number): Observable<Account[]> {
     return this.http.get<Account[]>(`${API_URL}/customers/${customerId}/accounts`);
   }

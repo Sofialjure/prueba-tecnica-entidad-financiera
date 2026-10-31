@@ -8,5 +8,10 @@ export const routes: Routes = [
     path: 'customers',
     loadChildren: () => import('./features/customers/customers.routes').then((m) => m.CUSTOMER_ROUTES),
   },
+  {
+    path: 'transactions',
+    loadChildren: () =>
+      import('./features/transactions/transactions.routes').then((m) => m.TRANSACTION_ROUTES),
+  },
   { path: '**', redirectTo: '' },
 ];

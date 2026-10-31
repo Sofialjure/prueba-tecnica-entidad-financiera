@@ -1,0 +1,70 @@
+.kinds {
+  margin-bottom: 20px;
+  border-radius: 12px;
+  background: var(--mat-sys-surface);
+  box-shadow: var(--app-shadow);
+
+  mat-icon {
+    margin-right: 6px;
+    vertical-align: middle;
+  }
+}
+
+.layout {
+  display: grid;
+  grid-template-columns: minmax(0, 3fr) minmax(0, 2fr);
+  gap: 20px;
+  align-items: start;
+}
+
+.form-card {
+  padding: 24px;
+  overflow: hidden;
+
+  h2 {
+    margin: 0 0 18px;
+    font-size: 17px;
+    font-weight: 700;
+    color: var(--app-navy);
+  }
+
+  mat-progress-bar {
+    margin: -24px -24px 20px;
+    width: calc(100% + 48px);
+  }
+}
+
+app-transaction-receipt {
+  display: block;
+}
+
+.tips {
+  padding: 22px;
+
+  h3 {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin: 0 0 8px;
+    font-size: 15px;
+    font-weight: 700;
+    color: var(--app-navy);
+
+    mat-icon {
+      color: var(--app-gold);
+    }
+  }
+
+  ul {
+    margin: 0;
+    padding-left: 20px;
+    color: var(--app-text-muted);
+    line-height: 1.6;
+  }
+}
+
+@media (max-width: 899px) {
+  .layout {
+    grid-template-columns: 1fr;
+  }
+}
