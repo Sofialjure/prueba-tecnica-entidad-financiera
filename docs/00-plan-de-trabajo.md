@@ -11,7 +11,7 @@ Fases del proyecto en el orden en que se desarrollan. Cada fase es una rama `fea
 | 1 | Documentación técnica | `feature/documentacion` | [#1](https://github.com/Sofialjure/prueba-tecnica-entidad-financiera/pull/1) | ✅ |
 | 2 | Base del backend | `feature/backend-base` | [#2](https://github.com/Sofialjure/prueba-tecnica-entidad-financiera/pull/2) | ✅ |
 | 3 | Clientes | `feature/customers` | [#3](https://github.com/Sofialjure/prueba-tecnica-entidad-financiera/pull/3) | ✅ |
-| 4 | Cuentas | `feature/accounts` | — | ⏳ |
+| 4 | Cuentas | `feature/accounts` | [#4](https://github.com/Sofialjure/prueba-tecnica-entidad-financiera/pull/4) | ✅ |
 | 5 | Transacciones | `feature/transactions` | — | ⏳ |
 | 6 | Frontend | `feature/frontend` | — | ⏳ |
 | 7 | Contenedores | `feature/docker` | — | ⏳ |
@@ -49,13 +49,13 @@ Fases del proyecto en el orden en que se desarrollan. Cada fase es una rama `fea
 - [x] Controller REST con validaciones
 - [x] Tests unitarios de Service y Controller (cobertura 100 % en ambas capas)
 
-### 4. Cuentas ⏳
+### 4. Cuentas ✅
 
-- [ ] Modelo de dominio `Account` con reglas por tipo (ahorros / corriente)
-- [ ] Crear cuenta con número automático de 10 dígitos: 53 ahorros, 33 corriente (RF-09 a RF-13)
-- [ ] Activar, inactivar y cancelar con saldo $0 (RF-15, RF-16)
-- [ ] Consultar una cuenta y las cuentas de un cliente (RF-19)
-- [ ] Tests unitarios de Service y Controller
+- [x] Modelo de dominio `Account` con reglas por tipo (ahorros / corriente), patrón Strategy
+- [x] Crear cuenta con número automático de 10 dígitos: 53 ahorros, 33 corriente (RF-09 a RF-13), patrón Factory
+- [x] Activar, inactivar y cancelar con saldo $0 (RF-15, RF-16)
+- [x] Consultar una cuenta y las cuentas de un cliente (RF-19)
+- [x] Tests unitarios de Service y Controller (cobertura 100 % en ambas capas)
 
 ### 5. Transacciones ⏳
 

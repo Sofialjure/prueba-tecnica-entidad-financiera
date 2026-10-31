@@ -54,6 +54,7 @@ Location: /api/v1/customers/1
 | Método | Endpoint | Descripción | RF |
 |---|---|---|---|
 | `POST` | `/accounts` | Crear cuenta | RF-09 a RF-13 |
+| `GET` | `/accounts` | Listar cuentas | RF-19 |
 | `GET` | `/accounts/{id}` | Consultar cuenta | RF-19 |
 | `PATCH` | `/accounts/{id}/activate` | Activar cuenta | RF-15 |
 | `PATCH` | `/accounts/{id}/deactivate` | Inactivar cuenta | RF-15 |
@@ -69,6 +70,7 @@ Content-Type: application/json
 {
   "customerId": 1,
   "accountType": "SAVINGS",
+  "overdraftLimit": 0,
   "gmfExempt": false
 }
 ```
@@ -150,4 +152,4 @@ Content-Type: application/problem+json
 | `400` | Validación de formato (correo inválido, campos obligatorios, monto ≤ 0). |
 | `404` | Cliente o cuenta inexistente. |
 | `409` | Identificación duplicada o cliente con productos vinculados. |
-| `422` | Menor de edad, saldo insuficiente, cuenta no activa, cancelación con saldo ≠ 0, reactivación de una cuenta cancelada. |
+| `422` | Menor de edad, saldo insuficiente, cuenta no activa, cupo de sobregiro en una cuenta de ahorros, cancelación con saldo ≠ 0, reactivación de una cuenta cancelada, activar una cuenta ya activa o inactivar una ya inactiva. |
