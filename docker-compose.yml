@@ -1,3 +1,10 @@
+# Whole application with one command: docker compose up --build
+#   frontend  http://localhost:4300   (nginx; forwards /api to the backend)
+#   backend   http://localhost:8080   (Swagger UI at /swagger-ui.html)
+#   postgres  localhost:5432
+# Host ports and credentials come from .env (see .env.example); containers talk to each
+# other through the compose network by service name.
+
 services:
   postgres:
     image: postgres:16-alpine
@@ -15,6 +22,38 @@ services:
       interval: 5s
       timeout: 5s
       retries: 10
+    restart: unless-stopped
+
+  backend:
+    build: ./backend
+    image: entidad-financiera-backend
+    container_name: entidad-financiera-api
+    environment:
+      # Inside the network the database is always "postgres:5432", whatever DB_PORT is
+      DB_HOST: postgres
+      DB_PORT: 5432
+      DB_NAME: ${DB_NAME:-entidad_financiera}
+      DB_USERNAME: ${DB_USERNAME:-entidad_financiera}
+      DB_PASSWORD: ${DB_PASSWORD:-entidad_financiera}
+    ports:
+      - "${BACKEND_PORT:-8080}:8080"
+    depends_on:
+      postgres:
+        condition: service_healthy
+    restart: unless-stopped
+
+  frontend:
+    build: ./frontend
+    image: entidad-financiera-frontend
+    container_name: entidad-financiera-web
+    environment:
+      BACKEND_URL: http://backend:8080
+    ports:
+      - "${FRONTEND_PORT:-4300}:8080"
+    depends_on:
+      backend:
+        condition: service_healthy
+    restart: unless-stopped
 
 volumes:
   pgdata:
