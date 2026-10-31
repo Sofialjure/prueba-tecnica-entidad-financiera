@@ -1,5 +1,6 @@
 package com.pruebatecnica.entidadfinanciera.infrastructure.config;
 
+import static org.hamcrest.Matchers.startsWith;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
@@ -82,6 +83,16 @@ class GlobalExceptionHandlerTest {
                 .andExpect(jsonPath("$.title").value("Datos de entrada inválidos"))
                 .andExpect(jsonPath("$.errors[0].field").value("name"))
                 .andExpect(jsonPath("$.errors[0].message").value("El nombre es obligatorio"));
+    }
+
+    @Test
+    void malformedJsonReturns400WithSpanishMessage() throws Exception {
+        mockMvc.perform(post("/validated")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("{\"name\": "))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.title").value("Datos de entrada inválidos"))
+                .andExpect(jsonPath("$.detail").value(startsWith("El cuerpo de la solicitud no es válido")));
     }
 
     @RestController

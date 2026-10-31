@@ -105,7 +105,7 @@ sequenceDiagram
 
 | Principio | Aplicación |
 |---|---|
-| **S** — Responsabilidad única | Cada caso de uso tiene su propio servicio. Los controllers solo traducen HTTP y la validación de negocio vive en el dominio. |
+| **S** — Responsabilidad única | Cada capa tiene una sola razón de cambio: el dominio guarda las reglas de negocio, el servicio orquesta los casos de uso de un agregado (`CustomerService`), el controller solo traduce HTTP y el adaptador de persistencia solo traduce a JPA. |
 | **O** — Abierto/Cerrado | Un nuevo tipo de cuenta se agrega con una nueva estrategia, sin modificar los servicios existentes. |
 | **L** — Sustitución de Liskov | Cualquier implementación de un puerto (JPA, en memoria para tests) es intercambiable. |
 | **I** — Segregación de interfaces | Puertos pequeños y específicos (`CreateCustomerUseCase`, `DeleteCustomerUseCase`...) en lugar de una interfaz gigante. |

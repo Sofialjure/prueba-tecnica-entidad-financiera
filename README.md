@@ -31,6 +31,35 @@ prueba-tecnica-entidad-financiera/
 └── README.md
 ```
 
+## Ejecución local del backend
+
+Requisitos: **Java 21** y **Docker** (para la base de datos y para los tests de integración).
+
+```bash
+# 1. Base de datos PostgreSQL (si el puerto 5432 está ocupado: DB_PORT=5433 docker compose up -d postgres)
+docker compose up -d postgres
+
+# 2. API REST (con el mismo DB_PORT si se cambió en el paso 1)
+cd backend
+./mvnw spring-boot:run
+```
+
+En Windows PowerShell, todo en la misma ventana (las variables solo valen para esa ventana):
+
+```powershell
+# Solo si JAVA_HOME apunta a otra versión de Java (error "UnsupportedClassVersionError")
+$env:JAVA_HOME = "C:\Program Files\Eclipse Adoptium\jdk-21.0.12.101-hotspot"
+# Solo si el puerto 5432 está ocupado
+$env:DB_PORT = "5433"
+
+docker compose up -d postgres
+cd backend
+.\mvnw.cmd spring-boot:run
+```
+
+- Swagger UI: http://localhost:8080/swagger-ui.html
+- Tests y reporte de cobertura: `./mvnw verify` → `backend/target/site/jacoco/index.html`
+
 ## Ejecución con Docker
 
 > Disponible cuando se integre la rama de contenedores.
@@ -49,6 +78,7 @@ docker compose up --build
 
 | # | Documento | Contenido |
 |---|---|---|
+| 0 | [Plan de trabajo](docs/00-plan-de-trabajo.md) | Fases del proyecto y avance |
 | 1 | [Requerimientos](docs/01-requerimientos.md) | Requerimientos funcionales, no funcionales y supuestos |
 | 2 | [Arquitectura](docs/02-arquitectura.md) | Hexagonal, patrones de diseño, SOLID y ACID |
 | 3 | [Modelo de datos](docs/03-modelo-datos.md) | Diagrama entidad-relación, DDL y DML |

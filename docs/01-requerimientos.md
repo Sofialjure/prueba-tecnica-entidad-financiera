@@ -86,6 +86,7 @@ El enunciado deja algunos puntos abiertos. Estas son las decisiones tomadas:
 | SUP-10 | **GMF (4×1000)**: en retiros y transferencias desde cuentas **no exentas** se cobra el 0,4 % del monto como un movimiento débito aparte, de tipo `GMF`. El saldo disponible debe cubrir el monto más el GMF. | Da uso real al atributo "exenta GMF" según la normativa colombiana. |
 | SUP-11 | Mayoría de edad: **18 años** cumplidos a la fecha de registro. | Legislación colombiana. |
 | SUP-12 | Tipos de identificación admitidos: `CC` (cédula de ciudadanía), `CE` (cédula de extranjería) y `PA` (pasaporte). | La tarjeta de identidad se excluye porque corresponde a menores de edad. |
+| SUP-13 | Las **transacciones son inmutables**: el "CRUD de transacciones" del enunciado se cubre con **crear** (consignar, retirar, transferir) y **consultar** (estado de cuenta). No se permite editar ni eliminar un movimiento. | Es la práctica contable y bancaria: un movimiento registrado no se borra, porque se perdería la trazabilidad del saldo. Un error se corrige con un movimiento nuevo en sentido contrario. |
 
 ### Ciclo de vida de la cuenta (SUP-04)
 
