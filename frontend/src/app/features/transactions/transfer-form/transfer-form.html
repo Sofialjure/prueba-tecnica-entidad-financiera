@@ -1,0 +1,75 @@
+<form [formGroup]="form" (ngSubmit)="submit()" novalidate>
+  <p class="step"><span>1</span> Cuenta de origen</p>
+  <mat-form-field appearance="outline" class="full">
+    <mat-label>Desde</mat-label>
+    <mat-select formControlName="sourceAccountNumber" panelWidth="">
+      @for (option of options(); track option.account.id) {
+        <mat-option [value]="option.account.accountNumber">
+          {{ option.account.accountNumber | accountNumber }} · {{ option.ownerName }} ·
+          {{ option.account.accountType | label: 'accountType' }}
+        </mat-option>
+      }
+    </mat-select>
+    <mat-error>Seleccione la cuenta que envía</mat-error>
+  </mat-form-field>
+  @if (source(); as option) {
+    <app-account-summary [option]="option" />
+  }
+
+  <p class="step"><span>2</span> Cuenta de destino</p>
+  <mat-form-field appearance="outline" class="full">
+    <mat-label>Hacia</mat-label>
+    <mat-select formControlName="targetAccountNumber" panelWidth="">
+      @for (option of targetOptions(); track option.account.id) {
+        <mat-option [value]="option.account.accountNumber">
+          {{ option.account.accountNumber | accountNumber }} · {{ option.ownerName }} ·
+          {{ option.account.accountType | label: 'accountType' }}
+        </mat-option>
+      }
+    </mat-select>
+    <mat-hint>No puede ser la misma cuenta de origen</mat-hint>
+    <mat-error>Seleccione la cuenta que recibe</mat-error>
+  </mat-form-field>
+
+  <p class="step"><span>3</span> Monto</p>
+  <mat-form-field appearance="outline" class="full">
+    <mat-label>Monto a transferir</mat-label>
+    <span matTextPrefix>$&nbsp;</span>
+    <input matInput appMoneyInput formControlName="amount" placeholder="0" />
+    <mat-error>{{ amountError() }}</mat-error>
+  </mat-form-field>
+
+  <mat-form-field appearance="outline" class="full">
+    <mat-label>Descripción (opcional)</mat-label>
+    <input matInput formControlName="description" placeholder="Ej. Pago arriendo" />
+    <mat-error>No puede superar 255 caracteres</mat-error>
+  </mat-form-field>
+
+  @if (amount() > 0) {
+    <div class="breakdown">
+      <div>
+        <span>Transferencia</span>
+        <span>{{ amount() | currency: 'COP' : 'symbol-narrow' : '1.2-2' }}</span>
+      </div>
+      <div>
+        <span>GMF 4x1000 (cuenta de origen)</span>
+        <span>{{ gmf() | currency: 'COP' : 'symbol-narrow' : '1.2-2' }}</span>
+      </div>
+      <div class="total">
+        <span>Total a debitar del origen</span>
+        <span>{{ total() | currency: 'COP' : 'symbol-narrow' : '1.2-2' }}</span>
+      </div>
+      @if (target(); as option) {
+        <div class="receives">
+          <span>{{ option.ownerName }} recibe</span>
+          <span>{{ amount() | currency: 'COP' : 'symbol-narrow' : '1.2-2' }}</span>
+        </div>
+      }
+    </div>
+  }
+
+  <button mat-flat-button type="submit" class="submit" [disabled]="saving()">
+    <mat-icon>swap_horiz</mat-icon>
+    {{ saving() ? 'Procesando...' : 'Transferir' }}
+  </button>
+</form>
