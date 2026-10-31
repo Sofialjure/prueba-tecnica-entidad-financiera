@@ -85,6 +85,16 @@ class TransactionServiceTest {
     }
 
     @Test
+    void blankDescriptionFallsBackToDefault() {
+        Account account = account(1L, "5300000002", "1000.00", "0.00", true);
+        when(accountRepository.findByAccountNumbersForUpdate(List.of("5300000002"))).thenReturn(List.of(account));
+
+        TransactionReceipt receipt = service.withdraw(new MovementData("5300000002", BigDecimal.TEN, "   "));
+
+        assertThat(receipt.entries().getFirst().description()).isEqualTo("Retiro");
+    }
+
+    @Test
     void depositFailsWhenAccountDoesNotExist() {
         when(accountRepository.findByAccountNumbersForUpdate(List.of("5399999999"))).thenReturn(List.of());
 
