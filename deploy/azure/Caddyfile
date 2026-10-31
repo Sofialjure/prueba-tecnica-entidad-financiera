@@ -1,0 +1,16 @@
+# HTTPS entry point on the Azure server.
+# Caddy gets a free Let's Encrypt certificate for the domain, renews it on its own and
+# redirects every http:// request to https://. Everything goes on to nginx (the frontend
+# container), which keeps serving Angular and forwarding /api to the backend.
+
+{$DOMAIN} {
+	encode zstd gzip
+
+	header {
+		# Browsers only use HTTPS for this site for the next 6 months
+		Strict-Transport-Security "max-age=15552000"
+		-Server
+	}
+
+	reverse_proxy frontend:8080
+}

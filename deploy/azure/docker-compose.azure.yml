@@ -1,7 +1,7 @@
 # Overrides for the Azure server, applied on top of docker-compose.yml:
 #   docker compose -f docker-compose.yml -f docker-compose.azure.yml up -d --no-build
-# Only nginx is published (port 80). PostgreSQL and the API publish no port at all:
-# they are reachable only through the internal Docker network.
+# Only Caddy is published (ports 80 and 443, HTTPS). nginx, the API and PostgreSQL publish
+# no port at all: they are reachable only through the internal Docker network.
 
 services:
   postgres:
@@ -14,6 +14,29 @@ services:
     mem_limit: 768m
 
   frontend:
-    ports: !override
-      - "80:8080"
+    ports: !reset []
     mem_limit: 128m
+
+  # HTTPS with a free Let's Encrypt certificate, renewed automatically
+  https:
+    image: caddy:2.11.7-alpine
+    container_name: entidad-financiera-https
+    environment:
+      DOMAIN: ${DOMAIN:-entidad-financiera-sofia.northcentralus.cloudapp.azure.com}
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile:ro
+      # Certificates survive restarts, so they are not requested again every time
+      - caddy-data:/data
+      - caddy-config:/config
+    depends_on:
+      frontend:
+        condition: service_healthy
+    mem_limit: 64m
+    restart: unless-stopped
+
+volumes:
+  caddy-data:
+  caddy-config:
