@@ -57,16 +57,17 @@ class TransactionPersistenceAdapterTest {
         UUID reference = UUID.randomUUID();
         LocalDateTime now = LocalDateTime.of(2026, 10, 30, 10, 0);
 
-        transactionRepository.saveAll(List.of(new Transaction(null, reference, account.getId(), null,
+        List<Transaction> saved = transactionRepository.saveAll(List.of(new Transaction(null, reference, account.getId(), null,
                 TransactionType.DEPOSIT, EntryType.CREDIT, new BigDecimal("1000.00"), new BigDecimal("601000.00"),
                 "Consignación", now)));
+        assertThat(saved).singleElement().satisfies(movement -> assertThat(movement.id()).isNotNull());
         // Read from the database, not from the persistence context, as a later request would
         entityManager.flush();
         entityManager.clear();
 
         assertThat(transactionRepository.findByAccountId(account.getId()).getFirst())
                 .satisfies(movement -> {
-                    assertThat(movement.id()).isNotNull();
+                    assertThat(movement.id()).isEqualTo(saved.getFirst().id());
                     assertThat(movement.reference()).isEqualTo(reference);
                     assertThat(movement.accountNumber()).isEqualTo("5300000002");
                     assertThat(movement.createdAt()).isEqualTo(now);

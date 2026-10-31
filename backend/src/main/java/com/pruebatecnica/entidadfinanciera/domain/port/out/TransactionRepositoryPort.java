@@ -8,7 +8,8 @@ import java.util.List;
  */
 public interface TransactionRepositoryPort {
 
-    void saveAll(List<Transaction> transactions);
+    /** Returns the movements, in the same order, with their generated ids. */
+    List<Transaction> saveAll(List<Transaction> transactions);
 
     /** Newest movement first. */
     List<Transaction> findByAccountId(Long accountId);

@@ -4,6 +4,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.assertj.core.api.Assertions.tuple;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.lenient;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoInteractions;
@@ -30,6 +31,7 @@ import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.IntStream;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -52,6 +54,11 @@ class TransactionServiceTest {
     @BeforeEach
     void setUp() {
         service = new TransactionService(accountRepository, transactionRepository, CLOCK);
+        // The repository hands the movements back with the ids the database would assign
+        lenient().when(transactionRepository.saveAll(any())).thenAnswer(invocation -> {
+            List<Transaction> movements = invocation.getArgument(0);
+            return IntStream.range(0, movements.size()).mapToObj(i -> withId(movements.get(i), i + 1L)).toList();
+        });
     }
 
     @Test
@@ -63,6 +70,7 @@ class TransactionServiceTest {
 
         assertThat(account.getBalance()).isEqualByComparingTo("1500");
         assertThat(receipt.entries()).singleElement().satisfies(entry -> {
+            assertThat(entry.id()).isEqualTo(1L);
             assertThat(entry.reference()).isEqualTo(receipt.reference());
             assertThat(entry.type()).isEqualTo(TransactionType.DEPOSIT);
             assertThat(entry.entryType()).isEqualTo(EntryType.CREDIT);
@@ -71,7 +79,7 @@ class TransactionServiceTest {
             assertThat(entry.createdAt()).isEqualTo(LocalDateTime.of(2026, 10, 30, 10, 0));
         });
         verify(accountRepository).save(account);
-        verify(transactionRepository).saveAll(receipt.entries());
+        verify(transactionRepository).saveAll(any());
     }
 
     @Test
@@ -171,7 +179,7 @@ class TransactionServiceTest {
         assertThat(target.getAvailableBalance()).isEqualByComparingTo("1499600");
         verify(accountRepository).save(source);
         verify(accountRepository).save(target);
-        verify(transactionRepository).saveAll(receipt.entries());
+        verify(transactionRepository).saveAll(any());
     }
 
     @Test
@@ -234,6 +242,11 @@ class TransactionServiceTest {
         assertThatThrownBy(() -> service.getStatement(99L))
                 .isInstanceOf(ResourceNotFoundException.class)
                 .hasMessage("No existe la cuenta con id 99");
+    }
+
+    private static Transaction withId(Transaction t, Long id) {
+        return new Transaction(id, t.reference(), t.accountId(), t.accountNumber(), t.type(), t.entryType(),
+                t.amount(), t.balanceAfter(), t.description(), t.createdAt());
     }
 
     private static Account account(Long id, String number, String balance, String overdraftLimit,

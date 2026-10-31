@@ -114,8 +114,7 @@ public class TransactionService
         for (Account account : accounts) {
             accountRepository.save(account);
         }
-        transactionRepository.saveAll(entries);
-        return new TransactionReceipt(reference, entries);
+        return new TransactionReceipt(reference, transactionRepository.saveAll(entries));
     }
 
     private static String describe(String description, String defaultDescription) {
