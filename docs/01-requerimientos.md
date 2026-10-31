@@ -87,6 +87,7 @@ El enunciado deja algunos puntos abiertos. Estas son las decisiones tomadas:
 | SUP-11 | Mayoría de edad: **18 años** cumplidos a la fecha de registro. | Legislación colombiana. |
 | SUP-12 | Tipos de identificación admitidos: `CC` (cédula de ciudadanía), `CE` (cédula de extranjería) y `PA` (pasaporte). | La tarjeta de identidad se excluye porque corresponde a menores de edad. |
 | SUP-13 | Las **transacciones son inmutables**: el "CRUD de transacciones" del enunciado se cubre con **crear** (consignar, retirar, transferir) y **consultar** (estado de cuenta). No se permite editar ni eliminar un movimiento. | Es la práctica contable y bancaria: un movimiento registrado no se borra, porque se perdería la trazabilidad del saldo. Un error se corrige con un movimiento nuevo en sentido contrario. |
+| SUP-14 | Al **cancelar** una cuenta corriente se **cierra su cupo de sobregiro** (queda en $0), así que su saldo disponible también queda en $0. Una cuenta **inactiva** conserva su cupo, porque puede volver a activarse, pero no lo puede usar mientras esté inactiva (SUP-05). | Una cuenta cancelada está cerrada de forma definitiva: mostrar un cupo "disponible" que no se puede usar es engañoso. Se refuerza en la base de datos con `ck_accounts_cancelled_no_overdraft`. |
 
 ### Ciclo de vida de la cuenta (SUP-04)
 

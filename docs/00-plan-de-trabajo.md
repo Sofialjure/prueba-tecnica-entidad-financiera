@@ -12,6 +12,7 @@ Fases del proyecto en el orden en que se desarrollan. Cada fase se divide en PRs
 | 2 | Base del backend | `feature/backend-base` | [#2](https://github.com/Sofialjure/prueba-tecnica-entidad-financiera/pull/2) | ✅ |
 | 3 | Clientes | `feature/customers` | [#3](https://github.com/Sofialjure/prueba-tecnica-entidad-financiera/pull/3) | ✅ |
 | 4 | Cuentas | `feature/accounts` | [#4](https://github.com/Sofialjure/prueba-tecnica-entidad-financiera/pull/4) | ✅ |
+| 4.1 | Cuentas: cerrar el cupo de sobregiro al cancelar | `feature/close-overdraft-on-cancel` | [#16](https://github.com/Sofialjure/prueba-tecnica-entidad-financiera/pull/16) | ✅ |
 | 5 | Transacciones | `feature/transactions` | [#5](https://github.com/Sofialjure/prueba-tecnica-entidad-financiera/pull/5) | ✅ |
 | 6.1 | Frontend: proyecto base y layout | `feature/frontend-setup` | [#6](https://github.com/Sofialjure/prueba-tecnica-entidad-financiera/pull/6) | ✅ |
 | 6.2 | Frontend: componentes compartidos | `feature/frontend-shared-components` | [#7](https://github.com/Sofialjure/prueba-tecnica-entidad-financiera/pull/7) | ✅ |
@@ -70,6 +71,7 @@ Fases del proyecto en el orden en que se desarrollan. Cada fase se divide en PRs
 - [x] Activar, inactivar y cancelar con saldo $0 (RF-15, RF-16)
 - [x] Consultar una cuenta y las cuentas de un cliente (RF-19)
 - [x] Tests unitarios de Service y Controller (cobertura 100 % en ambas capas)
+- [x] 4.1 Al cancelar una cuenta corriente se cierra su cupo de sobregiro (SUP-14), hallado en la revisión del frontend
 
 ### 5. Transacciones ✅
 

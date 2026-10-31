@@ -77,7 +77,10 @@ public class Account {
         changeStatus(AccountStatus.INACTIVE, clock);
     }
 
-    /** Closes the account for good; only allowed with balance exactly $0 (RF-16, SUP-09). */
+    /**
+     * Closes the account for good; only allowed with balance exactly $0 (RF-16, SUP-09).
+     * Its overdraft line is closed too, so nothing is shown as available any more (SUP-14).
+     */
     public void cancel(Clock clock) {
         if (status == AccountStatus.CANCELLED) {
             throw new BusinessRuleViolationException("La cuenta " + accountNumber + " ya está cancelada");
@@ -86,6 +89,7 @@ public class Account {
             throw new BusinessRuleViolationException("La cuenta " + accountNumber
                     + " solo se puede cancelar con saldo $0 (saldo actual: " + balance.toPlainString() + ")");
         }
+        overdraftLimit = money(BigDecimal.ZERO);
         changeStatus(AccountStatus.CANCELLED, clock);
     }
 

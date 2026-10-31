@@ -132,6 +132,16 @@ class AccountTest {
     }
 
     @Test
+    void cancelClosesTheOverdraftLineSoNothingIsAvailable() {
+        Account checking = stored(AccountType.CHECKING, AccountStatus.ACTIVE, "0.00", "1000000.00");
+
+        checking.cancel(CLOCK);
+
+        assertThat(checking.getOverdraftLimit()).isEqualByComparingTo("0").hasScaleOf(Account.MONEY_SCALE);
+        assertThat(checking.getAvailableBalance()).isEqualByComparingTo("0");
+    }
+
+    @Test
     void cancelRejectsAccountWithPositiveBalance() {
         Account account = stored(AccountType.SAVINGS, AccountStatus.ACTIVE, "1799200.00", "0.00");
 
