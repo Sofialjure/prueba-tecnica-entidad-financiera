@@ -155,3 +155,13 @@ src/app
 - Un **interceptor HTTP** muestra en un aviso el mensaje en español que devuelve la API (RFC 7807), así cada pantalla solo maneja el caso exitoso.
 - Formato regional `es-CO`: moneda `$ 1.799.200,00` y fechas `dd/MM/yyyy`.
 - Tests unitarios con **Vitest** (el *runner* por defecto de Angular 22).
+
+Componentes compartidos (`shared/`), usados por todas las pantallas:
+
+| Componente | Uso |
+|---|---|
+| `PageHeader` | Título, subtítulo y botones de acción de cada pantalla. |
+| `ConfirmDialog` + `ConfirmService` | Confirmación antes de acciones que no se pueden deshacer (eliminar un cliente, cancelar una cuenta). |
+| `StatusChip` | Estado de la cuenta con color: activa, inactiva, cancelada. |
+| `EmptyState` | Mensaje cuando una lista no tiene datos. |
+| `LabelPipe` | Muestra en español los valores que la API envía en inglés (`SAVINGS` → "Ahorros"). |
