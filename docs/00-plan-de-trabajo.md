@@ -25,6 +25,7 @@ Fases del proyecto en el orden en que se desarrollan. Cada fase se divide en PRs
 | 6.9 | Frontend: transferencias | `feature/frontend-transfers` | [#14](https://github.com/Sofialjure/prueba-tecnica-entidad-financiera/pull/14) | ✅ |
 | 6.10 | Frontend: estado de cuenta | `feature/frontend-statement` | [#15](https://github.com/Sofialjure/prueba-tecnica-entidad-financiera/pull/15) | ✅ |
 | 6.11 | Frontend: sobregiro visible y cuentas del mismo titular | `feature/frontend-overdraft-visibility` | [#17](https://github.com/Sofialjure/prueba-tecnica-entidad-financiera/pull/17) | ✅ |
+| 6.12 | Frontend: una cuenta de cada tipo por cliente | `feature/frontend-one-account-per-type` | [#25](https://github.com/Sofialjure/prueba-tecnica-entidad-financiera/pull/25) | ✅ |
 | 7.1 | Docker: imagen del backend | `feature/docker-backend` | [#18](https://github.com/Sofialjure/prueba-tecnica-entidad-financiera/pull/18) | ✅ |
 | 7.2 | Docker: imagen del frontend (Nginx) | `feature/docker-frontend` | [#19](https://github.com/Sofialjure/prueba-tecnica-entidad-financiera/pull/19) | ✅ |
 | 7.3 | Docker Compose con los 3 contenedores | `feature/docker-compose` | [#20](https://github.com/Sofialjure/prueba-tecnica-entidad-financiera/pull/20) | ✅ |
@@ -97,6 +98,7 @@ Fases del proyecto en el orden en que se desarrollan. Cada fase se divide en PRs
 - [x] 6.9 Transferencias con el GMF de la cuenta de origen, sin permitir la misma cuenta como destino
 - [x] 6.10 Estado de cuenta con totales, filtro por tipo de movimiento y descarga en CSV
 - [x] 6.11 Sobregiro visible (en uso, cupo, saldo después de cada débito) y cuentas del mismo titular marcadas al transferir, hallados en la revisión
+- [x] 6.12 Al abrir cuenta, el tipo que el cliente ya tiene queda deshabilitado; con una de cada tipo, el botón se deshabilita (SUP-15)
 
 ### 7. Contenedores ✅
 
