@@ -16,7 +16,7 @@ Fases del proyecto en el orden en que se desarrollan. Cada fase se divide en PRs
 | 6.1 | Frontend: proyecto base y layout | `feature/frontend-setup` | [#6](https://github.com/Sofialjure/prueba-tecnica-entidad-financiera/pull/6) | ✅ |
 | 6.2 | Frontend: componentes compartidos | `feature/frontend-shared-components` | [#7](https://github.com/Sofialjure/prueba-tecnica-entidad-financiera/pull/7) | ✅ |
 | 6.3 | Frontend: listado y eliminación de clientes | `feature/frontend-customers-list` | [#8](https://github.com/Sofialjure/prueba-tecnica-entidad-financiera/pull/8) | ✅ |
-| 6.4 | Frontend: formulario de cliente | `feature/frontend-customer-form` | — | ⏳ |
+| 6.4 | Frontend: formulario de cliente | `feature/frontend-customer-form` | [#9](https://github.com/Sofialjure/prueba-tecnica-entidad-financiera/pull/9) | ✅ |
 | 6.5 | Frontend: cuentas del cliente y apertura | `feature/frontend-accounts` | — | ⏳ |
 | 6.6 | Frontend: activar, inactivar y cancelar cuentas | `feature/frontend-account-status` | — | ⏳ |
 | 6.7 | Frontend: consignaciones y retiros | `feature/frontend-deposits-withdrawals` | — | ⏳ |
@@ -85,7 +85,7 @@ Fases del proyecto en el orden en que se desarrollan. Cada fase se divide en PRs
 - [x] 6.1 Mensajes de error de la API visibles para el usuario (interceptor HTTP)
 - [x] 6.2 Componentes reutilizables (encabezado de página, diálogo de confirmación, estado de la cuenta, estado vacío) y textos en español de los valores de la API
 - [x] 6.3 Listado de clientes con búsqueda, y eliminación con confirmación
-- [ ] 6.4 Formulario de cliente (crear y editar) con las mismas validaciones de la API
+- [x] 6.4 Formulario de cliente (crear y editar) con las mismas validaciones de la API
 - [ ] 6.5 Cuentas de un cliente y apertura de cuentas
 - [ ] 6.6 Activar, inactivar y cancelar cuentas
 - [ ] 6.7 Consignaciones y retiros

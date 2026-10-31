@@ -165,3 +165,4 @@ Componentes compartidos (`shared/`), usados por todas las pantallas:
 | `StatusChip` | Estado de la cuenta con color: activa, inactiva, cancelada. |
 | `EmptyState` | Mensaje cuando una lista no tiene datos. |
 | `LabelPipe` | Muestra en español los valores que la API envía en inglés (`SAVINGS` → "Ahorros"). |
+| `validators.ts` + `validationMessage` | Validaciones de formulario iguales a las de la API (mayoría de edad, longitud sin espacios) y sus mensajes en español. La API sigue validando todo: el frontend solo adelanta el aviso. |
