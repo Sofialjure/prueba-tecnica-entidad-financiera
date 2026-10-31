@@ -177,5 +177,5 @@ Content-Type: application/problem+json
 |---|---|
 | `400` | Validación de formato (correo inválido, campos obligatorios, monto ≤ 0). |
 | `404` | Cliente o cuenta inexistente. |
-| `409` | Identificación duplicada o cliente con productos vinculados. |
+| `409` | Identificación duplicada, cliente con productos vinculados o cliente que ya tiene una cuenta activa o inactiva del mismo tipo (SUP-15). |
 | `422` | Menor de edad, saldo insuficiente (el saldo disponible debe cubrir el monto más el GMF), cuenta no activa, transferencia a la misma cuenta, cupo de sobregiro en una cuenta de ahorros, cancelación con saldo ≠ 0, reactivación de una cuenta cancelada, activar una cuenta ya activa o inactivar una ya inactiva. |
