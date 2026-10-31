@@ -78,16 +78,28 @@ Pipelines de **GitHub Actions** en cada push y Pull Request a `develop` y `main`
 
 | Trabajo | Qué hace |
 |---|---|
-| **Compilar y probar** | Java 21 (Temurin) con caché de Maven y `./mvnw verify`: tests unitarios, tests de integración contra PostgreSQL real (Testcontainers usa el Docker del servidor de GitHub) y reporte JaCoCo. Si algo falla, guarda los reportes de Surefire como artefacto durante 7 días. |
+| **Compilar y probar** | Java 21 (Temurin) con caché de Maven y `./mvnw verify`: tests unitarios, tests de integración contra PostgreSQL real (Testcontainers usa el Docker del servidor de GitHub), reporte JaCoCo y sus mínimos de cobertura. Publica la tabla de cobertura en el resumen de la ejecución y guarda el reporte HTML como artefacto (`backend-coverage`, 14 días). Si algo falla, guarda también los reportes de Surefire (7 días). |
 | **Construir imagen Docker** | Solo si los tests pasan. Construye `backend/Dockerfile` con Buildx y caché de GitHub Actions, sin publicarla. Comprueba que el Dockerfile sigue funcionando. |
 
 Permisos mínimos: `contents: read`.
+
+### Cobertura mínima
+
+Los dos pipelines **fallan si la cobertura baja** de estos mínimos:
+
+| Proyecto | Regla | Valor actual |
+|---|---|---|
+| Backend (JaCoCo, `pom.xml`) | Clases de `application.service` y `adapter.in.rest.controller`: **100 %** de líneas y ramas | 100 % |
+| Backend | Todo el proyecto: ≥ 95 % de líneas y ≥ 90 % de ramas | 100 % / 100 % |
+| Frontend (Vitest, `angular.json`) | ≥ 95 % de sentencias y líneas, ≥ 90 % de ramas y funciones | 98,5 % · 98,8 % · 94,4 % · 96,3 % |
+
+Se excluye del cálculo el código que no se escribe a mano: las implementaciones generadas por MapStruct (`*MapperImpl`), la clase `main` del backend y los datos de prueba del frontend (`testing/`). Un script común (`.github/scripts/coverage_summary.py`) convierte los reportes en la tabla del resumen de cada ejecución.
 
 ### Frontend (`.github/workflows/frontend.yml`)
 
 | Trabajo | Qué hace |
 |---|---|
-| **Probar y compilar** | Node 24 con caché de npm, `npm ci`, tests unitarios con Vitest (`npm test -- --watch=false`) y compilación de producción (`npm run build`), que falla si el paquete inicial supera el presupuesto de error de `angular.json`. |
+| **Probar y compilar** | Node 24 con caché de npm, `npm ci`, tests unitarios con cobertura (`npm run test:coverage`, Vitest + V8) y compilación de producción (`npm run build`), que falla si el paquete inicial supera el presupuesto de error de `angular.json`. Publica la tabla de cobertura en el resumen de la ejecución y guarda el reporte HTML (`frontend-coverage`, 14 días). |
 | **Construir imagen Docker** | Solo si lo anterior pasa. Construye `frontend/Dockerfile` (Node + Nginx) con Buildx y caché de GitHub Actions, sin publicarla. |
 
 Permisos mínimos: `contents: read`.

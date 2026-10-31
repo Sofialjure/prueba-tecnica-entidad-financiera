@@ -6,11 +6,13 @@ on:
     paths:
       - 'backend/**'
       - '.github/workflows/backend.yml'
+      - '.github/scripts/coverage_summary.py'
   pull_request:
     branches: [develop, main]
     paths:
       - 'backend/**'
       - '.github/workflows/backend.yml'
+      - '.github/scripts/coverage_summary.py'
 
 # A newer push to the same branch or PR cancels the run that is still going
 concurrency:
@@ -39,9 +41,25 @@ jobs:
           cache: maven
 
       # Unit tests and integration tests against PostgreSQL (Testcontainers uses the
-      # runner's Docker), plus the JaCoCo coverage report
+      # runner's Docker), the JaCoCo report and its minimums (jacoco:check in pom.xml)
       - name: mvnw verify
         run: ./mvnw -B -ntp verify
+
+      - name: Resumen de cobertura
+        if: success() || failure()
+        run: |
+          if [ -f target/site/jacoco/jacoco.csv ]; then
+            python3 ../.github/scripts/coverage_summary.py jacoco target/site/jacoco/jacoco.csv
+          fi
+
+      - name: Guardar reporte de cobertura
+        if: success() || failure()
+        uses: actions/upload-artifact@v7
+        with:
+          name: backend-coverage
+          path: backend/target/site/jacoco/
+          if-no-files-found: ignore
+          retention-days: 14
 
       - name: Guardar reportes de tests si fallan
         if: failure()
