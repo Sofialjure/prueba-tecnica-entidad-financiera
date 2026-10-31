@@ -1,0 +1,81 @@
+<form [formGroup]="form" (ngSubmit)="submit()" novalidate>
+  <mat-form-field appearance="outline" class="full">
+    <mat-label>Cuenta</mat-label>
+    <mat-select formControlName="accountNumber" panelWidth="">
+      @for (option of options(); track option.account.id) {
+        <mat-option [value]="option.account.accountNumber">
+          {{ option.account.accountNumber | accountNumber }} · {{ option.ownerName }} ·
+          {{ option.account.accountType | label: 'accountType' }}
+        </mat-option>
+      }
+    </mat-select>
+    <mat-hint>Solo se muestran cuentas activas</mat-hint>
+    <mat-error>Seleccione una cuenta</mat-error>
+  </mat-form-field>
+
+  @if (selected(); as option) {
+    <div class="account-summary">
+      <span class="summary-icon" [class.checking]="option.account.accountType === 'CHECKING'">
+        <mat-icon>{{
+          option.account.accountType === 'SAVINGS' ? 'savings' : 'account_balance'
+        }}</mat-icon>
+      </span>
+      <div class="summary-text">
+        <strong>{{ option.ownerName }}</strong>
+        <span>
+          {{ option.account.accountType | label: 'accountTypeName' }} ·
+          {{ option.account.gmfExempt ? 'Exenta GMF' : 'Paga GMF 4x1000' }}
+        </span>
+      </div>
+      <div class="summary-balance">
+        <span>Disponible</span>
+        <strong>{{
+          option.account.availableBalance | currency: 'COP' : 'symbol-narrow' : '1.2-2'
+        }}</strong>
+      </div>
+    </div>
+  }
+
+  <mat-form-field appearance="outline" class="full">
+    <mat-label>Monto</mat-label>
+    <span matTextPrefix>$&nbsp;</span>
+    <input matInput type="number" min="0" step="1000" formControlName="amount" />
+    <mat-error>{{ amountError() }}</mat-error>
+  </mat-form-field>
+
+  <mat-form-field appearance="outline" class="full">
+    <mat-label>Descripción (opcional)</mat-label>
+    <input
+      matInput
+      formControlName="description"
+      [placeholder]="kind() === 'deposit' ? 'Ej. Pago de nómina' : 'Ej. Retiro en cajero'"
+    />
+    <mat-error>No puede superar 255 caracteres</mat-error>
+  </mat-form-field>
+
+  @if (kind() === 'withdrawal' && total() > 0) {
+    <div class="breakdown">
+      <div>
+        <span>Retiro</span>
+        <span>{{ form.controls.amount.value | currency: 'COP' : 'symbol-narrow' : '1.2-2' }}</span>
+      </div>
+      <div>
+        <span>GMF 4x1000</span>
+        <span>{{ gmf() | currency: 'COP' : 'symbol-narrow' : '1.2-2' }}</span>
+      </div>
+      <div class="total">
+        <span>Total a debitar</span>
+        <span>{{ total() | currency: 'COP' : 'symbol-narrow' : '1.2-2' }}</span>
+      </div>
+    </div>
+  }
+
+  <button mat-flat-button type="submit" class="submit" [disabled]="saving()">
+    <mat-icon>{{ kind() === 'deposit' ? 'south_west' : 'north_east' }}</mat-icon>
+    @if (saving()) {
+      Procesando...
+    } @else {
+      {{ kind() === 'deposit' ? 'Consignar' : 'Retirar' }}
+    }
+  </button>
+</form>

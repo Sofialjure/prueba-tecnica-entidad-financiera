@@ -23,7 +23,7 @@ describe('Shell', () => {
     const entries = Array.from(element.querySelectorAll('.nav-item'), (item) => item.textContent?.trim());
 
     expect(element.querySelector('.brand')?.textContent).toContain('Financiera');
-    expect(entries).toEqual(['homeInicio', 'groupClientes']);
+    expect(entries).toEqual(['homeInicio', 'groupClientes', 'swap_horizMovimientos']);
   });
 
   it('keeps the menu open and hides the menu button on wide screens', () => {

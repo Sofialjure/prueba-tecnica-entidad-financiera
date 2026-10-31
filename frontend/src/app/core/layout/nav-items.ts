@@ -8,4 +8,5 @@ export interface NavItem {
 export const NAV_ITEMS: NavItem[] = [
   { label: 'Inicio', icon: 'home', route: '/' },
   { label: 'Clientes', icon: 'group', route: '/customers' },
+  { label: 'Movimientos', icon: 'swap_horiz', route: '/transactions' },
 ];

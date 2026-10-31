@@ -1,0 +1,59 @@
+<app-page-header title="Movimientos" subtitle="Consignaciones y retiros sobre cuentas activas" />
+
+<mat-button-toggle-group
+  class="kinds"
+  hideSingleSelectionIndicator
+  aria-label="Tipo de movimiento"
+  [value]="kind()"
+  (change)="changeKind($event.value)"
+>
+  <mat-button-toggle value="deposit">
+    <mat-icon>south_west</mat-icon>
+    Consignar
+  </mat-button-toggle>
+  <mat-button-toggle value="withdrawal">
+    <mat-icon>north_east</mat-icon>
+    Retirar
+  </mat-button-toggle>
+</mat-button-toggle-group>
+
+<div class="layout">
+  <section class="app-card form-card">
+    @if (loading()) {
+      <mat-progress-bar mode="indeterminate" />
+    }
+    <h2>{{ kind() === 'deposit' ? 'Nueva consignación' : 'Nuevo retiro' }}</h2>
+    <app-movement-form
+      [kind]="kind()"
+      [options]="options()"
+      [initialAccount]="account()"
+      (completed)="showReceipt($event)"
+    />
+  </section>
+
+  <aside class="side">
+    @if (receipt(); as receipt) {
+      <app-transaction-receipt class="app-card" [receipt]="receipt" />
+    } @else {
+      <div class="app-card tips">
+        <h3><mat-icon>lightbulb</mat-icon>Tenga en cuenta</h3>
+        <ul>
+          @if (kind() === 'deposit') {
+            <li>La consignación aumenta el saldo y el saldo disponible.</li>
+            <li>Las consignaciones no pagan GMF.</li>
+          } @else {
+            <li>
+              Las cuentas no exentas pagan el <strong>GMF 4x1000</strong> como un movimiento aparte.
+            </li>
+            <li>El saldo disponible debe cubrir el retiro más el GMF.</li>
+            <li>
+              Una cuenta de ahorros nunca queda por debajo de $0; una corriente puede usar su cupo
+              de sobregiro.
+            </li>
+          }
+          <li>Solo las cuentas activas permiten movimientos.</li>
+        </ul>
+      </div>
+    }
+  </aside>
+</div>
