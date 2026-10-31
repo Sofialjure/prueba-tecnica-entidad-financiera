@@ -114,6 +114,28 @@ class DatabaseMigrationTest {
     }
 
     @Test
+    void rejectsASecondOpenAccountOfTheSameTypeForACustomer() {
+        assertThatThrownBy(() -> jdbc.update("""
+                INSERT INTO accounts (account_type, account_number, customer_id)
+                SELECT 'SAVINGS', '5300000099', id FROM customers WHERE identification_number = '1020304050'
+                """))
+                .isInstanceOf(DataIntegrityViolationException.class)
+                .hasMessageContaining("uk_accounts_customer_open_type");
+    }
+
+    @Test
+    void allowsANewAccountOfATypeWhoseOnlyAccountIsCancelled() {
+        jdbc.update("UPDATE accounts SET overdraft_limit = 0, status = 'CANCELLED' WHERE account_number = '3300000002'");
+
+        int inserted = jdbc.update("""
+                INSERT INTO accounts (account_type, account_number, customer_id)
+                SELECT 'CHECKING', '3300000099', id FROM customers WHERE identification_number = '456789'
+                """);
+
+        assertThat(inserted).isEqualTo(1);
+    }
+
+    @Test
     void rejectsCancelledAccountThatKeepsAnOverdraft() {
         assertThatThrownBy(() -> jdbc.update(
                 "UPDATE accounts SET status = 'CANCELLED' WHERE account_number = '3300000002'"))

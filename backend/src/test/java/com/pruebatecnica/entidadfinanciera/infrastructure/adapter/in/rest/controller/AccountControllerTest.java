@@ -12,6 +12,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import com.pruebatecnica.entidadfinanciera.domain.exception.BusinessRuleViolationException;
+import com.pruebatecnica.entidadfinanciera.domain.exception.ResourceConflictException;
 import com.pruebatecnica.entidadfinanciera.domain.exception.ResourceNotFoundException;
 import com.pruebatecnica.entidadfinanciera.domain.model.Account;
 import com.pruebatecnica.entidadfinanciera.domain.model.AccountStatus;
@@ -110,6 +111,19 @@ class AccountControllerTest {
                         """))
                 .andExpect(status().isNotFound())
                 .andExpect(jsonPath("$.detail").value("No existe el cliente con id 99"));
+    }
+
+    @Test
+    void openReturns409WhenCustomerAlreadyHasThatType() throws Exception {
+        when(openAccount.open(any())).thenThrow(new ResourceConflictException(
+                "El cliente con id 1 ya tiene una cuenta de ahorros activa o inactiva. Solo se permite una cuenta de cada tipo por cliente"));
+
+        mockMvc.perform(post("/api/v1/accounts").contentType(MediaType.APPLICATION_JSON).content("""
+                        {"customerId": 1, "accountType": "SAVINGS"}
+                        """))
+                .andExpect(status().isConflict())
+                .andExpect(jsonPath("$.detail").value(org.hamcrest.Matchers.startsWith(
+                        "El cliente con id 1 ya tiene una cuenta de ahorros")));
     }
 
     @Test

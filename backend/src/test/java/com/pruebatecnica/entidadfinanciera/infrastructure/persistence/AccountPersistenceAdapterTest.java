@@ -70,19 +70,41 @@ class AccountPersistenceAdapterTest {
 
     @Test
     void savesNewAccountAndFindsItByCustomer() {
+        // Laura already has a checking account (SUP-15), so she gets a savings one
         Long customerId = customerRepository.findAll().get(2).getId();
 
         Account saved = repository.save(factory.open(
-                new OpenAccountData(customerId, AccountType.CHECKING, new BigDecimal("250000"), true)));
+                new OpenAccountData(customerId, AccountType.SAVINGS, null, true)));
 
         assertThat(saved.getId()).isNotNull();
-        assertThat(saved.getAccountNumber()).startsWith("33").hasSize(10);
+        assertThat(saved.getAccountNumber()).startsWith("53").hasSize(10);
         assertThat(repository.findByCustomerId(customerId))
                 .extracting(Account::getAccountNumber)
                 .containsExactly("3300000002", saved.getAccountNumber());
         Account found = repository.findById(saved.getId()).orElseThrow();
         assertThat(found.isGmfExempt()).isTrue();
         assertThat(found.getCreatedAt()).isEqualTo(saved.getCreatedAt());
+    }
+
+    @Test
+    void tellsWhetherACustomerHasAnOpenAccountOfAType() {
+        Long ana = customerRepository.findAll().get(0).getId();
+        Long carlos = customerRepository.findAll().get(1).getId();
+        Long laura = customerRepository.findAll().get(2).getId();
+
+        assertThat(repository.hasOpenAccountOfType(ana, AccountType.SAVINGS)).isTrue();
+        assertThat(repository.hasOpenAccountOfType(carlos, AccountType.CHECKING)).isFalse();
+        // Inactive accounts count: they can be activated again
+        assertThat(repository.hasOpenAccountOfType(laura, AccountType.CHECKING)).isTrue();
+    }
+
+    @Test
+    void cancelledAccountsDoNotCountAsOpen() {
+        Account lauraChecking = repository.findAll().get(3);
+        lauraChecking.cancel(Clock.systemDefaultZone());
+        repository.save(lauraChecking);
+
+        assertThat(repository.hasOpenAccountOfType(lauraChecking.getCustomerId(), AccountType.CHECKING)).isFalse();
     }
 
     @Test

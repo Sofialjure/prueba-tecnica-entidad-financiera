@@ -1,5 +1,7 @@
 package com.pruebatecnica.entidadfinanciera.infrastructure.adapter.out.persistence.repository;
 
+import com.pruebatecnica.entidadfinanciera.domain.model.AccountStatus;
+import com.pruebatecnica.entidadfinanciera.domain.model.AccountType;
 import com.pruebatecnica.entidadfinanciera.infrastructure.adapter.out.persistence.entity.AccountEntity;
 import jakarta.persistence.LockModeType;
 import java.util.Collection;
@@ -13,6 +15,8 @@ import org.springframework.data.repository.query.Param;
 public interface AccountJpaRepository extends JpaRepository<AccountEntity, Long> {
 
     List<AccountEntity> findByCustomerIdOrderById(Long customerId);
+
+    boolean existsByCustomerIdAndAccountTypeAndStatusNot(Long customerId, AccountType type, AccountStatus status);
 
     /** SELECT ... FOR UPDATE */
     @Lock(LockModeType.PESSIMISTIC_WRITE)
