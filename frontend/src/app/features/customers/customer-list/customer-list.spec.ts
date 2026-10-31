@@ -73,12 +73,15 @@ describe('CustomerList', () => {
     expect(firstRow).toContain('01/10/2026 08:00');
   });
 
-  it('links to the new customer form and to each customer edit form', async () => {
+  it('links to the new customer form and to each customer detail and edit form', async () => {
     const fixture = await render();
     const element = fixture.nativeElement as HTMLElement;
 
     expect(element.querySelector('app-page-header a')?.getAttribute('href')).toBe('/new');
-    expect(rows(fixture)[1].querySelector('a')?.getAttribute('href')).toBe('/2/edit');
+    const secondRow = rows(fixture)[1];
+    expect(secondRow.querySelector('a.person')?.getAttribute('href')).toBe('/2');
+    expect(secondRow.querySelector('a[aria-label^="Ver cuentas"]')?.getAttribute('href')).toBe('/2');
+    expect(secondRow.querySelector('a[aria-label^="Editar"]')?.getAttribute('href')).toBe('/2/edit');
   });
 
   it('shows a progress bar while loading', async () => {

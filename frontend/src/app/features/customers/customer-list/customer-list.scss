@@ -59,6 +59,13 @@ td {
   display: flex;
   align-items: center;
   gap: 12px;
+  color: inherit;
+  text-decoration: none;
+
+  &:hover strong {
+    color: var(--mat-sys-primary);
+    text-decoration: underline;
+  }
 }
 
 .person-text {

@@ -9,5 +9,10 @@ export const CUSTOMER_ROUTES: Routes = [
     title: 'Clientes | Entidad Financiera',
   },
   { path: 'new', loadComponent: loadForm, title: 'Nuevo cliente | Entidad Financiera' },
+  {
+    path: ':id',
+    loadComponent: () => import('./customer-detail/customer-detail').then((m) => m.CustomerDetail),
+    title: 'Cliente | Entidad Financiera',
+  },
   { path: ':id/edit', loadComponent: loadForm, title: 'Editar cliente | Entidad Financiera' },
 ];

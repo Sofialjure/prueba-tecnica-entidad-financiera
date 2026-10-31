@@ -1,7 +1,4 @@
-<app-page-header
-  title="Panel principal"
-  subtitle="Resumen de clientes y cuentas de la entidad"
-/>
+<app-page-header title="Panel principal" subtitle="Resumen de clientes y cuentas de la entidad" />
 
 @if (loading()) {
   <mat-progress-bar mode="indeterminate" />
@@ -57,12 +54,14 @@
         <ul class="people">
           @for (customer of data.recentCustomers; track customer.id) {
             <li>
-              <app-avatar [firstName]="customer.firstName" [lastName]="customer.lastName" />
-              <div class="person">
-                <strong>{{ customer.firstName }} {{ customer.lastName }}</strong>
-                <span>{{ customer.identificationType }} {{ customer.identificationNumber }}</span>
-              </div>
-              <span class="date">{{ customer.createdAt | date: 'd MMM y' }}</span>
+              <a class="row-link" [routerLink]="['/customers', customer.id]">
+                <app-avatar [firstName]="customer.firstName" [lastName]="customer.lastName" />
+                <div class="person">
+                  <strong>{{ customer.firstName }} {{ customer.lastName }}</strong>
+                  <span>{{ customer.identificationType }} {{ customer.identificationNumber }}</span>
+                </div>
+                <span class="date">{{ customer.createdAt | date: 'd MMM y' }}</span>
+              </a>
             </li>
           }
         </ul>
@@ -77,7 +76,9 @@
     <div class="actions">
       @for (action of quickActions; track action.route) {
         <a class="action" [routerLink]="action.route">
-          <span class="action-icon"><mat-icon>{{ action.icon }}</mat-icon></span>
+          <span class="action-icon"
+            ><mat-icon>{{ action.icon }}</mat-icon></span
+          >
           <span class="action-text">
             <strong>{{ action.title }}</strong>
             <small>{{ action.description }}</small>

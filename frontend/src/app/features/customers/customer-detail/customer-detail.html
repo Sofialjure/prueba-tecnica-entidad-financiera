@@ -1,0 +1,72 @@
+<a routerLink="/customers" class="back">
+  <mat-icon>arrow_back</mat-icon>
+  Volver a clientes
+</a>
+
+@if (loading()) {
+  <mat-progress-bar mode="indeterminate" />
+}
+
+@if (customer(); as customer) {
+  <section class="profile app-card">
+    <app-avatar class="big" [firstName]="customer.firstName" [lastName]="customer.lastName" />
+    <div class="identity">
+      <h1>{{ customer.firstName }} {{ customer.lastName }}</h1>
+      <p>
+        <span class="id-type">{{ customer.identificationType }}</span>
+        {{ customer.identificationNumber }} ·
+        {{ customer.identificationType | label: 'identificationType' }}
+      </p>
+    </div>
+    <a mat-stroked-button [routerLink]="['/customers', customer.id, 'edit']" class="edit">
+      <mat-icon>edit</mat-icon>
+      Editar
+    </a>
+
+    <dl class="facts">
+      <div>
+        <dt><mat-icon>mail</mat-icon>Correo</dt>
+        <dd>{{ customer.email }}</dd>
+      </div>
+      <div>
+        <dt><mat-icon>cake</mat-icon>Nacimiento</dt>
+        <dd>{{ customer.birthDate | date: 'dd/MM/yyyy' }}</dd>
+      </div>
+      <div>
+        <dt><mat-icon>event</mat-icon>Cliente desde</dt>
+        <dd>{{ customer.createdAt | date: "d 'de' MMMM 'de' y" }}</dd>
+      </div>
+      <div>
+        <dt><mat-icon>update</mat-icon>Última modificación</dt>
+        <dd>{{ customer.updatedAt | date: 'dd/MM/yyyy HH:mm' }}</dd>
+      </div>
+    </dl>
+  </section>
+
+  <section class="accounts">
+    <div class="accounts-header">
+      <div>
+        <h2>Cuentas</h2>
+        <p>{{ accountsSubtitle() }}</p>
+      </div>
+      <button mat-flat-button (click)="openAccount()">
+        <mat-icon>add_card</mat-icon>
+        Abrir cuenta
+      </button>
+    </div>
+
+    @if (accounts().length === 0) {
+      <div class="app-card">
+        <app-empty-state icon="credit_card_off" message="Este cliente todavía no tiene cuentas">
+          <button mat-stroked-button (click)="openAccount()">Abrir la primera cuenta</button>
+        </app-empty-state>
+      </div>
+    } @else {
+      <div class="cards">
+        @for (account of accounts(); track account.id) {
+          <app-account-card [account]="account" />
+        }
+      </div>
+    }
+  </section>
+}
