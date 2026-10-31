@@ -5,7 +5,7 @@
 
 Aplicación para los trabajadores de una entidad financiera que permite administrar **clientes**, sus **productos financieros** (cuentas de ahorro y corriente) y los **movimientos transaccionales** (consignaciones, retiros y transferencias), con consulta de estados de cuenta.
 
-> 🚧 Proyecto en construcción. El avance se puede seguir en el historial de commits y Pull Requests.
+> ✅ Todos los requisitos del enunciado están implementados y probados: ver la [trazabilidad requisito → prueba](docs/07-trazabilidad.md). El avance completo está en el [plan de trabajo](docs/00-plan-de-trabajo.md) y en el historial de Pull Requests.
 
 ## Stack tecnológico
 
@@ -113,7 +113,8 @@ npm start
 | 3 | [Modelo de datos](docs/03-modelo-datos.md) | Diagrama entidad-relación, DDL y DML |
 | 4 | [API REST](docs/04-api.md) | Endpoints, ejemplos y manejo de errores |
 | 5 | [Git Flow](docs/05-git-flow.md) | Estrategia de ramas y convención de commits |
-| 6 | [Despliegue](docs/06-despliegue.md) | Docker y servicios en la nube |
+| 6 | [Despliegue](docs/06-despliegue.md) | Docker, integración continua y servicios en la nube |
+| 7 | [Trazabilidad](docs/07-trazabilidad.md) | Cada requisito con su implementación y las pruebas que lo demuestran |
 | — | [Decisiones de arquitectura (ADR)](docs/adr/) | Por qué se tomó cada decisión técnica |
 
 ## Autora
