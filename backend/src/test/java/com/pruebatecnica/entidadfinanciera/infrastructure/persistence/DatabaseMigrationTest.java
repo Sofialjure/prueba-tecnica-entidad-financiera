@@ -114,6 +114,14 @@ class DatabaseMigrationTest {
     }
 
     @Test
+    void rejectsCancelledAccountThatKeepsAnOverdraft() {
+        assertThatThrownBy(() -> jdbc.update(
+                "UPDATE accounts SET status = 'CANCELLED' WHERE account_number = '3300000002'"))
+                .isInstanceOf(DataIntegrityViolationException.class)
+                .hasMessageContaining("ck_accounts_cancelled_no_overdraft");
+    }
+
+    @Test
     void rejectsAccountNumberWithWrongPrefixForItsType() {
         assertThatThrownBy(() -> jdbc.update("""
                 INSERT INTO accounts (account_type, account_number, customer_id)
