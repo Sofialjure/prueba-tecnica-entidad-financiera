@@ -83,9 +83,14 @@ Pipelines de **GitHub Actions** en cada push y Pull Request a `develop` y `main`
 
 Permisos mínimos: `contents: read`.
 
-### Frontend
+### Frontend (`.github/workflows/frontend.yml`)
 
-> Se agrega en el PR 8.2.
+| Trabajo | Qué hace |
+|---|---|
+| **Probar y compilar** | Node 24 con caché de npm, `npm ci`, tests unitarios con Vitest (`npm test -- --watch=false`) y compilación de producción (`npm run build`), que falla si el paquete inicial supera el presupuesto de error de `angular.json`. |
+| **Construir imagen Docker** | Solo si lo anterior pasa. Construye `frontend/Dockerfile` (Node + Nginx) con Buildx y caché de GitHub Actions, sin publicarla. |
+
+Permisos mínimos: `contents: read`.
 
 ## 6.3 Servicios en la nube
 
