@@ -49,10 +49,13 @@
         <h2>Cuentas</h2>
         <p>{{ accountsSubtitle() }}</p>
       </div>
-      <button mat-flat-button (click)="openAccount()">
-        <mat-icon>add_card</mat-icon>
-        Abrir cuenta
-      </button>
+      <!-- The wrapper shows the tooltip, since a disabled button does not receive mouse events -->
+      <span [matTooltip]="canOpenAccount() ? '' : 'Ya tiene una cuenta de ahorros y una corriente'">
+        <button mat-flat-button [disabled]="!canOpenAccount()" (click)="openAccount()">
+          <mat-icon>add_card</mat-icon>
+          Abrir cuenta
+        </button>
+      </span>
     </div>
 
     @if (accounts().length === 0) {
@@ -64,10 +67,7 @@
     } @else {
       <div class="cards">
         @for (account of accounts(); track account.id) {
-          <app-account-card
-            [account]="account"
-            (statusChange)="changeStatus(account, $event)"
-          />
+          <app-account-card [account]="account" (statusChange)="changeStatus(account, $event)" />
         }
       </div>
     }

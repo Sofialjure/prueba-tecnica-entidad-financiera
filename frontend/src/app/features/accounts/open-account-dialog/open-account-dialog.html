@@ -15,11 +15,16 @@
           role="radio"
           [class.selected]="accountType() === type.value"
           [attr.aria-checked]="accountType() === type.value"
+          [disabled]="isTaken(type.value)"
           (click)="selectType(type.value)"
         >
           <mat-icon>{{ type.icon }}</mat-icon>
           <strong>{{ type.title }}</strong>
-          <small>{{ type.description }}</small>
+          @if (isTaken(type.value)) {
+            <small class="taken">Ya tiene una cuenta de este tipo</small>
+          } @else {
+            <small>{{ type.description }}</small>
+          }
         </button>
       }
     </div>
