@@ -108,4 +108,62 @@ Permisos mínimos: `contents: read`.
 
 La aplicación se publica en **Microsoft Azure**: una máquina virtual Linux (`Standard_B2als_v2`, región `northcentralus`) que ejecuta el mismo Docker Compose. Los motivos, las alternativas y las consecuencias están en el [ADR-0006](adr/0006-despliegue-en-azure.md).
 
-> El procedimiento de despliegue, la URL pública y cómo apagar o borrar los recursos se documentan en el PR 9.2.
+**Aplicación en línea:** http://entidad-financiera-sofia.northcentralus.cloudapp.azure.com
+
+```text
+Navegador ──http:80──► Azure (northcentralus) · VM Standard_B2als_v2 · Ubuntu 24.04 LTS
+                       └─ Docker Compose: frontend (nginx :80) ──/api──► backend ──► postgres
+```
+
+### Recursos en Azure
+
+Todos viven en un solo grupo de recursos, **`rg-entidad-financiera`**, de la suscripción **Azure for Students** (sin tarjeta de crédito).
+
+| Recurso | Nombre | Configuración | Costo aprox. |
+|---|---|---|---|
+| Máquina virtual | `vm-entidad-financiera` | `Standard_B2als_v2` (2 vCPU AMD, 4 GiB) + 2 GiB de *swap*, Ubuntu Server 24.04 LTS | 34,16 USD/mes encendida; 0 USD apagada |
+| Disco | `vm-entidad-financiera_OsDisk_…` | SSD estándar de 32 GiB | 2,40 USD/mes, siempre |
+| IP pública | `vm-entidad-financieraPublicIP` | Estándar estática, con nombre DNS `entidad-financiera-sofia` | 3,65 USD/mes, siempre |
+| Firewall | `vm-entidad-financieraNSG` | Solo dos reglas de entrada (ver seguridad) | Gratis |
+| Red e interfaz | `vm-entidad-financieraVNET`, `…VMNic` | Red privada de la máquina | Gratis |
+| Alerta de presupuesto | `presupuesto-entidad-financiera` | 20 USD/mes; correo al 80 % y al 100 % del gasto real | Gratis |
+
+**Total:** unos **40 USD/mes encendida** y **6 USD/mes apagada**, descontados del crédito de estudiante. Precios públicos de Azure (oct. 2026); la salida de datos es gratuita hasta 100 GB/mes. Si el crédito se agota, Azure deshabilita la suscripción: no hay medio de pago, así que no puede haber cobros.
+
+### Seguridad
+
+| Medida | Detalle |
+|---|---|
+| Firewall de Azure | Entrada solo por el puerto **80** (web) desde internet y el **22** (SSH) desde la IP de la administradora. Los puertos 8080, 5432 y 443 no responden desde internet (verificado). |
+| Puertos de los contenedores | `docker-compose.azure.yml` quita los puertos publicados de PostgreSQL y de la API (`ports: !reset []`): solo se hablan por la red interna de Docker. El único puerto publicado es el 80 de Nginx. Por eso Swagger no es público en Azure. |
+| Llave SSH | `ed25519` sin contraseña en `~/.ssh/entidad-financiera-azure` de la administradora, fuera del repositorio. Solo la parte pública está en el servidor, y el `.gitignore` excluye patrones de llaves por si acaso. |
+| Contraseña de la base de datos | Aleatoria (32 caracteres), generada en el servidor dentro de un `.env` con permisos `600`. Nunca pasa por el repositorio ni por el computador local. |
+| Memoria | Límites por contenedor (PostgreSQL 512 MiB, API 768 MiB, Nginx 128 MiB) para que la JVM no le quite memoria a la base de datos. |
+
+### Cómo se desplegó
+
+1. `deploy/azure/cloud-init.yaml` (en el primer arranque): instala Docker desde el repositorio oficial y crea el *swap*.
+2. Las imágenes se construyen **en el equipo local** y se copian comprimidas por SSH (`docker save | gzip | ssh … docker load`). Así el servidor no compila.
+3. En el servidor se ejecuta `docker compose -f docker-compose.yml -f docker-compose.azure.yml up -d --no-build`.
+
+Para publicar una versión nueva basta, desde la raíz del repositorio y con Git Bash:
+
+```bash
+./deploy/azure/deploy.sh
+```
+
+### Apagar, encender y borrar
+
+Con la [CLI de Azure](https://learn.microsoft.com/cli/azure/install-azure-cli) (`az login` antes del primer uso):
+
+| Acción | Comando | Efecto |
+|---|---|---|
+| **Apagar** cuando no se use | `az vm deallocate -g rg-entidad-financiera -n vm-entidad-financiera` | Deja de cobrar la máquina; solo se pagan el disco y la IP (unos 6 USD/mes). La dirección y los datos se conservan. |
+| **Encender** | `az vm start -g rg-entidad-financiera -n vm-entidad-financiera` | La aplicación arranca sola en 1 o 2 minutos (`restart: unless-stopped`). |
+| Ver el estado | `az vm get-instance-view -g rg-entidad-financiera -n vm-entidad-financiera --query "instanceView.statuses[1].displayStatus" -o tsv` | `VM running` o `VM deallocated`. |
+| **Borrar todo** | `az group delete --name rg-entidad-financiera --yes` | Elimina la máquina, el disco, la IP, la red y el firewall. No se puede deshacer. |
+| Comprobar que no quedó nada | `az group exists --name rg-entidad-financiera` → `false` y `az resource list -o table` | Confirma que no quedan recursos que consuman crédito. |
+
+> **Importante:** apagar la máquina desde dentro de Ubuntu (`shutdown`) **no** detiene el cobro. Hay que *desasignarla* (`deallocate`), por la CLI o con el botón **Detener** del portal.
+
+En el portal (https://portal.azure.com) lo mismo se hace en **Máquinas virtuales → vm-entidad-financiera → Detener / Iniciar**, y el gasto se ve en **Cost Management → Análisis de costos**.
