@@ -5,11 +5,13 @@ import { MatDialog } from '@angular/material/dialog';
 import { MatIconModule } from '@angular/material/icon';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { Router, RouterLink } from '@angular/router';
-import { filter, finalize, forkJoin } from 'rxjs';
-import { Account } from '../../../core/models/account';
+import { filter, finalize, forkJoin, switchMap } from 'rxjs';
+import { Account, AccountAction } from '../../../core/models/account';
 import { Customer } from '../../../core/models/customer';
 import { NotificationService } from '../../../core/notification/notification.service';
 import { Avatar } from '../../../shared/components/avatar/avatar';
+import { ConfirmDialogData } from '../../../shared/components/confirm-dialog/confirm-dialog';
+import { ConfirmService } from '../../../shared/components/confirm-dialog/confirm.service';
 import { EmptyState } from '../../../shared/components/empty-state/empty-state';
 import { LABELS } from '../../../shared/labels';
 import { AccountNumberPipe } from '../../../shared/pipes/account-number.pipe';
@@ -21,6 +23,38 @@ import {
   OpenAccountDialogData,
 } from '../../accounts/open-account-dialog/open-account-dialog';
 import { CustomerService } from '../customer.service';
+
+/** Confirmation text and result message of each status change. */
+const STATUS_CHANGES: Record<
+  AccountAction,
+  { confirm: (number: string) => ConfirmDialogData; done: string }
+> = {
+  deactivate: {
+    confirm: (number) => ({
+      title: 'Inactivar cuenta',
+      message: `La cuenta ${number} dejará de permitir consignaciones, retiros y transferencias hasta que se active de nuevo.`,
+      confirmText: 'Inactivar',
+    }),
+    done: 'inactivada',
+  },
+  activate: {
+    confirm: (number) => ({
+      title: 'Activar cuenta',
+      message: `La cuenta ${number} volverá a permitir movimientos.`,
+      confirmText: 'Activar',
+    }),
+    done: 'activada',
+  },
+  cancel: {
+    confirm: (number) => ({
+      title: 'Cancelar cuenta',
+      message: `La cuenta ${number} quedará cancelada de forma definitiva y no se podrá volver a activar.`,
+      confirmText: 'Cancelar cuenta',
+      destructive: true,
+    }),
+    done: 'cancelada',
+  },
+};
 
 /** Profile of one customer with the accounts they own (RF-19). */
 @Component({
@@ -43,6 +77,7 @@ export class CustomerDetail implements OnInit {
   private readonly customerService = inject(CustomerService);
   private readonly accountService = inject(AccountService);
   private readonly dialog = inject(MatDialog);
+  private readonly confirmService = inject(ConfirmService);
   private readonly notifications = inject(NotificationService);
   private readonly router = inject(Router);
   private readonly accountNumber = new AccountNumberPipe();
@@ -72,6 +107,25 @@ export class CustomerDetail implements OnInit {
           this.accounts.set(accounts);
         },
         error: () => this.router.navigate(['/customers']),
+      });
+  }
+
+  protected changeStatus(account: Account, action: AccountAction): void {
+    const number = this.accountNumber.transform(account.accountNumber);
+    const change = STATUS_CHANGES[action];
+    this.confirmService
+      .confirm(change.confirm(number))
+      .pipe(
+        filter(Boolean),
+        switchMap(() => this.accountService.changeStatus(account.id, action)),
+      )
+      .subscribe({
+        next: (updated) => {
+          this.accounts.update((list) => list.map((item) => (item.id === updated.id ? updated : item)));
+          this.notifications.success(`Cuenta ${number} ${change.done}`);
+        },
+        // The error interceptor already showed why the API refused (e.g. balance not $0)
+        error: () => undefined,
       });
   }
 

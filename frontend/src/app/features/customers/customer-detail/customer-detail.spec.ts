@@ -7,6 +7,7 @@ import { provideRouter, Router } from '@angular/router';
 import { of, throwError } from 'rxjs';
 import { Customer } from '../../../core/models/customer';
 import { NotificationService } from '../../../core/notification/notification.service';
+import { ConfirmService } from '../../../shared/components/confirm-dialog/confirm.service';
 import { AccountService } from '../../accounts/account.service';
 import { OpenAccountDialog } from '../../accounts/open-account-dialog/open-account-dialog';
 import { CHECKING_ACCOUNT, SAVINGS_ACCOUNT } from '../../accounts/testing/accounts.fixtures';
@@ -29,7 +30,8 @@ const ANA: Customer = {
 
 describe('CustomerDetail', () => {
   const customerService = { getById: vi.fn() };
-  const accountService = { getByCustomer: vi.fn() };
+  const accountService = { getByCustomer: vi.fn(), changeStatus: vi.fn() };
+  const confirmService = { confirm: vi.fn() };
   const dialog = { open: vi.fn() };
   const notifications = { success: vi.fn(), error: vi.fn() };
   let router: Router;
@@ -44,6 +46,7 @@ describe('CustomerDetail', () => {
         { provide: CustomerService, useValue: customerService },
         { provide: AccountService, useValue: accountService },
         { provide: MatDialog, useValue: dialog },
+        { provide: ConfirmService, useValue: confirmService },
         { provide: NotificationService, useValue: notifications },
         { provide: LOCALE_ID, useValue: 'es-CO' },
       ],
@@ -56,7 +59,8 @@ describe('CustomerDetail', () => {
     return fixture;
   }
 
-  const element = (fixture: ComponentFixture<CustomerDetail>) => fixture.nativeElement as HTMLElement;
+  const element = (fixture: ComponentFixture<CustomerDetail>) =>
+    fixture.nativeElement as HTMLElement;
 
   beforeEach(() => vi.resetAllMocks());
 
@@ -109,6 +113,61 @@ describe('CustomerDetail', () => {
 
     expect(element(fixture).querySelectorAll('app-account-card')).toHaveLength(1);
     expect(notifications.success).not.toHaveBeenCalled();
+  });
+
+  it('inactivates an account after confirmation and updates its card', async () => {
+    const fixture = await render([SAVINGS_ACCOUNT, CHECKING_ACCOUNT]);
+    confirmService.confirm.mockReturnValue(of(true));
+    accountService.changeStatus.mockReturnValue(of({ ...SAVINGS_ACCOUNT, status: 'INACTIVE' }));
+
+    fixture.debugElement
+      .query((node) => node.name === 'app-account-card')
+      .triggerEventHandler('statusChange', 'deactivate');
+    await fixture.whenStable();
+
+    expect(confirmService.confirm).toHaveBeenCalledWith(
+      expect.objectContaining({ title: 'Inactivar cuenta', confirmText: 'Inactivar' }),
+    );
+    expect(accountService.changeStatus).toHaveBeenCalledWith(1, 'deactivate');
+    expect(notifications.success).toHaveBeenCalledWith('Cuenta 53 0000 0001 inactivada');
+    expect(element(fixture).querySelector('app-account-card')?.classList).toContain('not-active');
+  });
+
+  it('asks with a red button before cancelling an account for good', async () => {
+    const fixture = await render([{ ...SAVINGS_ACCOUNT, balance: 0 }]);
+    confirmService.confirm.mockReturnValue(of(true));
+    accountService.changeStatus.mockReturnValue(
+      of({ ...SAVINGS_ACCOUNT, balance: 0, status: 'CANCELLED' }),
+    );
+
+    fixture.debugElement
+      .query((node) => node.name === 'app-account-card')
+      .triggerEventHandler('statusChange', 'cancel');
+    await fixture.whenStable();
+
+    expect(confirmService.confirm).toHaveBeenCalledWith(
+      expect.objectContaining({ title: 'Cancelar cuenta', destructive: true }),
+    );
+    expect(notifications.success).toHaveBeenCalledWith('Cuenta 53 0000 0001 cancelada');
+  });
+
+  it('changes nothing when the status change is not confirmed or the API refuses it', async () => {
+    const fixture = await render([SAVINGS_ACCOUNT]);
+    const card = () => fixture.debugElement.query((node) => node.name === 'app-account-card');
+
+    confirmService.confirm.mockReturnValue(of(false));
+    card().triggerEventHandler('statusChange', 'activate');
+    await fixture.whenStable();
+    expect(accountService.changeStatus).not.toHaveBeenCalled();
+
+    confirmService.confirm.mockReturnValue(of(true));
+    accountService.changeStatus.mockReturnValue(throwError(() => new Error('422')));
+    card().triggerEventHandler('statusChange', 'activate');
+    await fixture.whenStable();
+    expect(notifications.success).not.toHaveBeenCalled();
+    expect(element(fixture).querySelector('app-account-card')?.classList).not.toContain(
+      'not-active',
+    );
   });
 
   it('goes back to the list when the customer does not exist', async () => {
