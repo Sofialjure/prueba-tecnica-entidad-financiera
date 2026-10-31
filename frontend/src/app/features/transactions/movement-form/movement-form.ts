@@ -22,6 +22,7 @@ import { maxDecimals } from '../../../shared/forms/validators';
 import { AccountNumberPipe } from '../../../shared/pipes/account-number.pipe';
 import { LabelPipe } from '../../../shared/pipes/label.pipe';
 import { AccountOption } from '../account-option';
+import { AccountSummary } from '../account-summary/account-summary';
 import { gmfFor } from '../gmf';
 import { TransactionService } from '../transaction.service';
 
@@ -32,6 +33,7 @@ export type MovementKind = 'deposit' | 'withdrawal';
   selector: 'app-movement-form',
   imports: [
     AccountNumberPipe,
+    AccountSummary,
     CurrencyPipe,
     LabelPipe,
     MatButtonModule,
@@ -43,7 +45,7 @@ export type MovementKind = 'deposit' | 'withdrawal';
     ReactiveFormsModule,
   ],
   templateUrl: './movement-form.html',
-  styleUrl: './movement-form.scss',
+  styleUrl: '../operation-form.scss',
 })
 export class MovementForm {
   private readonly transactionService = inject(TransactionService);
