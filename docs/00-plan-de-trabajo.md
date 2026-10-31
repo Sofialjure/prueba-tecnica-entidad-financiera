@@ -27,7 +27,7 @@ Fases del proyecto en el orden en que se desarrollan. Cada fase se divide en PRs
 | 6.11 | Frontend: sobregiro visible y cuentas del mismo titular | `feature/frontend-overdraft-visibility` | [#17](https://github.com/Sofialjure/prueba-tecnica-entidad-financiera/pull/17) | ✅ |
 | 7.1 | Docker: imagen del backend | `feature/docker-backend` | [#18](https://github.com/Sofialjure/prueba-tecnica-entidad-financiera/pull/18) | ✅ |
 | 7.2 | Docker: imagen del frontend (Nginx) | `feature/docker-frontend` | [#19](https://github.com/Sofialjure/prueba-tecnica-entidad-financiera/pull/19) | ✅ |
-| 7.3 | Docker Compose con los 3 contenedores | `feature/docker-compose` | — | ⏳ |
+| 7.3 | Docker Compose con los 3 contenedores | `feature/docker-compose` | [#20](https://github.com/Sofialjure/prueba-tecnica-entidad-financiera/pull/20) | ✅ |
 | 8.1 | CI: pipeline del backend | `feature/ci-backend` | — | ⏳ |
 | 8.2 | CI: pipeline del frontend | `feature/ci-frontend` | — | ⏳ |
 | 8.3 | CI: reportes de cobertura | `feature/ci-coverage` | — | ⏳ |
@@ -98,11 +98,11 @@ Fases del proyecto en el orden en que se desarrollan. Cada fase se divide en PRs
 - [x] 6.10 Estado de cuenta con totales, filtro por tipo de movimiento y descarga en CSV
 - [x] 6.11 Sobregiro visible (en uso, cupo, saldo después de cada débito) y cuentas del mismo titular marcadas al transferir, hallados en la revisión
 
-### 7. Contenedores 🔄
+### 7. Contenedores ✅
 
 - [x] 7.1 Dockerfile multi-stage del backend (JRE Alpine, capas, usuario sin privilegios, healthcheck)
 - [x] 7.2 Dockerfile multi-stage del frontend (Nginx sin root, proxy de /api, caché y cabeceras de seguridad)
-- [ ] 7.3 Docker Compose con los 3 contenedores: `docker compose up --build`
+- [x] 7.3 Docker Compose con los 3 contenedores: `docker compose up --build`, con arranque en orden por healthchecks
 
 ### 8. Integración continua ⏳
 

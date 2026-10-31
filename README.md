@@ -31,7 +31,27 @@ prueba-tecnica-entidad-financiera/
 └── README.md
 ```
 
-## Ejecución local del backend
+## Inicio rápido con Docker
+
+Solo se necesita **Docker**: no hace falta tener Java ni Node instalados.
+
+```bash
+cp .env.example .env      # opcional: credenciales y puertos
+docker compose up --build
+```
+
+La primera vez tarda unos minutos, porque compila el backend y el frontend dentro de Docker. Los contenedores arrancan en orden: primero la base de datos, cuando está sana la API (que aplica las migraciones Flyway) y cuando la API está sana el frontend.
+
+| Servicio | URL |
+|---|---|
+| Aplicación web | http://localhost:4300 |
+| API REST | http://localhost:8080/api/v1 |
+| Swagger UI | http://localhost:8080/swagger-ui.html |
+
+- **Puertos ocupados:** se cambian en `.env` (`FRONTEND_PORT`, `BACKEND_PORT`, `DB_PORT`) o al lanzar el comando. En PowerShell: `$env:DB_PORT="5433"; docker compose up --build`.
+- **Detener:** `docker compose down`. Los datos quedan en el volumen `pgdata`; `docker compose down -v` los borra y la próxima vez arranca con los datos de ejemplo.
+
+## Ejecución local del backend (desarrollo)
 
 Requisitos: **Java 21** y **Docker** (para la base de datos y para los tests de integración).
 
@@ -60,7 +80,7 @@ cd backend
 - Swagger UI: http://localhost:8080/swagger-ui.html
 - Tests y reporte de cobertura: `./mvnw verify` → `backend/target/site/jacoco/index.html`
 
-## Ejecución local del frontend
+## Ejecución local del frontend (desarrollo)
 
 Requisitos: **Node.js 22 o superior** y el backend corriendo en el puerto 8080.
 
@@ -73,29 +93,6 @@ npm start
 - Aplicación: http://localhost:4300 (se usa el 4300 y no el 4200 por defecto de Angular, para no chocar con otros proyectos)
 - Las llamadas a `/api` se redirigen al backend con `proxy.conf.json`, así que no se necesita CORS.
 - Tests: `npm test`
-
-## Ejecución con Docker
-
-> El `docker compose up --build` con los 3 contenedores llega en el PR 7.3. Por ahora se puede construir y probar la imagen del backend:
-
-```bash
-# Imagen del backend (compila con Maven dentro de Docker; no hace falta Java instalado)
-docker build -t entidad-financiera-backend ./backend
-
-# Ejecutarla junto a la base de datos del docker-compose actual
-docker compose up -d postgres
-docker run --rm -p 8080:8080 --network prueba-tecnica-entidad-financiera_default   --network-alias backend -e DB_HOST=entidad-financiera-db -e DB_PORT=5432 entidad-financiera-backend
-
-# Imagen del frontend (compila Angular dentro de Docker; Nginx redirige /api al contenedor "backend")
-docker build -t entidad-financiera-frontend ./frontend
-docker run --rm -p 4300:8080 --network prueba-tecnica-entidad-financiera_default entidad-financiera-frontend
-```
-
-| Servicio | URL |
-|---|---|
-| Frontend | http://localhost:4300 |
-| API REST | http://localhost:8080/api/v1 |
-| Swagger UI | http://localhost:8080/swagger-ui.html |
 
 ## Documentación
 

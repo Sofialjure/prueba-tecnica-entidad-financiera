@@ -56,6 +56,20 @@ cp .env.example .env
 docker compose up --build
 ```
 
+### Orquestación (`docker-compose.yml`)
+
+| Servicio | Contenedor | Puerto en el equipo | Espera a |
+|---|---|---|---|
+| `postgres` | `entidad-financiera-db` | `DB_PORT` (5432) | — |
+| `backend` | `entidad-financiera-api` | `BACKEND_PORT` (8080) | `postgres` *healthy* (`pg_isready`) |
+| `frontend` | `entidad-financiera-web` | `FRONTEND_PORT` (4300) | `backend` *healthy* (`/actuator/health`) |
+
+- **Arranque en orden:** `depends_on` con `condition: service_healthy`. La API no intenta conectarse antes de que PostgreSQL acepte conexiones, y Nginx no recibe tráfico antes de que la API responda.
+- **Red interna:** los contenedores se encuentran por nombre de servicio. El backend usa siempre `postgres:5432` y Nginx `http://backend:8080`, sin importar los puertos publicados en el equipo.
+- **Configuración:** credenciales y puertos en `.env` (plantilla `.env.example`, sin versionar el `.env`). Cada variable tiene un valor por defecto, así que `docker compose up --build` funciona sin `.env`.
+- **Datos persistentes:** volumen `pgdata`. `docker compose down` conserva los datos; `docker compose down -v` los borra.
+- **Reinicio:** `restart: unless-stopped` en los tres servicios.
+
 ## 6.2 Integración continua
 
 Pipeline de **GitHub Actions** en cada push y Pull Request a `develop` y `main`:
