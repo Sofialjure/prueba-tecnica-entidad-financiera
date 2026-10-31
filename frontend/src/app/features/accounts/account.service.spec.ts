@@ -21,6 +21,12 @@ describe('AccountService', () => {
     expect(httpTesting.expectOne('/api/v1/customers/3/accounts').request.method).toBe('GET');
   });
 
+  it.each(['activate', 'deactivate', 'cancel'] as const)('changes the status with %s', (action) => {
+    service.changeStatus(5, action).subscribe();
+
+    expect(httpTesting.expectOne(`/api/v1/accounts/5/${action}`).request.method).toBe('PATCH');
+  });
+
   it('opens an account', () => {
     const request = { customerId: 3, accountType: 'CHECKING' as const, overdraftLimit: 300000, gmfExempt: true };
 
