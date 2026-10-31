@@ -8,6 +8,17 @@ export function trimmedMinLength(min: number): ValidatorFn {
   };
 }
 
+/** Money amounts have at most `digits` decimals, like the API's NUMERIC(19,2). */
+export function maxDecimals(digits: number): ValidatorFn {
+  return (control: AbstractControl): ValidationErrors | null => {
+    if (control.value === null || control.value === '' || control.value === undefined) {
+      return null;
+    }
+    const decimals = control.value.toString().split('.')[1] ?? '';
+    return decimals.length > digits ? { maxDecimals: { digits } } : null;
+  };
+}
+
 /** Rejects birth dates of people younger than `years` (RF-05). */
 export function legalAge(years: number, today: () => Date = () => new Date()): ValidatorFn {
   return (control: AbstractControl): ValidationErrors | null => {

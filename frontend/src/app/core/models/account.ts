@@ -14,3 +14,12 @@ export interface Account {
   createdAt: string;
   updatedAt: string;
 }
+
+/** Body of POST /api/v1/accounts; number, status and balance are set by the API. */
+export interface OpenAccountRequest {
+  customerId: number;
+  accountType: AccountType;
+  /** Only for checking accounts; savings accounts have no overdraft (SUP-01). */
+  overdraftLimit: number;
+  gmfExempt: boolean;
+}

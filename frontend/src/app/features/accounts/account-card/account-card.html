@@ -1,0 +1,33 @@
+@let item = account();
+<div class="top">
+  <span class="type">
+    <mat-icon>{{ item.accountType === 'SAVINGS' ? 'savings' : 'account_balance' }}</mat-icon>
+    {{ item.accountType | label: 'accountTypeName' }}
+  </span>
+  <app-status-chip [status]="item.status" />
+</div>
+
+<p class="number">{{ item.accountNumber | accountNumber }}</p>
+
+<div class="balance">
+  <span class="caption">Saldo</span>
+  <strong [class.negative]="item.balance < 0">
+    {{ item.balance | currency: 'COP' : 'symbol-narrow' : '1.2-2' }}
+  </strong>
+</div>
+
+<div class="details">
+  <div>
+    <span class="caption">Disponible</span>
+    <span>{{ item.availableBalance | currency: 'COP' : 'symbol-narrow' : '1.2-2' }}</span>
+  </div>
+  @if (item.accountType === 'CHECKING') {
+    <div>
+      <span class="caption">Cupo de sobregiro</span>
+      <span>{{ item.overdraftLimit | currency: 'COP' : 'symbol-narrow' : '1.0-0' }}</span>
+    </div>
+  }
+  @if (item.gmfExempt) {
+    <span class="badge">Exenta GMF</span>
+  }
+</div>

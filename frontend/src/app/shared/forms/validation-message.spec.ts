@@ -17,6 +17,7 @@ describe('validationMessage', () => {
       'No puede superar 100 caracteres',
     );
     expect(validationMessage({ min: { min: 0.01 } })).toBe('El valor mínimo es 0.01');
+    expect(validationMessage({ maxDecimals: { digits: 2 } })).toBe('Admite máximo 2 decimales');
     expect(validationMessage({ legalAge: { years: 18 } })).toBe(
       'El cliente debe ser mayor de edad (18 años cumplidos)',
     );
