@@ -1,5 +1,68 @@
-mat-card {
-  max-width: 760px;
+.back {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin-bottom: 12px;
+  color: var(--app-text-muted);
+  font-weight: 500;
+  text-decoration: none;
+
+  mat-icon {
+    width: 18px;
+    height: 18px;
+    font-size: 18px;
+  }
+
+  &:hover {
+    color: var(--mat-sys-primary);
+  }
+}
+
+.form-card {
+  max-width: 860px;
+  overflow: hidden;
+}
+
+form {
+  padding: 8px 28px 24px;
+}
+
+.section {
+  padding: 20px 0 4px;
+
+  & + .section {
+    border-top: 1px solid var(--mat-sys-outline-variant);
+  }
+}
+
+.section-title {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 16px;
+
+  h2 {
+    margin: 0;
+    font-size: 15px;
+    font-weight: 700;
+    color: var(--app-navy);
+  }
+
+  p {
+    margin: 2px 0 0;
+    font-size: 13px;
+    color: var(--app-text-muted);
+  }
+}
+
+.section-icon {
+  display: grid;
+  place-items: center;
+  width: 36px;
+  height: 36px;
+  border-radius: 10px;
+  background: var(--mat-sys-primary-container);
+  color: var(--mat-sys-primary);
 }
 
 // Two columns on wide screens, one on phones
@@ -8,12 +71,18 @@ mat-card {
   grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
   column-gap: 16px;
   row-gap: 4px;
-  padding-top: 8px;
 }
 
 .buttons {
-  grid-column: 1 / -1;
   display: flex;
   justify-content: flex-end;
   gap: 8px;
+  padding-top: 16px;
+  border-top: 1px solid var(--mat-sys-outline-variant);
+}
+
+@media (max-width: 599px) {
+  form {
+    padding: 4px 16px 16px;
+  }
 }

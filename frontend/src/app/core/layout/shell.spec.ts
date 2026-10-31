@@ -2,7 +2,7 @@ import { BreakpointObserver } from '@angular/cdk/layout';
 import { TestBed } from '@angular/core/testing';
 import { provideRouter } from '@angular/router';
 import { of } from 'rxjs';
-import { Shell } from './shell';
+import { greetingFor, Shell } from './shell';
 
 describe('Shell', () => {
   function render(handset: boolean) {
@@ -18,10 +18,12 @@ describe('Shell', () => {
     return fixture.nativeElement as HTMLElement;
   }
 
-  it('shows the side menu entries', () => {
+  it('shows the brand and the side menu entries', () => {
     const element = render(false);
+    const entries = Array.from(element.querySelectorAll('.nav-item'), (item) => item.textContent?.trim());
 
-    expect(element.querySelector('mat-nav-list')?.textContent).toContain('Inicio');
+    expect(element.querySelector('.brand')?.textContent).toContain('Financiera');
+    expect(entries).toEqual(['homeInicio', 'groupClientes']);
   });
 
   it('keeps the menu open and hides the menu button on wide screens', () => {
@@ -34,5 +36,14 @@ describe('Shell', () => {
     const element = render(true);
 
     expect(element.querySelector('button[aria-label="Abrir menú"]')).not.toBeNull();
+  });
+});
+
+describe('greetingFor', () => {
+  it('greets according to the time of day', () => {
+    expect(greetingFor(8)).toBe('Buenos días');
+    expect(greetingFor(12)).toBe('Buenas tardes');
+    expect(greetingFor(18)).toBe('Buenas tardes');
+    expect(greetingFor(19)).toBe('Buenas noches');
   });
 });

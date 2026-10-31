@@ -100,8 +100,8 @@ describe('CustomerForm', () => {
       'Debe tener entre 4 y 20 letras o números, sin espacios',
       'Debe tener al menos 2 caracteres',
       'Este campo es obligatorio',
-      'El correo debe tener el formato xxxx@xxxxx.xxx',
       'El cliente debe ser mayor de edad (18 años cumplidos)',
+      'El correo debe tener el formato xxxx@xxxxx.xxx',
     ]);
   });
 

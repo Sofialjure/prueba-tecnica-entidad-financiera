@@ -1,20 +1,105 @@
+@use '@angular/material' as mat;
+
+.toolbar {
+  padding: 20px 20px 16px;
+}
+
 .search {
   width: 100%;
-  max-width: 420px;
+  max-width: 440px;
 }
 
 // Wide tables scroll sideways on phones instead of breaking the layout
 .table-container {
   overflow-x: auto;
-  border: 1px solid var(--mat-sys-outline-variant);
-  border-radius: 8px;
 }
 
 table {
-  min-width: 760px;
+  width: 100%;
+  min-width: 720px;
+  @include mat.table-overrides(
+    (
+      background-color: transparent,
+      header-headline-color: var(--app-text-muted),
+      header-headline-weight: 600,
+      header-headline-size: 12px,
+      row-item-outline-color: var(--mat-sys-outline-variant),
+    )
+  );
+}
+
+th {
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  background: #f8f9fc;
+}
+
+tr[mat-row] {
+  transition: background-color 0.15s;
+
+  &:hover {
+    background: #f7f9fd;
+  }
+
+  &:last-child td {
+    border-bottom: none;
+  }
+}
+
+td,
+th {
+  padding: 0 20px;
+}
+
+td {
+  height: 68px;
+}
+
+.person {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.person-text {
+  display: flex;
+  flex-direction: column;
+
+  strong {
+    color: var(--app-navy);
+  }
+
+  span {
+    font-size: 13px;
+    color: var(--app-text-muted);
+  }
+}
+
+td.mat-column-identification {
+  white-space: nowrap;
+}
+
+.id-type {
+  display: inline-block;
+  margin-right: 6px;
+  padding: 2px 8px;
+  border-radius: 6px;
+  background: var(--mat-sys-primary-container);
+  color: var(--mat-sys-on-primary-container);
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.muted {
+  color: var(--app-text-muted);
 }
 
 .actions {
   text-align: right;
   white-space: nowrap;
+  color: var(--app-text-muted);
+}
+
+.delete:hover {
+  color: var(--mat-sys-error);
 }

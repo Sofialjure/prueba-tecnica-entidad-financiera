@@ -6,7 +6,7 @@ import { MatIconModule } from '@angular/material/icon';
   selector: 'app-empty-state',
   imports: [MatIconModule],
   template: `
-    <mat-icon class="icon">{{ icon() }}</mat-icon>
+    <span class="icon-circle"><mat-icon>{{ icon() }}</mat-icon></span>
     <p>{{ message() }}</p>
     <ng-content />
   `,
@@ -15,15 +15,28 @@ import { MatIconModule } from '@angular/material/icon';
       display: flex;
       flex-direction: column;
       align-items: center;
-      gap: 8px;
-      padding: 48px 16px;
+      gap: 12px;
+      padding: 56px 16px;
       text-align: center;
-      color: var(--mat-sys-on-surface-variant);
+      color: var(--app-text-muted);
     }
-    .icon {
-      width: 48px;
-      height: 48px;
-      font-size: 48px;
+    .icon-circle {
+      display: grid;
+      place-items: center;
+      width: 72px;
+      height: 72px;
+      border-radius: 50%;
+      background: var(--mat-sys-primary-container);
+      color: var(--mat-sys-primary);
+    }
+    mat-icon {
+      width: 36px;
+      height: 36px;
+      font-size: 36px;
+    }
+    p {
+      margin: 0;
+      font-size: 15px;
     }
   `,
 })
