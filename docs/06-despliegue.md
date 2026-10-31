@@ -72,11 +72,20 @@ docker compose up --build
 
 ## 6.2 Integración continua
 
-Pipeline de **GitHub Actions** en cada push y Pull Request a `develop` y `main`:
+Pipelines de **GitHub Actions** en cada push y Pull Request a `develop` y `main`. Cada uno se ejecuta solo cuando cambia su parte del repositorio (filtro `paths`), y un push nuevo cancela la ejecución anterior de la misma rama (`concurrency`).
 
-1. Compilar el backend y ejecutar los tests (JUnit + JaCoCo).
-2. Compilar el frontend y ejecutar sus tests.
-3. Construir las imágenes Docker.
+### Backend (`.github/workflows/backend.yml`)
+
+| Trabajo | Qué hace |
+|---|---|
+| **Compilar y probar** | Java 21 (Temurin) con caché de Maven y `./mvnw verify`: tests unitarios, tests de integración contra PostgreSQL real (Testcontainers usa el Docker del servidor de GitHub) y reporte JaCoCo. Si algo falla, guarda los reportes de Surefire como artefacto durante 7 días. |
+| **Construir imagen Docker** | Solo si los tests pasan. Construye `backend/Dockerfile` con Buildx y caché de GitHub Actions, sin publicarla. Comprueba que el Dockerfile sigue funcionando. |
+
+Permisos mínimos: `contents: read`.
+
+### Frontend
+
+> Se agrega en el PR 8.2.
 
 ## 6.3 Servicios en la nube
 
