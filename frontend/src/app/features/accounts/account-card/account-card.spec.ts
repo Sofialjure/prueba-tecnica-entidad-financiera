@@ -2,6 +2,7 @@ import { registerLocaleData } from '@angular/common';
 import localeEsCo from '@angular/common/locales/es-CO';
 import { ApplicationRef, LOCALE_ID } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
+import { provideRouter } from '@angular/router';
 import { Account, AccountAction } from '../../../core/models/account';
 import { CHECKING_ACCOUNT, SAVINGS_ACCOUNT } from '../testing/accounts.fixtures';
 import { AccountCard } from './account-card';
@@ -14,7 +15,7 @@ describe('AccountCard', () => {
   async function render(account: Account) {
     TestBed.configureTestingModule({
       imports: [AccountCard],
-      providers: [{ provide: LOCALE_ID, useValue: 'es-CO' }],
+      providers: [{ provide: LOCALE_ID, useValue: 'es-CO' }, provideRouter([])],
     });
     const fixture = TestBed.createComponent(AccountCard);
     fixture.componentRef.setInput('account', account);
@@ -25,10 +26,15 @@ describe('AccountCard', () => {
   }
 
   /** Opens the card menu; its items render in an overlay outside the card. */
-  async function menuItems(card: HTMLElement) {
+  async function openMenu(card: HTMLElement) {
     card.querySelector<HTMLButtonElement>('.menu-button')!.click();
     await TestBed.inject(ApplicationRef).whenStable();
-    return Array.from(document.querySelectorAll<HTMLButtonElement>('.mat-mdc-menu-item'));
+  }
+
+  /** Status actions are buttons; the deposit and withdrawal shortcuts are links. */
+  async function menuItems(card: HTMLElement) {
+    await openMenu(card);
+    return Array.from(document.querySelectorAll<HTMLButtonElement>('button.mat-mdc-menu-item'));
   }
 
   const text = (element: HTMLElement) => element.textContent?.replace(/\s+/g, ' ') ?? '';
@@ -66,6 +72,24 @@ describe('AccountCard', () => {
 
     items[0].click();
     expect(emitted).toEqual(['deactivate']);
+  });
+
+  it('links an active account to the deposit and withdrawal screens', async () => {
+    await openMenu(await render(SAVINGS_ACCOUNT));
+    const links = Array.from(document.querySelectorAll('a.mat-mdc-menu-item'), (link) =>
+      link.getAttribute('href'),
+    );
+
+    expect(links).toEqual([
+      '/transactions?type=deposit&account=5300000001',
+      '/transactions?type=withdrawal&account=5300000001',
+    ]);
+  });
+
+  it('offers to activate an inactive account without money shortcuts', async () => {
+    await openMenu(await render({ ...SAVINGS_ACCOUNT, status: 'INACTIVE' }));
+
+    expect(document.querySelectorAll('a.mat-mdc-menu-item')).toHaveLength(0);
   });
 
   it('offers to activate an inactive account', async () => {

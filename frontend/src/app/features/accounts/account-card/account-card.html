@@ -21,6 +21,25 @@
 
 <mat-menu #actions="matMenu" xPosition="before">
   @if (item.status === 'ACTIVE') {
+    <a
+      mat-menu-item
+      routerLink="/transactions"
+      [queryParams]="{ type: 'deposit', account: item.accountNumber }"
+    >
+      <mat-icon>south_west</mat-icon>
+      Consignar
+    </a>
+    <a
+      mat-menu-item
+      routerLink="/transactions"
+      [queryParams]="{ type: 'withdrawal', account: item.accountNumber }"
+    >
+      <mat-icon>north_east</mat-icon>
+      Retirar
+    </a>
+    <mat-divider />
+  }
+  @if (item.status === 'ACTIVE') {
     <button mat-menu-item (click)="statusChange.emit('deactivate')">
       <mat-icon>pause_circle</mat-icon>
       Inactivar cuenta

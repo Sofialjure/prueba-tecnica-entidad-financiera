@@ -1,8 +1,10 @@
 import { CurrencyPipe } from '@angular/common';
 import { Component, input, output } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
+import { MatDividerModule } from '@angular/material/divider';
 import { MatIconModule } from '@angular/material/icon';
 import { MatMenuModule } from '@angular/material/menu';
+import { RouterLink } from '@angular/router';
 import { Account, AccountAction } from '../../../core/models/account';
 import { StatusChip } from '../../../shared/components/status-chip/status-chip';
 import { AccountNumberPipe } from '../../../shared/pipes/account-number.pipe';
@@ -19,8 +21,10 @@ import { LabelPipe } from '../../../shared/pipes/label.pipe';
     CurrencyPipe,
     LabelPipe,
     MatButtonModule,
+    MatDividerModule,
     MatIconModule,
     MatMenuModule,
+    RouterLink,
     StatusChip,
   ],
   templateUrl: './account-card.html',
