@@ -53,6 +53,22 @@
     border-color: var(--mat-sys-primary);
     background: var(--mat-sys-primary-container);
   }
+
+  &:disabled {
+    border-style: dashed;
+    background: #f3f5f9;
+    color: var(--app-text-muted);
+    cursor: not-allowed;
+
+    mat-icon {
+      color: var(--app-text-muted);
+    }
+  }
+
+  .taken {
+    color: #7a5600;
+    font-weight: 600;
+  }
 }
 
 .overdraft {

@@ -1,3 +1,4 @@
+import { AccountType } from '../../../core/models/enums';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { of, throwError } from 'rxjs';
@@ -9,11 +10,14 @@ describe('OpenAccountDialog', () => {
   const accountService = { open: vi.fn() };
   const dialogRef = { close: vi.fn() };
 
-  async function render() {
+  async function render(takenTypes?: AccountType[]) {
     TestBed.configureTestingModule({
       imports: [OpenAccountDialog],
       providers: [
-        { provide: MAT_DIALOG_DATA, useValue: { customerId: 3, customerName: 'Laura Restrepo' } },
+        {
+          provide: MAT_DIALOG_DATA,
+          useValue: { customerId: 3, customerName: 'Laura Restrepo', takenTypes },
+        },
         { provide: MatDialogRef, useValue: dialogRef },
         { provide: AccountService, useValue: accountService },
       ],
@@ -113,6 +117,22 @@ describe('OpenAccountDialog', () => {
     expect(overdraft.value).toBe('500.000');
     expect(accountService.open).toHaveBeenCalledWith(
       expect.objectContaining({ overdraftLimit: 500000 }),
+    );
+  });
+
+  it('starts on checking and blocks savings when the customer already has a savings account', async () => {
+    accountService.open.mockReturnValue(of(CHECKING_ACCOUNT));
+    const fixture = await render(['SAVINGS']);
+    const savings = typeButton(fixture, 'Ahorros');
+
+    expect(savings.disabled).toBe(true);
+    expect(savings.textContent).toContain('Ya tiene una cuenta de este tipo');
+    expect(typeButton(fixture, 'Corriente').getAttribute('aria-checked')).toBe('true');
+
+    await submit(fixture);
+
+    expect(accountService.open).toHaveBeenCalledWith(
+      expect.objectContaining({ accountType: 'CHECKING' }),
     );
   });
 

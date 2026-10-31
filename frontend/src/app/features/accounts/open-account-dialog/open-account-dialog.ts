@@ -18,6 +18,8 @@ import { AccountService } from '../account.service';
 export interface OpenAccountDialogData {
   customerId: number;
   customerName: string;
+  /** Types the customer already has an active or inactive account of (SUP-15). */
+  takenTypes?: AccountType[];
 }
 
 interface TypeOption {
@@ -64,8 +66,11 @@ export class OpenAccountDialog {
     },
   ];
 
+  private readonly takenTypes = this.data.takenTypes ?? [];
+
   protected readonly form = inject(FormBuilder).nonNullable.group({
-    accountType: ['SAVINGS' as AccountType, Validators.required],
+    // Starts on the first type the customer can still open
+    accountType: [this.firstFreeType(), Validators.required],
     overdraftLimit: [0, [Validators.required, Validators.min(0), maxDecimals(2)]],
     gmfExempt: [false],
   });
@@ -74,12 +79,24 @@ export class OpenAccountDialog {
     initialValue: this.form.controls.accountType.value,
   });
 
+  /** A customer has at most one active or inactive account of each type (SUP-15). */
+  protected isTaken(type: AccountType): boolean {
+    return this.takenTypes.includes(type);
+  }
+
   protected selectType(type: AccountType): void {
+    if (this.isTaken(type)) {
+      return;
+    }
     this.form.controls.accountType.setValue(type);
     // Savings accounts cannot have an overdraft (SUP-01)
     if (type === 'SAVINGS') {
       this.form.controls.overdraftLimit.setValue(0);
     }
+  }
+
+  private firstFreeType(): AccountType {
+    return (['SAVINGS', 'CHECKING'] as AccountType[]).find((type) => !this.isTaken(type)) ?? 'SAVINGS';
   }
 
   protected overdraftError(): string {

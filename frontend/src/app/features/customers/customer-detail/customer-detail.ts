@@ -4,6 +4,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatDialog } from '@angular/material/dialog';
 import { MatIconModule } from '@angular/material/icon';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
+import { MatTooltipModule } from '@angular/material/tooltip';
 import { Router, RouterLink } from '@angular/router';
 import { filter, finalize, forkJoin, switchMap } from 'rxjs';
 import { Account, AccountAction } from '../../../core/models/account';
@@ -68,6 +69,7 @@ const STATUS_CHANGES: Record<
     MatButtonModule,
     MatIconModule,
     MatProgressBarModule,
+    MatTooltipModule,
     RouterLink,
   ],
   templateUrl: './customer-detail.html',
@@ -129,11 +131,25 @@ export class CustomerDetail implements OnInit {
       });
   }
 
+  /** Types with an active or inactive account; cancelled ones do not count (SUP-15). */
+  protected readonly takenTypes = computed(() => [
+    ...new Set(
+      this.accounts()
+        .filter((account) => account.status !== 'CANCELLED')
+        .map((account) => account.accountType),
+    ),
+  ]);
+  protected readonly canOpenAccount = computed(() => this.takenTypes().length < 2);
+
   protected openAccount(): void {
     const customer = this.customer()!;
     this.dialog
       .open<OpenAccountDialog, OpenAccountDialogData, Account>(OpenAccountDialog, {
-        data: { customerId: customer.id, customerName: `${customer.firstName} ${customer.lastName}` },
+        data: {
+          customerId: customer.id,
+          customerName: `${customer.firstName} ${customer.lastName}`,
+          takenTypes: this.takenTypes(),
+        },
         width: '520px',
       })
       .afterClosed()

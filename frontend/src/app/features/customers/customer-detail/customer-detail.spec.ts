@@ -97,11 +97,28 @@ describe('CustomerDetail', () => {
     await fixture.whenStable();
 
     expect(dialog.open).toHaveBeenCalledWith(OpenAccountDialog, {
-      data: { customerId: 1, customerName: 'Ana María Gómez' },
+      data: { customerId: 1, customerName: 'Ana María Gómez', takenTypes: ['SAVINGS'] },
       width: '520px',
     });
     expect(element(fixture).querySelectorAll('app-account-card')).toHaveLength(2);
     expect(notifications.success).toHaveBeenCalledWith('Cuenta corriente 33 0000 0001 abierta');
+  });
+
+  it('cannot open more accounts when the customer has one of each type', async () => {
+    const fixture = await render([SAVINGS_ACCOUNT, CHECKING_ACCOUNT]);
+
+    expect(
+      element(fixture).querySelector<HTMLButtonElement>('.accounts-header button')!.disabled,
+    ).toBe(true);
+  });
+
+  it('does not count cancelled accounts as taken', async () => {
+    const fixture = await render([SAVINGS_ACCOUNT, { ...CHECKING_ACCOUNT, status: 'CANCELLED' }]);
+    dialog.open.mockReturnValue({ afterClosed: () => of(undefined) });
+
+    element(fixture).querySelector<HTMLButtonElement>('.accounts-header button')!.click();
+
+    expect(dialog.open.mock.calls[0][1].data.takenTypes).toEqual(['SAVINGS']);
   });
 
   it('changes nothing when the dialog is cancelled', async () => {
