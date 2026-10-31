@@ -5,4 +5,7 @@ export interface NavItem {
 }
 
 /** Side menu entries. Each feature adds its own entry when it is built. */
-export const NAV_ITEMS: NavItem[] = [{ label: 'Inicio', icon: 'home', route: '/' }];
+export const NAV_ITEMS: NavItem[] = [
+  { label: 'Inicio', icon: 'home', route: '/' },
+  { label: 'Clientes', icon: 'group', route: '/customers' },
+];
