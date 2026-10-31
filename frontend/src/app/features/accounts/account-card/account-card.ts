@@ -1,5 +1,5 @@
 import { CurrencyPipe } from '@angular/common';
-import { Component, input, output } from '@angular/core';
+import { Component, computed, input, output } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatDividerModule } from '@angular/material/divider';
 import { MatIconModule } from '@angular/material/icon';
@@ -40,4 +40,11 @@ export class AccountCard {
   /** False to show the card alone, e.g. as the header of the statement. */
   readonly actions = input(true);
   readonly statusChange = output<AccountAction>();
+
+  /** How negative a checking account is, out of its overdraft line (SUP-01). */
+  protected readonly overdraftInUse = computed(() => Math.max(0, -this.account().balance));
+  protected readonly overdraftPercent = computed(() => {
+    const limit = this.account().overdraftLimit;
+    return limit > 0 ? Math.min(100, (this.overdraftInUse() / limit) * 100) : 0;
+  });
 }

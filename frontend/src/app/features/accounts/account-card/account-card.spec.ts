@@ -139,6 +139,31 @@ describe('AccountCard', () => {
     expect((fixture.nativeElement as HTMLElement).querySelector('.menu-button')).toBeNull();
   });
 
+  it('shows how much of the overdraft is in use', async () => {
+    const card = await render(CHECKING_ACCOUNT);
+
+    expect(text(card.querySelector('.overdraft')!)).toContain(
+      'Sobregiro en uso $ 250.000 de $ 500.000',
+    );
+    expect(card.querySelector<HTMLElement>('.overdraft-bar span')!.style.width).toBe('50%');
+  });
+
+  it('has no overdraft block while the balance is not negative', async () => {
+    expect((await render(SAVINGS_ACCOUNT)).querySelector('.overdraft')).toBeNull();
+  });
+
+  it('tells that an inactive account can use its available balance once activated', async () => {
+    const card = await render({ ...CHECKING_ACCOUNT, status: 'INACTIVE' });
+
+    expect(text(card.querySelector('.details')!)).toContain('Disponible al activarla');
+  });
+
+  it('does not show an overdraft line on a cancelled checking account', async () => {
+    const card = await render({ ...CHECKING_ACCOUNT, status: 'CANCELLED', balance: 0 });
+
+    expect(text(card)).not.toContain('Cupo de sobregiro');
+  });
+
   it('greys out accounts that are not active', async () => {
     const card = await render({ ...SAVINGS_ACCOUNT, status: 'INACTIVE' });
 
