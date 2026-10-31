@@ -1,0 +1,32 @@
+<div class="header">
+  <span class="ok"><mat-icon>check</mat-icon></span>
+  <div>
+    <h2>Operación exitosa</h2>
+    <p>{{ date() | date: "d 'de' MMMM 'de' y, HH:mm" }}</p>
+  </div>
+</div>
+
+<ul class="entries">
+  @for (entry of receipt().entries; track entry.id) {
+    <li>
+      <span class="icon" [class.credit]="entry.entryType === 'CREDIT'">
+        <mat-icon>{{ entry.entryType === 'CREDIT' ? 'south_west' : 'north_east' }}</mat-icon>
+      </span>
+      <div class="what">
+        <strong>{{ entry.type | label: 'transactionType' }}</strong>
+        <span>{{ entry.description }} · {{ entry.accountNumber | accountNumber }}</span>
+      </div>
+      <div class="amounts">
+        <strong [class.credit]="entry.entryType === 'CREDIT'">
+          {{ entry.entryType === 'CREDIT' ? '+' : '−' }}
+          {{ entry.amount | currency: 'COP' : 'symbol-narrow' : '1.2-2' }}
+        </strong>
+        <span>Saldo {{ entry.balanceAfter | currency: 'COP' : 'symbol-narrow' : '1.2-2' }}</span>
+      </div>
+    </li>
+  }
+</ul>
+
+<p class="reference">
+  Referencia <code>{{ receipt().reference }}</code>
+</p>
