@@ -12,3 +12,6 @@ export interface Customer {
   createdAt: string;
   updatedAt: string;
 }
+
+/** Body of POST and PUT /api/v1/customers; the dates are set by the API. */
+export type CustomerRequest = Omit<Customer, 'id' | 'createdAt' | 'updatedAt'>;
