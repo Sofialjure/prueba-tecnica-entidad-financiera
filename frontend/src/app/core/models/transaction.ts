@@ -19,6 +19,14 @@ export interface TransactionReceipt {
   entries: Transaction[];
 }
 
+/** Body of POST /transactions/transfers. */
+export interface TransferRequest {
+  sourceAccountNumber: string;
+  targetAccountNumber: string;
+  amount: number;
+  description?: string;
+}
+
 /** Body of POST /transactions/deposits and /transactions/withdrawals. */
 export interface MovementRequest {
   accountNumber: string;

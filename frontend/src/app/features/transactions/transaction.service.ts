@@ -2,7 +2,11 @@ import { HttpClient } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { API_URL } from '../../core/http/api.config';
-import { MovementRequest, TransactionReceipt } from '../../core/models/transaction';
+import {
+  MovementRequest,
+  TransactionReceipt,
+  TransferRequest,
+} from '../../core/models/transaction';
 
 @Injectable({ providedIn: 'root' })
 export class TransactionService {
@@ -17,5 +21,10 @@ export class TransactionService {
   /** Debit movement plus the 4x1000 on non-exempt accounts (RF-21, SUP-10). */
   withdraw(request: MovementRequest): Observable<TransactionReceipt> {
     return this.http.post<TransactionReceipt>(`${this.url}/withdrawals`, request);
+  }
+
+  /** Debit on the source (plus its 4x1000) and credit on the target, in one operation (RF-22). */
+  transfer(request: TransferRequest): Observable<TransactionReceipt> {
+    return this.http.post<TransactionReceipt>(`${this.url}/transfers`, request);
   }
 }

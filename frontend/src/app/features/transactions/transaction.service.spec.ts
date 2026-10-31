@@ -25,6 +25,20 @@ describe('TransactionService', () => {
     expect(call.request.body).toEqual(request);
   });
 
+  it('posts transfers', () => {
+    const transfer = {
+      sourceAccountNumber: '5300000001',
+      targetAccountNumber: '3300000001',
+      amount: 100000,
+      description: 'Pago arriendo',
+    };
+
+    service.transfer(transfer).subscribe();
+
+    const call = httpTesting.expectOne({ method: 'POST', url: '/api/v1/transactions/transfers' });
+    expect(call.request.body).toEqual(transfer);
+  });
+
   it('posts withdrawals', () => {
     service.withdraw(request).subscribe();
 
