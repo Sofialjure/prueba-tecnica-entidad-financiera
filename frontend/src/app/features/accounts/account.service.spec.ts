@@ -15,6 +15,12 @@ describe('AccountService', () => {
 
   afterEach(() => httpTesting.verify());
 
+  it('lists every account', () => {
+    service.getAll().subscribe();
+
+    expect(httpTesting.expectOne('/api/v1/accounts').request.method).toBe('GET');
+  });
+
   it('lists the accounts of a customer', () => {
     service.getByCustomer(3).subscribe();
 
