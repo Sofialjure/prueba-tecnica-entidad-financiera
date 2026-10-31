@@ -29,7 +29,7 @@ Fases del proyecto en el orden en que se desarrollan. Cada fase se divide en PRs
 | 7.2 | Docker: imagen del frontend (Nginx) | `feature/docker-frontend` | [#19](https://github.com/Sofialjure/prueba-tecnica-entidad-financiera/pull/19) | ✅ |
 | 7.3 | Docker Compose con los 3 contenedores | `feature/docker-compose` | [#20](https://github.com/Sofialjure/prueba-tecnica-entidad-financiera/pull/20) | ✅ |
 | 8.1 | CI: pipeline del backend | `feature/ci-backend` | [#21](https://github.com/Sofialjure/prueba-tecnica-entidad-financiera/pull/21) | ✅ |
-| 8.2 | CI: pipeline del frontend | `feature/ci-frontend` | — | ⏳ |
+| 8.2 | CI: pipeline del frontend | `feature/ci-frontend` | [#22](https://github.com/Sofialjure/prueba-tecnica-entidad-financiera/pull/22) | ✅ |
 | 8.3 | CI: reportes de cobertura | `feature/ci-coverage` | — | ⏳ |
 | 9.1 | Nube: elección del proveedor (ADR) | `feature/cloud-decision` | — | ⏳ |
 | 9.2 | Nube: despliegue | `feature/cloud-deploy` | — | ⏳ |
@@ -107,7 +107,7 @@ Fases del proyecto en el orden en que se desarrollan. Cada fase se divide en PRs
 ### 8. Integración continua 🔄
 
 - [x] 8.1 GitHub Actions: compilar y ejecutar los tests del backend (con Testcontainers) y construir su imagen Docker en cada PR
-- [ ] 8.2 GitHub Actions: compilar y ejecutar los tests del frontend en cada PR
+- [x] 8.2 GitHub Actions: tests del frontend (Vitest), compilación de producción y construcción de su imagen Docker en cada PR
 - [ ] 8.3 Reportes de cobertura (JaCoCo y Vitest)
 
 ### 9. Despliegue en la nube ⏳
