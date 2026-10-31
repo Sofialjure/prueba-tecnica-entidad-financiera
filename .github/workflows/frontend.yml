@@ -6,11 +6,13 @@ on:
     paths:
       - 'frontend/**'
       - '.github/workflows/frontend.yml'
+      - '.github/scripts/coverage_summary.py'
   pull_request:
     branches: [develop, main]
     paths:
       - 'frontend/**'
       - '.github/workflows/frontend.yml'
+      - '.github/scripts/coverage_summary.py'
 
 # A newer push to the same branch or PR cancels the run that is still going
 concurrency:
@@ -41,8 +43,25 @@ jobs:
       - name: npm ci
         run: npm ci --no-audit --no-fund
 
-      - name: Tests unitarios (Vitest)
-        run: npm test -- --watch=false
+      # Fails if coverage drops below coverageThresholds in angular.json
+      - name: Tests unitarios con cobertura (Vitest)
+        run: npm run test:coverage
+
+      - name: Resumen de cobertura
+        if: success() || failure()
+        run: |
+          if [ -f coverage/frontend/coverage-summary.json ]; then
+            python3 ../.github/scripts/coverage_summary.py vitest coverage/frontend/coverage-summary.json
+          fi
+
+      - name: Guardar reporte de cobertura
+        if: success() || failure()
+        uses: actions/upload-artifact@v7
+        with:
+          name: frontend-coverage
+          path: frontend/coverage/frontend/
+          if-no-files-found: ignore
+          retention-days: 14
 
       # Production build; fails if the bundle goes over the error budget in angular.json
       - name: Compilación de producción
