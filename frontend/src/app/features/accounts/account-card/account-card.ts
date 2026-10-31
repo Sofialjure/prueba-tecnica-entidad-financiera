@@ -1,15 +1,28 @@
 import { CurrencyPipe } from '@angular/common';
-import { Component, input } from '@angular/core';
+import { Component, input, output } from '@angular/core';
+import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
-import { Account } from '../../../core/models/account';
+import { MatMenuModule } from '@angular/material/menu';
+import { Account, AccountAction } from '../../../core/models/account';
 import { StatusChip } from '../../../shared/components/status-chip/status-chip';
 import { AccountNumberPipe } from '../../../shared/pipes/account-number.pipe';
 import { LabelPipe } from '../../../shared/pipes/label.pipe';
 
-/** An account drawn like a bank card: navy for savings, teal for checking, grey when not active. */
+/**
+ * An account drawn like a bank card: navy for savings, teal for checking, grey when not active.
+ * Its menu only offers the status changes allowed from the current status (SUP-04).
+ */
 @Component({
   selector: 'app-account-card',
-  imports: [AccountNumberPipe, CurrencyPipe, LabelPipe, MatIconModule, StatusChip],
+  imports: [
+    AccountNumberPipe,
+    CurrencyPipe,
+    LabelPipe,
+    MatButtonModule,
+    MatIconModule,
+    MatMenuModule,
+    StatusChip,
+  ],
   templateUrl: './account-card.html',
   styleUrl: './account-card.scss',
   host: {
@@ -20,4 +33,5 @@ import { LabelPipe } from '../../../shared/pipes/label.pipe';
 })
 export class AccountCard {
   readonly account = input.required<Account>();
+  readonly statusChange = output<AccountAction>();
 }

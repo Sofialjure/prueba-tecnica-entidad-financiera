@@ -67,6 +67,21 @@ body {
   --mat-form-field-outlined-container-shape: 10px;
 }
 
+// Account card menu (rendered in an overlay, outside the card)
+.mat-mdc-menu-item.cancel-item:not([disabled]) {
+  color: var(--mat-sys-error);
+
+  .mat-icon {
+    color: var(--mat-sys-error);
+  }
+}
+
+.mat-mdc-menu-item .hint {
+  display: block;
+  font-size: 12px;
+  color: var(--app-text-muted);
+}
+
 // Notifications: green for success, red for API errors
 .snackbar-success {
   @include mat.snack-bar-overrides(
