@@ -84,7 +84,11 @@ docker build -t entidad-financiera-backend ./backend
 
 # Ejecutarla junto a la base de datos del docker-compose actual
 docker compose up -d postgres
-docker run --rm -p 8080:8080 --network prueba-tecnica-entidad-financiera_default   -e DB_HOST=entidad-financiera-db -e DB_PORT=5432 entidad-financiera-backend
+docker run --rm -p 8080:8080 --network prueba-tecnica-entidad-financiera_default   --network-alias backend -e DB_HOST=entidad-financiera-db -e DB_PORT=5432 entidad-financiera-backend
+
+# Imagen del frontend (compila Angular dentro de Docker; Nginx redirige /api al contenedor "backend")
+docker build -t entidad-financiera-frontend ./frontend
+docker run --rm -p 4300:8080 --network prueba-tecnica-entidad-financiera_default entidad-financiera-frontend
 ```
 
 | Servicio | URL |

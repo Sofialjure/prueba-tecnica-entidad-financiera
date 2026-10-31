@@ -1,0 +1,41 @@
+# Serves the Angular SPA and forwards /api to the backend, so the browser talks to a single
+# origin (no CORS), exactly like proxy.conf.json does in development.
+# ${BACKEND_URL} is filled in when the container starts (nginx envsubst templates).
+
+server {
+    listen 8080;
+    server_name _;
+    root /usr/share/nginx/html;
+    index index.html;
+
+    # Do not reveal the nginx version in headers and error pages
+    server_tokens off;
+
+    gzip on;
+    gzip_types text/plain text/css application/javascript application/json image/svg+xml;
+    gzip_min_length 1024;
+
+    location /api/ {
+        include /etc/nginx/snippets/security-headers.conf;
+        proxy_pass ${BACKEND_URL};
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+    }
+
+    # File names carry a content hash, so they can be cached for a year
+    location ~* \.(?:js|css|woff2?|ttf|svg|png|jpg|ico)$ {
+        include /etc/nginx/snippets/security-headers.conf;
+        add_header Cache-Control "public, max-age=31536000, immutable";
+        try_files $uri =404;
+    }
+
+    # Angular routes (/customers/1, /transactions...) are resolved by the SPA;
+    # index.html is never cached so a new version is picked up right away
+    location / {
+        include /etc/nginx/snippets/security-headers.conf;
+        add_header Cache-Control "no-cache";
+        try_files $uri $uri/ /index.html;
+    }
+}
