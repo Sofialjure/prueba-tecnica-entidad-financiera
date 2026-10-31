@@ -116,7 +116,7 @@ class AccountServiceTest {
 
     @Test
     void activateSavesActiveAccount() {
-        when(accountRepository.findById(1L)).thenReturn(Optional.of(stored(AccountStatus.INACTIVE, "0.00")));
+        when(accountRepository.findByIdForUpdate(1L)).thenReturn(Optional.of(stored(AccountStatus.INACTIVE, "0.00")));
         when(accountRepository.save(any(Account.class))).thenAnswer(invocation -> invocation.getArgument(0));
 
         Account account = service.activate(1L);
@@ -127,7 +127,7 @@ class AccountServiceTest {
 
     @Test
     void deactivateSavesInactiveAccount() {
-        when(accountRepository.findById(1L)).thenReturn(Optional.of(stored(AccountStatus.ACTIVE, "100.00")));
+        when(accountRepository.findByIdForUpdate(1L)).thenReturn(Optional.of(stored(AccountStatus.ACTIVE, "100.00")));
         when(accountRepository.save(any(Account.class))).thenAnswer(invocation -> invocation.getArgument(0));
 
         assertThat(service.deactivate(1L).getStatus()).isEqualTo(AccountStatus.INACTIVE);
@@ -135,7 +135,7 @@ class AccountServiceTest {
 
     @Test
     void cancelSavesCancelledAccount() {
-        when(accountRepository.findById(1L)).thenReturn(Optional.of(stored(AccountStatus.ACTIVE, "0.00")));
+        when(accountRepository.findByIdForUpdate(1L)).thenReturn(Optional.of(stored(AccountStatus.ACTIVE, "0.00")));
         when(accountRepository.save(any(Account.class))).thenAnswer(invocation -> invocation.getArgument(0));
 
         assertThat(service.cancel(1L).getStatus()).isEqualTo(AccountStatus.CANCELLED);
@@ -143,7 +143,7 @@ class AccountServiceTest {
 
     @Test
     void cancelRejectsAccountWithBalanceWithoutSaving() {
-        when(accountRepository.findById(1L)).thenReturn(Optional.of(stored(AccountStatus.ACTIVE, "100.00")));
+        when(accountRepository.findByIdForUpdate(1L)).thenReturn(Optional.of(stored(AccountStatus.ACTIVE, "100.00")));
 
         assertThatThrownBy(() -> service.cancel(1L)).isInstanceOf(BusinessRuleViolationException.class);
         verify(accountRepository, never()).save(any());
@@ -151,7 +151,7 @@ class AccountServiceTest {
 
     @Test
     void statusChangeFailsWhenAccountDoesNotExist() {
-        when(accountRepository.findById(99L)).thenReturn(Optional.empty());
+        when(accountRepository.findByIdForUpdate(99L)).thenReturn(Optional.empty());
 
         assertThatThrownBy(() -> service.deactivate(99L)).isInstanceOf(ResourceNotFoundException.class);
         verify(accountRepository, never()).save(any());
