@@ -11,6 +11,7 @@ import { RouterLink } from '@angular/router';
 import { filter, finalize, switchMap } from 'rxjs';
 import { Customer } from '../../../core/models/customer';
 import { NotificationService } from '../../../core/notification/notification.service';
+import { Avatar } from '../../../shared/components/avatar/avatar';
 import { ConfirmService } from '../../../shared/components/confirm-dialog/confirm.service';
 import { EmptyState } from '../../../shared/components/empty-state/empty-state';
 import { PageHeader } from '../../../shared/components/page-header/page-header';
@@ -19,6 +20,7 @@ import { CustomerService } from '../customer.service';
 @Component({
   selector: 'app-customer-list',
   imports: [
+    Avatar,
     DatePipe,
     EmptyState,
     MatButtonModule,
@@ -39,7 +41,7 @@ export class CustomerList implements OnInit {
   private readonly confirmService = inject(ConfirmService);
   private readonly notifications = inject(NotificationService);
 
-  protected readonly columns = ['identification', 'name', 'email', 'birthDate', 'createdAt', 'actions'];
+  protected readonly columns = ['name', 'identification', 'birthDate', 'createdAt', 'actions'];
   protected readonly customers = signal<Customer[]>([]);
   protected readonly loading = signal(true);
   protected readonly search = signal('');

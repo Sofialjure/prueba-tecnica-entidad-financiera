@@ -1,9 +1,9 @@
 import { Component, computed, inject, input, OnInit, signal } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
-import { MatCardModule } from '@angular/material/card';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { MatSelectModule } from '@angular/material/select';
@@ -32,9 +32,9 @@ const EMAIL_PATTERN = /^[^@\s]+@[^@\s]+\.[A-Za-z]{2,}$/;
   selector: 'app-customer-form',
   imports: [
     MatButtonModule,
-    MatCardModule,
     MatDatepickerModule,
     MatFormFieldModule,
+    MatIconModule,
     MatInputModule,
     MatProgressBarModule,
     MatSelectModule,
