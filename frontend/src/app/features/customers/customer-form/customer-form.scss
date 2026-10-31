@@ -1,0 +1,19 @@
+mat-card {
+  max-width: 760px;
+}
+
+// Two columns on wide screens, one on phones
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  column-gap: 16px;
+  row-gap: 4px;
+  padding-top: 8px;
+}
+
+.buttons {
+  grid-column: 1 / -1;
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+}

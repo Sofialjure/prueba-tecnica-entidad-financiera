@@ -7,6 +7,7 @@ import { MatInputModule } from '@angular/material/input';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { MatTableModule } from '@angular/material/table';
 import { MatTooltipModule } from '@angular/material/tooltip';
+import { RouterLink } from '@angular/router';
 import { filter, finalize, switchMap } from 'rxjs';
 import { Customer } from '../../../core/models/customer';
 import { NotificationService } from '../../../core/notification/notification.service';
@@ -28,6 +29,7 @@ import { CustomerService } from '../customer.service';
     MatTableModule,
     MatTooltipModule,
     PageHeader,
+    RouterLink,
   ],
   templateUrl: './customer-list.html',
   styleUrl: './customer-list.scss',
