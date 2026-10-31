@@ -15,6 +15,7 @@ describe('App', () => {
     await fixture.whenStable();
 
     const compiled = fixture.nativeElement as HTMLElement;
-    expect(compiled.querySelector('mat-toolbar')?.textContent).toContain('Entidad Financiera');
+    expect(compiled.querySelector('.brand')?.textContent).toContain('Entidad');
+    expect(compiled.querySelector('.topbar')).not.toBeNull();
   });
 });
