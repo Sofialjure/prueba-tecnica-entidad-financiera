@@ -16,6 +16,8 @@ describe('NotificationService', () => {
     service.success('Cliente creado');
 
     expect(snackBar.open).toHaveBeenCalledWith('Cliente creado', 'Cerrar', {
+      horizontalPosition: 'center',
+      verticalPosition: 'top',
       duration: 4000,
       panelClass: 'snackbar-success',
     });
@@ -25,6 +27,8 @@ describe('NotificationService', () => {
     service.error('Saldo disponible insuficiente');
 
     expect(snackBar.open).toHaveBeenCalledWith('Saldo disponible insuficiente', 'Cerrar', {
+      horizontalPosition: 'center',
+      verticalPosition: 'top',
       duration: 8000,
       panelClass: 'snackbar-error',
     });
