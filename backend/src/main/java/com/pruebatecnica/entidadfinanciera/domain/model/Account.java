@@ -6,6 +6,8 @@ import java.math.RoundingMode;
 import java.time.Clock;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
+import java.util.Optional;
+import java.util.UUID;
 
 /**
  * A savings or checking account owned by a customer.
@@ -85,6 +87,53 @@ public class Account {
                     + " solo se puede cancelar con saldo $0 (saldo actual: " + balance.toPlainString() + ")");
         }
         changeStatus(AccountStatus.CANCELLED, clock);
+    }
+
+    /** Adds money to the account (RF-20) and returns the movement with the new balance. */
+    public Transaction credit(UUID reference, TransactionType type, BigDecimal amount, String description,
+            Clock clock) {
+        BigDecimal value = validateMovement(amount);
+        balance = balance.add(value);
+        return movement(reference, type, EntryType.CREDIT, value, description, clock);
+    }
+
+    /** Takes money out while the available balance covers it (RF-14, RF-21, SUP-01). */
+    public Transaction debit(UUID reference, TransactionType type, BigDecimal amount, String description,
+            Clock clock) {
+        BigDecimal value = validateMovement(amount);
+        if (getAvailableBalance().compareTo(value) < 0) {
+            throw new BusinessRuleViolationException("Saldo disponible insuficiente en la cuenta " + accountNumber);
+        }
+        balance = balance.subtract(value);
+        return movement(reference, type, EntryType.DEBIT, value, description, clock);
+    }
+
+    /** Charges the 4x1000 on a debited amount, unless the account is exempt or the tax rounds to $0 (SUP-10). */
+    public Optional<Transaction> chargeGmf(UUID reference, BigDecimal debitedAmount, Clock clock) {
+        BigDecimal gmf = Gmf.of(debitedAmount);
+        if (gmfExempt || gmf.signum() == 0) {
+            return Optional.empty();
+        }
+        return Optional.of(debit(reference, TransactionType.GMF, gmf, Gmf.DESCRIPTION, clock));
+    }
+
+    /** Only active accounts move money (SUP-05) and every amount must be positive (SUP-06). */
+    private BigDecimal validateMovement(BigDecimal amount) {
+        if (status != AccountStatus.ACTIVE) {
+            throw new BusinessRuleViolationException(
+                    "La cuenta " + accountNumber + " no está activa y no permite movimientos");
+        }
+        if (amount.signum() <= 0) {
+            throw new BusinessRuleViolationException("El monto de la transacción debe ser mayor a $0");
+        }
+        return money(amount);
+    }
+
+    private Transaction movement(UUID reference, TransactionType type, EntryType entryType, BigDecimal amount,
+            String description, Clock clock) {
+        touch(clock);
+        return new Transaction(null, reference, id, accountNumber, type, entryType, amount, balance, description,
+                updatedAt);
     }
 
     private void rejectIfCancelled(String action) {
