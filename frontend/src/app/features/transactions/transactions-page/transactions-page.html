@@ -1,4 +1,7 @@
-<app-page-header title="Movimientos" subtitle="Consignaciones y retiros sobre cuentas activas" />
+<app-page-header
+  title="Movimientos"
+  subtitle="Consignaciones, retiros y transferencias entre cuentas activas"
+/>
 
 <mat-button-toggle-group
   class="kinds"
@@ -15,6 +18,10 @@
     <mat-icon>north_east</mat-icon>
     Retirar
   </mat-button-toggle>
+  <mat-button-toggle value="transfer">
+    <mat-icon>swap_horiz</mat-icon>
+    Transferir
+  </mat-button-toggle>
 </mat-button-toggle-group>
 
 <div class="layout">
@@ -22,13 +29,21 @@
     @if (loading()) {
       <mat-progress-bar mode="indeterminate" />
     }
-    <h2>{{ kind() === 'deposit' ? 'Nueva consignación' : 'Nuevo retiro' }}</h2>
-    <app-movement-form
-      [kind]="kind()"
-      [options]="options()"
-      [initialAccount]="account()"
-      (completed)="showReceipt($event)"
-    />
+    <h2>{{ titles[kind()] }}</h2>
+    @if (kind() === 'transfer') {
+      <app-transfer-form
+        [options]="options()"
+        [initialAccount]="account()"
+        (completed)="showReceipt($event)"
+      />
+    } @else {
+      <app-movement-form
+        [kind]="movementKind()"
+        [options]="options()"
+        [initialAccount]="account()"
+        (completed)="showReceipt($event)"
+      />
+    }
   </section>
 
   <aside class="side">
@@ -41,6 +56,17 @@
           @if (kind() === 'deposit') {
             <li>La consignación aumenta el saldo y el saldo disponible.</li>
             <li>Las consignaciones no pagan GMF.</li>
+          } @else if (kind() === 'transfer') {
+            <li>
+              Genera un <strong>débito</strong> en la cuenta de origen y un
+              <strong>crédito</strong> en la de destino.
+            </li>
+            <li>
+              Si la cuenta de origen no es exenta, paga el <strong>GMF 4x1000</strong>; la de
+              destino recibe el monto completo.
+            </li>
+            <li>No se puede transferir a la misma cuenta.</li>
+            <li>Todo ocurre en una sola operación: si algo falla, no se mueve nada.</li>
           } @else {
             <li>
               Las cuentas no exentas pagan el <strong>GMF 4x1000</strong> como un movimiento aparte.

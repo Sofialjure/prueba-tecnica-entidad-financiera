@@ -74,7 +74,7 @@ describe('AccountCard', () => {
     expect(emitted).toEqual(['deactivate']);
   });
 
-  it('links an active account to the deposit and withdrawal screens', async () => {
+  it('links an active account to the deposit, withdrawal and transfer screens', async () => {
     await openMenu(await render(SAVINGS_ACCOUNT));
     const links = Array.from(document.querySelectorAll('a.mat-mdc-menu-item'), (link) =>
       link.getAttribute('href'),
@@ -83,6 +83,7 @@ describe('AccountCard', () => {
     expect(links).toEqual([
       '/transactions?type=deposit&account=5300000001',
       '/transactions?type=withdrawal&account=5300000001',
+      '/transactions?type=transfer&account=5300000001',
     ]);
   });
 

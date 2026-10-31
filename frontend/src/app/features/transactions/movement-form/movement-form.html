@@ -14,26 +14,7 @@
   </mat-form-field>
 
   @if (selected(); as option) {
-    <div class="account-summary">
-      <span class="summary-icon" [class.checking]="option.account.accountType === 'CHECKING'">
-        <mat-icon>{{
-          option.account.accountType === 'SAVINGS' ? 'savings' : 'account_balance'
-        }}</mat-icon>
-      </span>
-      <div class="summary-text">
-        <strong>{{ option.ownerName }}</strong>
-        <span>
-          {{ option.account.accountType | label: 'accountTypeName' }} ·
-          {{ option.account.gmfExempt ? 'Exenta GMF' : 'Paga GMF 4x1000' }}
-        </span>
-      </div>
-      <div class="summary-balance">
-        <span>Disponible</span>
-        <strong>{{
-          option.account.availableBalance | currency: 'COP' : 'symbol-narrow' : '1.2-2'
-        }}</strong>
-      </div>
-    </div>
+    <app-account-summary [option]="option" />
   }
 
   <mat-form-field appearance="outline" class="full">

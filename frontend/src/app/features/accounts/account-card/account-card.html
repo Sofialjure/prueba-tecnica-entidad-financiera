@@ -37,6 +37,14 @@
       <mat-icon>north_east</mat-icon>
       Retirar
     </a>
+    <a
+      mat-menu-item
+      routerLink="/transactions"
+      [queryParams]="{ type: 'transfer', account: item.accountNumber }"
+    >
+      <mat-icon>swap_horiz</mat-icon>
+      Transferir
+    </a>
     <mat-divider />
   }
   @if (item.status === 'ACTIVE') {

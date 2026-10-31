@@ -21,7 +21,7 @@ Fases del proyecto en el orden en que se desarrollan. Cada fase se divide en PRs
 | 6.6 | Frontend: cuentas del cliente y apertura | `feature/frontend-accounts` | [#11](https://github.com/Sofialjure/prueba-tecnica-entidad-financiera/pull/11) | ✅ |
 | 6.7 | Frontend: activar, inactivar y cancelar cuentas | `feature/frontend-account-status` | [#12](https://github.com/Sofialjure/prueba-tecnica-entidad-financiera/pull/12) | ✅ |
 | 6.8 | Frontend: consignaciones y retiros | `feature/frontend-deposits-withdrawals` | [#13](https://github.com/Sofialjure/prueba-tecnica-entidad-financiera/pull/13) | ✅ |
-| 6.9 | Frontend: transferencias | `feature/frontend-transfers` | — | ⏳ |
+| 6.9 | Frontend: transferencias | `feature/frontend-transfers` | [#14](https://github.com/Sofialjure/prueba-tecnica-entidad-financiera/pull/14) | ✅ |
 | 6.10 | Frontend: estado de cuenta | `feature/frontend-statement` | — | ⏳ |
 | 7.1 | Docker: imagen del backend | `feature/docker-backend` | — | ⏳ |
 | 7.2 | Docker: imagen del frontend (Nginx) | `feature/docker-frontend` | — | ⏳ |
@@ -91,7 +91,7 @@ Fases del proyecto en el orden en que se desarrollan. Cada fase se divide en PRs
 - [x] 6.6 Detalle del cliente con sus cuentas (tarjetas tipo bancarias) y apertura de cuentas
 - [x] 6.7 Activar, inactivar y cancelar cuentas desde el menú de cada tarjeta, con confirmación
 - [x] 6.8 Consignaciones y retiros con vista previa del GMF, validación del saldo disponible y comprobante
-- [ ] 6.9 Transferencias
+- [x] 6.9 Transferencias con el GMF de la cuenta de origen, sin permitir la misma cuenta como destino
 - [ ] 6.10 Estado de cuenta
 
 ### 7. Contenedores ⏳
