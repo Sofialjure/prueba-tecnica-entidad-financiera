@@ -17,6 +17,7 @@ import { finalize } from 'rxjs';
 import { TransactionReceipt } from '../../../core/models/transaction';
 import { NotificationService } from '../../../core/notification/notification.service';
 import { validationMessage } from '../../../shared/forms/validation-message';
+import { MoneyInput } from '../../../shared/forms/money-input';
 import { maxDecimals } from '../../../shared/forms/validators';
 import { AccountNumberPipe } from '../../../shared/pipes/account-number.pipe';
 import { LabelPipe } from '../../../shared/pipes/label.pipe';
@@ -38,6 +39,7 @@ export type MovementKind = 'deposit' | 'withdrawal';
     MatIconModule,
     MatInputModule,
     MatSelectModule,
+    MoneyInput,
     ReactiveFormsModule,
   ],
   templateUrl: './movement-form.html',

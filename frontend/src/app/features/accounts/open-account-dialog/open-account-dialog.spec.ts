@@ -23,7 +23,8 @@ describe('OpenAccountDialog', () => {
     return fixture;
   }
 
-  const element = (fixture: ComponentFixture<OpenAccountDialog>) => fixture.nativeElement as HTMLElement;
+  const element = (fixture: ComponentFixture<OpenAccountDialog>) =>
+    fixture.nativeElement as HTMLElement;
   const typeButton = (fixture: ComponentFixture<OpenAccountDialog>, title: string) =>
     Array.from(element(fixture).querySelectorAll<HTMLButtonElement>('.type')).find((button) =>
       button.textContent?.includes(title),
@@ -61,7 +62,9 @@ describe('OpenAccountDialog', () => {
 
     typeButton(fixture, 'Corriente').click();
     await fixture.whenStable();
-    const overdraft = element(fixture).querySelector<HTMLInputElement>('input[formControlName="overdraftLimit"]')!;
+    const overdraft = element(fixture).querySelector<HTMLInputElement>(
+      'input[formControlName="overdraftLimit"]',
+    )!;
     overdraft.value = '500000';
     overdraft.dispatchEvent(new Event('input'));
     element(fixture).querySelector<HTMLButtonElement>('mat-slide-toggle button')!.click();
@@ -81,28 +84,35 @@ describe('OpenAccountDialog', () => {
 
     typeButton(fixture, 'Corriente').click();
     await fixture.whenStable();
-    const overdraft = element(fixture).querySelector<HTMLInputElement>('input[formControlName="overdraftLimit"]')!;
+    const overdraft = element(fixture).querySelector<HTMLInputElement>(
+      'input[formControlName="overdraftLimit"]',
+    )!;
     overdraft.value = '1000';
     overdraft.dispatchEvent(new Event('input'));
     typeButton(fixture, 'Ahorros').click();
     await submit(fixture);
 
-    expect(accountService.open).toHaveBeenCalledWith(expect.objectContaining({ overdraftLimit: 0 }));
+    expect(accountService.open).toHaveBeenCalledWith(
+      expect.objectContaining({ overdraftLimit: 0 }),
+    );
   });
 
-  it('rejects a negative overdraft without calling the API', async () => {
+  it('does not even let a minus sign be typed in the overdraft', async () => {
+    accountService.open.mockReturnValue(of(CHECKING_ACCOUNT));
     const fixture = await render();
 
     typeButton(fixture, 'Corriente').click();
     await fixture.whenStable();
-    const overdraft = element(fixture).querySelector<HTMLInputElement>('input[formControlName="overdraftLimit"]')!;
-    overdraft.value = '-1';
+    const overdraft = element(fixture).querySelector<HTMLInputElement>(
+      'input[formControlName="overdraftLimit"]',
+    )!;
+    overdraft.value = '-500000';
     overdraft.dispatchEvent(new Event('input'));
     await submit(fixture);
 
-    expect(accountService.open).not.toHaveBeenCalled();
-    expect(element(fixture).querySelector('mat-error')?.textContent?.trim()).toBe(
-      'El cupo de sobregiro no puede ser negativo',
+    expect(overdraft.value).toBe('500.000');
+    expect(accountService.open).toHaveBeenCalledWith(
+      expect.objectContaining({ overdraftLimit: 500000 }),
     );
   });
 
@@ -113,6 +123,8 @@ describe('OpenAccountDialog', () => {
     await submit(fixture);
 
     expect(dialogRef.close).not.toHaveBeenCalled();
-    expect(element(fixture).querySelector<HTMLButtonElement>('button[type=submit]')!.disabled).toBe(false);
+    expect(element(fixture).querySelector<HTMLButtonElement>('button[type=submit]')!.disabled).toBe(
+      false,
+    );
   });
 });

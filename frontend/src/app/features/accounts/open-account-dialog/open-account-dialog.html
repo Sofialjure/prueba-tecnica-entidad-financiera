@@ -28,7 +28,7 @@
       <mat-form-field appearance="outline" class="overdraft">
         <mat-label>Cupo de sobregiro</mat-label>
         <span matTextPrefix>$&nbsp;</span>
-        <input matInput type="number" min="0" step="1000" formControlName="overdraftLimit" />
+        <input matInput appMoneyInput formControlName="overdraftLimit" />
         <mat-hint>Valor que la cuenta puede quedar en negativo</mat-hint>
         <mat-error>{{ overdraftError() }}</mat-error>
       </mat-form-field>

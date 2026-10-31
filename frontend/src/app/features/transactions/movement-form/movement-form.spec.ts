@@ -64,9 +64,7 @@ describe('MovementForm', () => {
   const norm = (text: string | null | undefined) => text?.replace(/\s+/g, ' ').trim();
 
   const errors = (fixture: ComponentFixture<MovementForm>) =>
-    Array.from(element(fixture).querySelectorAll('mat-error'), (error) =>
-      norm(error.textContent),
-    );
+    Array.from(element(fixture).querySelectorAll('mat-error'), (error) => norm(error.textContent));
 
   beforeEach(() => vi.resetAllMocks());
 
@@ -168,6 +166,16 @@ describe('MovementForm', () => {
     expect(errors(fixture)).toEqual(['Seleccione una cuenta', 'El monto debe ser mayor a $0']);
   });
 
+  it('writes the amount with thousand dots', async () => {
+    const fixture = await render('deposit', '5300000001');
+
+    await type(fixture, 'amount', '6600');
+
+    expect(
+      element(fixture).querySelector<HTMLInputElement>('input[formControlName="amount"]')!.value,
+    ).toBe('6.600');
+  });
+
   it('ignores a preselected account that is not active', async () => {
     const fixture = await render('deposit', '3300000002');
 
@@ -184,6 +192,6 @@ describe('MovementForm', () => {
     expect(completed).toEqual([]);
     expect(
       element(fixture).querySelector<HTMLInputElement>('input[formControlName="amount"]')!.value,
-    ).toBe('50000');
+    ).toBe('50.000');
   });
 });

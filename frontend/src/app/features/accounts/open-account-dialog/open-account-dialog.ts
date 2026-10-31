@@ -11,6 +11,7 @@ import { finalize } from 'rxjs';
 import { Account } from '../../../core/models/account';
 import { AccountType } from '../../../core/models/enums';
 import { validationMessage } from '../../../shared/forms/validation-message';
+import { MoneyInput } from '../../../shared/forms/money-input';
 import { maxDecimals } from '../../../shared/forms/validators';
 import { AccountService } from '../account.service';
 
@@ -36,6 +37,7 @@ interface TypeOption {
     MatIconModule,
     MatInputModule,
     MatSlideToggleModule,
+    MoneyInput,
     ReactiveFormsModule,
   ],
   templateUrl: './open-account-dialog.html',
