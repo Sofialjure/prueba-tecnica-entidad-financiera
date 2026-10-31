@@ -14,7 +14,7 @@ Fases del proyecto en el orden en que se desarrollan. Cada fase se divide en PRs
 | 4 | Cuentas | `feature/accounts` | [#4](https://github.com/Sofialjure/prueba-tecnica-entidad-financiera/pull/4) | ✅ |
 | 5 | Transacciones | `feature/transactions` | [#5](https://github.com/Sofialjure/prueba-tecnica-entidad-financiera/pull/5) | ✅ |
 | 6.1 | Frontend: proyecto base y layout | `feature/frontend-setup` | [#6](https://github.com/Sofialjure/prueba-tecnica-entidad-financiera/pull/6) | ✅ |
-| 6.2 | Frontend: componentes compartidos | `feature/frontend-shared-components` | — | ⏳ |
+| 6.2 | Frontend: componentes compartidos | `feature/frontend-shared-components` | [#7](https://github.com/Sofialjure/prueba-tecnica-entidad-financiera/pull/7) | ✅ |
 | 6.3 | Frontend: listado y eliminación de clientes | `feature/frontend-customers-list` | — | ⏳ |
 | 6.4 | Frontend: formulario de cliente | `feature/frontend-customer-form` | — | ⏳ |
 | 6.5 | Frontend: cuentas del cliente y apertura | `feature/frontend-accounts` | — | ⏳ |
@@ -83,7 +83,7 @@ Fases del proyecto en el orden en que se desarrollan. Cada fase se divide en PRs
 
 - [x] 6.1 Proyecto Angular 22 con Angular Material, layout con menú lateral, proxy a la API, formato de moneda colombiana
 - [x] 6.1 Mensajes de error de la API visibles para el usuario (interceptor HTTP)
-- [ ] 6.2 Componentes reutilizables (encabezado de página, diálogo de confirmación, estado de la cuenta, estado vacío)
+- [x] 6.2 Componentes reutilizables (encabezado de página, diálogo de confirmación, estado de la cuenta, estado vacío) y textos en español de los valores de la API
 - [ ] 6.3 Listado de clientes y eliminación con confirmación
 - [ ] 6.4 Formulario de cliente (crear y editar) con las mismas validaciones de la API
 - [ ] 6.5 Cuentas de un cliente y apertura de cuentas
