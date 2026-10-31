@@ -34,7 +34,7 @@ Fases del proyecto en el orden en que se desarrollan. Cada fase se divide en PRs
 | 8.2 | CI: pipeline del frontend | `feature/ci-frontend` | [#22](https://github.com/Sofialjure/prueba-tecnica-entidad-financiera/pull/22) | ✅ |
 | 8.3 | CI: reportes de cobertura | `feature/ci-coverage` | [#23](https://github.com/Sofialjure/prueba-tecnica-entidad-financiera/pull/23) | ✅ |
 | 9.1 | Nube: elección del proveedor (ADR) | `feature/cloud-decision` | [#26](https://github.com/Sofialjure/prueba-tecnica-entidad-financiera/pull/26) | ✅ |
-| 9.2 | Nube: despliegue | `feature/cloud-deploy` | — | ⏳ |
+| 9.2 | Nube: despliegue | `feature/cloud-deploy` | [#27](https://github.com/Sofialjure/prueba-tecnica-entidad-financiera/pull/27) | ✅ |
 | 10 | Versión 1.0.0 | `release/1.0.0` | — | ⏳ |
 
 ## Detalle por fase
@@ -114,10 +114,10 @@ Fases del proyecto en el orden en que se desarrollan. Cada fase se divide en PRs
 - [x] 8.2 GitHub Actions: tests del frontend (Vitest), compilación de producción y construcción de su imagen Docker en cada PR
 - [x] 8.3 Reportes de cobertura (JaCoCo y Vitest) con mínimos obligatorios, resumen en cada ejecución e insignias en el README
 
-### 9. Despliegue en la nube 🔄
+### 9. Despliegue en la nube ✅
 
 - [x] 9.1 Elegir proveedor y registrar la decisión en un ADR: Azure for Students, una VM con Docker Compose (ADR-0006)
-- [ ] 9.2 Desplegar base de datos, backend y frontend, y documentar los servicios usados ([Despliegue](06-despliegue.md))
+- [x] 9.2 Desplegar base de datos, backend y frontend en Azure y documentar los servicios usados, costos, seguridad y cómo apagar o borrar ([Despliegue](06-despliegue.md)) → http://entidad-financiera-sofia.northcentralus.cloudapp.azure.com
 
 ### 10. Versión 1.0.0 ⏳
 

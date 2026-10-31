@@ -1,0 +1,19 @@
+#cloud-config
+# Runs once, the first time the Azure VM boots: installs Docker and adds swap memory.
+
+package_update: true
+package_upgrade: true
+
+runcmd:
+  # Docker Engine and the Compose plugin from Docker's official repository
+  - curl -fsSL https://get.docker.com | sh
+  - usermod -aG docker azureuser
+  - systemctl enable --now docker
+  # 2 GiB of swap: PostgreSQL, the Java API and nginx together are tight in 2 GiB of RAM
+  - fallocate -l 2G /swapfile
+  - chmod 600 /swapfile
+  - mkswap /swapfile
+  - swapon /swapfile
+  - echo '/swapfile none swap sw 0 0' >> /etc/fstab
+  - mkdir -p /opt/entidad-financiera
+  - chown azureuser:azureuser /opt/entidad-financiera

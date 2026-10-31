@@ -1,0 +1,19 @@
+# Overrides for the Azure server, applied on top of docker-compose.yml:
+#   docker compose -f docker-compose.yml -f docker-compose.azure.yml up -d --no-build
+# Only nginx is published (port 80). PostgreSQL and the API publish no port at all:
+# they are reachable only through the internal Docker network.
+
+services:
+  postgres:
+    ports: !reset []
+    mem_limit: 512m
+
+  backend:
+    ports: !reset []
+    # The heap is 75 % of this limit, so the JVM never takes the memory PostgreSQL needs
+    mem_limit: 768m
+
+  frontend:
+    ports: !override
+      - "80:8080"
+    mem_limit: 128m
