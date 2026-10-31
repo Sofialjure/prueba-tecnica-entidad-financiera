@@ -24,6 +24,7 @@ import { LabelPipe } from '../../../shared/pipes/label.pipe';
 import { AccountOption } from '../account-option';
 import { AccountSummary } from '../account-summary/account-summary';
 import { gmfFor } from '../gmf';
+import { previewDebit } from '../overdraft';
 import { TransactionService } from '../transaction.service';
 
 export type MovementKind = 'deposit' | 'withdrawal';
@@ -92,6 +93,12 @@ export class MovementForm {
   });
 
   protected readonly total = computed(() => Number(this.values().amount || 0) + this.gmf());
+
+  /** Balance after the withdrawal and the part paid with the overdraft line, if any. */
+  protected readonly preview = computed(() => {
+    const selected = this.selected();
+    return selected ? previewDebit(selected.account, this.total()) : null;
+  });
 
   constructor() {
     effect(() => {

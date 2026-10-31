@@ -91,12 +91,30 @@
   </strong>
 </div>
 
+@if (overdraftInUse() > 0) {
+  <div class="overdraft" role="group" aria-label="Sobregiro en uso">
+    <div class="overdraft-text">
+      <span>Sobregiro en uso</span>
+      <span>
+        {{ overdraftInUse() | currency: 'COP' : 'symbol-narrow' : '1.0-0' }} de
+        {{ item.overdraftLimit | currency: 'COP' : 'symbol-narrow' : '1.0-0' }}
+      </span>
+    </div>
+    <div class="overdraft-bar">
+      <span [style.width.%]="overdraftPercent()"></span>
+    </div>
+  </div>
+}
+
 <div class="details">
   <div>
-    <span class="caption">Disponible</span>
+    <span class="caption">
+      {{ item.status === 'INACTIVE' ? 'Disponible al activarla' : 'Disponible' }}
+    </span>
     <span>{{ item.availableBalance | currency: 'COP' : 'symbol-narrow' : '1.2-2' }}</span>
   </div>
-  @if (item.accountType === 'CHECKING') {
+  <!-- A cancelled account has no overdraft line any more (SUP-14) -->
+  @if (item.accountType === 'CHECKING' && item.status !== 'CANCELLED') {
     <div>
       <span class="caption">Cupo de sobregiro</span>
       <span>{{ item.overdraftLimit | currency: 'COP' : 'symbol-narrow' : '1.0-0' }}</span>

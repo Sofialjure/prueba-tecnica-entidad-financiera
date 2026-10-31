@@ -121,8 +121,27 @@ describe('TransferForm', () => {
       ['Transferencia', '$ 100.000,00'],
       ['GMF 4x1000 (cuenta de origen)', '$ 400,00'],
       ['Total a debitar del origen', '$ 100.400,00'],
+      ['Saldo del origen después', '$ 1.698.800,00'],
       ['Carlos Andrés Pérez recibe', '$ 100.000,00'],
     ]);
+  });
+
+  it('labels the other accounts of the same owner so they are not mistaken for the source', async () => {
+    const fixture = await render('5300000001');
+    const sameOwner = (
+      fixture.componentInstance as unknown as {
+        sameOwner(option: AccountOption): boolean;
+      }
+    ).sameOwner.bind(fixture.componentInstance);
+
+    expect(sameOwner(ANA_CHECKING)).toBe(true);
+    expect(sameOwner(CARLOS)).toBe(false);
+
+    await choose(fixture, 'targetAccountNumber', '3300000001');
+    await typeAmount(fixture, '1000');
+    expect(norm(element(fixture).querySelector('.receives')?.textContent)).toContain(
+      'Ana María Gómez recibe (en otra de sus cuentas)',
+    );
   });
 
   it('never offers the source account as target', async () => {

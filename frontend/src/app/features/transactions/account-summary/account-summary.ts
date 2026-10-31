@@ -24,6 +24,17 @@ import { AccountOption } from '../account-option';
     <div class="summary-balance">
       <span>Disponible</span>
       <strong>{{ account.availableBalance | currency: 'COP' : 'symbol-narrow' : '1.2-2' }}</strong>
+      @if (account.accountType === 'CHECKING') {
+        <small class="split">
+          Saldo {{ account.balance | currency: 'COP' : 'symbol-narrow' : '1.0-2' }} + cupo
+          {{ account.overdraftLimit | currency: 'COP' : 'symbol-narrow' : '1.0-0' }}
+        </small>
+        @if (account.balance < 0) {
+          <small class="in-use">
+            Sobregiro en uso: {{ -account.balance | currency: 'COP' : 'symbol-narrow' : '1.0-2' }}
+          </small>
+        }
+      }
     </div>
   `,
   styleUrl: './account-summary.scss',

@@ -96,6 +96,40 @@
   }
 }
 
+.overdraft {
+  padding: 10px 12px;
+  border-radius: 12px;
+  background: rgba(0, 0, 0, 0.18);
+  font-size: 13px;
+}
+
+.overdraft-text {
+  display: flex;
+  justify-content: space-between;
+  gap: 8px;
+  margin-bottom: 6px;
+  white-space: nowrap;
+
+  span:first-child {
+    color: #ffc9c4;
+    font-weight: 600;
+  }
+}
+
+.overdraft-bar {
+  height: 6px;
+  border-radius: 3px;
+  background: rgba(255, 255, 255, 0.2);
+  overflow: hidden;
+
+  span {
+    display: block;
+    height: 100%;
+    border-radius: 3px;
+    background: #ff8a80;
+  }
+}
+
 .details {
   display: flex;
   flex-wrap: wrap;

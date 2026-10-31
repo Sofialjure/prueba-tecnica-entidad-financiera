@@ -24,6 +24,9 @@
         <mat-option [value]="option.account.accountNumber">
           {{ option.account.accountNumber | accountNumber }} · {{ option.ownerName }} ·
           {{ option.account.accountType | label: 'accountType' }}
+          @if (sameOwner(option)) {
+            <span class="same-owner">Otra cuenta del mismo titular</span>
+          }
         </mat-option>
       }
     </mat-select>
@@ -59,9 +62,26 @@
         <span>Total a debitar del origen</span>
         <span>{{ total() | currency: 'COP' : 'symbol-narrow' : '1.2-2' }}</span>
       </div>
+      @if (preview(); as result) {
+        @if (result.overdraftUsed > 0) {
+          <div class="overdraft-use">
+            <span>Usará del cupo de sobregiro</span>
+            <span>{{ result.overdraftUsed | currency: 'COP' : 'symbol-narrow' : '1.2-2' }}</span>
+          </div>
+        }
+        <div class="after" [class.negative]="result.balanceAfter < 0">
+          <span>Saldo del origen después</span>
+          <span>{{ result.balanceAfter | currency: 'COP' : 'symbol-narrow' : '1.2-2' }}</span>
+        </div>
+      }
       @if (target(); as option) {
         <div class="receives">
-          <span>{{ option.ownerName }} recibe</span>
+          <span>
+            {{ option.ownerName }} recibe
+            @if (sameOwner(option)) {
+              (en otra de sus cuentas)
+            }
+          </span>
           <span>{{ amount() | currency: 'COP' : 'symbol-narrow' : '1.2-2' }}</span>
         </div>
       }
