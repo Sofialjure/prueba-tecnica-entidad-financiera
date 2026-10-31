@@ -74,13 +74,14 @@ describe('AccountCard', () => {
     expect(emitted).toEqual(['deactivate']);
   });
 
-  it('links an active account to the deposit, withdrawal and transfer screens', async () => {
+  it('links an active account to its statement and to the deposit, withdrawal and transfer screens', async () => {
     await openMenu(await render(SAVINGS_ACCOUNT));
     const links = Array.from(document.querySelectorAll('a.mat-mdc-menu-item'), (link) =>
       link.getAttribute('href'),
     );
 
     expect(links).toEqual([
+      '/accounts/1/statement',
       '/transactions?type=deposit&account=5300000001',
       '/transactions?type=withdrawal&account=5300000001',
       '/transactions?type=transfer&account=5300000001',
@@ -90,7 +91,10 @@ describe('AccountCard', () => {
   it('offers to activate an inactive account without money shortcuts', async () => {
     await openMenu(await render({ ...SAVINGS_ACCOUNT, status: 'INACTIVE' }));
 
-    expect(document.querySelectorAll('a.mat-mdc-menu-item')).toHaveLength(0);
+    expect(document.querySelectorAll('a.mat-mdc-menu-item')).toHaveLength(1);
+    expect(document.querySelector('a.mat-mdc-menu-item')?.textContent).toContain(
+      'Estado de cuenta',
+    );
   });
 
   it('offers to activate an inactive account', async () => {
@@ -111,10 +115,28 @@ describe('AccountCard', () => {
     expect(items[1].textContent).toContain('Requiere saldo $0');
   });
 
-  it('has no actions on a cancelled account', async () => {
-    const card = await render({ ...SAVINGS_ACCOUNT, status: 'CANCELLED', balance: 0 });
+  it('only offers the statement of a cancelled account', async () => {
+    await openMenu(await render({ ...SAVINGS_ACCOUNT, status: 'CANCELLED', balance: 0 }));
 
-    expect(card.querySelector('.menu-button')).toBeNull();
+    expect(document.querySelectorAll('button.mat-mdc-menu-item')).toHaveLength(0);
+    expect(
+      Array.from(document.querySelectorAll('a.mat-mdc-menu-item'), (link) =>
+        link.getAttribute('href'),
+      ),
+    ).toEqual(['/accounts/1/statement']);
+  });
+
+  it('can be shown without menu', async () => {
+    TestBed.configureTestingModule({
+      imports: [AccountCard],
+      providers: [{ provide: LOCALE_ID, useValue: 'es-CO' }, provideRouter([])],
+    });
+    const fixture = TestBed.createComponent(AccountCard);
+    fixture.componentRef.setInput('account', SAVINGS_ACCOUNT);
+    fixture.componentRef.setInput('actions', false);
+    await fixture.whenStable();
+
+    expect((fixture.nativeElement as HTMLElement).querySelector('.menu-button')).toBeNull();
   });
 
   it('greys out accounts that are not active', async () => {
